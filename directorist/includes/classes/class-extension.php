@@ -1063,6 +1063,7 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 					'type' => $type,
 				)
 			);
+
 			wp_send_json( $installation_status );
 		}
 
@@ -1134,7 +1135,9 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 				return array( 'status' => $status );
 			}
 
-			$link          = $installing_file['download_link'];
+			$beta_link = ! empty( $installing_file['beta_link'] ) ? $installing_file['beta_link'] : '';
+
+			$link          = ATBDP()->beta ? $beta_link : $installing_file['download_link'];
 			$download_args = array( 'url' => $link );
 
 			if ( 'plugin' === $type ) {
@@ -2143,6 +2146,10 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 				'get_info'     => 'download_link',
 			);
 
+			if( ATBDP()->beta ) {
+				$query_args['beta'] = true;
+			}
+
 			try {
 				$response = wp_remote_get(
 					$activation_url,
@@ -2227,6 +2234,7 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 				'ATBDP_Extensions'                      => $this,
 				'is_logged_in'                          => $is_logged_in,
 				'hard_logout'                           => $hard_logout,
+				'is_beta'                           	=> ATBDP()->beta,
 
 				'total_active_extensions'               => $extensions_overview['total_active_extensions'],
 				'total_outdated_extensions'             => $extensions_overview['total_outdated_extensions'],

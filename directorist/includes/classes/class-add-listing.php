@@ -224,10 +224,17 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 					$result = self::validate_field( $field, $posted_data );
 
 					if ( ! $result['is_valid'] ) {
-						$error->add(
-							$field->get_key(),
-							sprintf( '<strong>%1$s</strong>: %2$s', $field->label, $result['message'] )
-						);
+						if ( $field->get_key() === 'privacy_policy' ) {
+							$error->add(
+								$field->get_key(),
+								sprintf( '%1$s', __( 'Terms & Privacy is required', 'directorist' ) )
+							);
+						} else {
+							$error->add(
+								$field->get_key(),
+								sprintf( '<strong>%1$s</strong>: %2$s', $field->label, $result['message'] )
+							);
+						}
 
 						continue;
 					}
@@ -278,13 +285,14 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 					}
 				}
 
-				if ( directorist_should_check_privacy_policy( $directory_id ) && empty( $posted_data['privacy_policy'] ) ) {
-					$error->add( 'privacy_policy_required', __( 'Privacy Policy is required.', 'directorist' ) );
-				}
+				// // Terms & conditions and privacy policy have been merged in v8.
+				// if ( directorist_should_check_privacy_policy( $directory_id ) && empty( $posted_data['privacy_policy'] ) && directorist_should_check_terms_and_condition( $directory_id ) && empty( $posted_data['t_c_check'] ) ) {
+				// 	$error->add( 'terms_and_condition_required', __( 'Terms and condition is required.', 'directorist' ) );
+				// }
 
-				if ( directorist_should_check_terms_and_condition( $directory_id ) && empty( $posted_data['t_c_check'] ) ) {
-					$error->add( 'terms_and_condition_required', __( 'Terms and condition is required.', 'directorist' ) );
-				}
+				// if ( directorist_should_check_privacy_policy( $directory_id ) && empty( $posted_data['privacy_policy'] ) ) {
+				// 	$error->add( 'privacy_policy_required', __( 'Privacy Policy is required.', 'directorist' ) );
+				// }
 
 				if ( $error->has_errors() ) {
 					return wp_send_json( apply_filters( 'atbdp_listing_form_submission_info', array(
@@ -293,18 +301,15 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 					) ) );
 				}
 
-				if ( ! empty( $posted_data['privacy_policy'] ) ) {
-					$meta_data['_privacy_policy'] = (bool) $posted_data['privacy_policy'];
-				}
-
-				if ( ! empty( $posted_data['t_c_check'] ) ) {
-					$meta_data['_t_c_check'] = (bool) $posted_data['t_c_check'];
+				// Terms & conditions and privacy policy have been merged in v8.
+				if ( ! empty( $posted_data['t_c_check'] ) || ! empty( $posted_data['privacy_policy'] ) ) {
+					$meta_data['_t_c_check'] = true;
+					$meta_data['_privacy_policy'] = true;
 				}
 
 				$listing_create_status = directorist_get_listing_create_status( $directory_id );
-				$listing_edit_status   = ( 'publish' !== $listing_create_status ) ? $listing_create_status : directorist_get_listing_edit_status( $directory_id );
 				$default_expiration    = directorist_get_default_expiration( $directory_id );
-				$preview_enable        = atbdp_is_truthy( get_term_meta( $directory_id, 'preview_mode', true ) );
+				$preview_enable        = directorist_is_preview_enabled( $directory_id );
 
 				/**
 				 * It applies a filter to the meta values that are going to be saved with the listing submitted from the front end
@@ -325,12 +330,14 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 					 */
 					do_action( 'atbdp_before_processing_to_update_listing' );
 
-					$listing_data['ID'] = $listing_id; // set the ID of the post to update the post
-					if ( $preview_enable ) {
-						$listing_data['post_status'] = 'private';
-					} else {
-						$listing_data['post_status'] = $listing_edit_status;
-					}
+					$listing_data['ID']          = $listing_id;
+					$listing_data['post_status'] = directorist_get_listing_edit_status( $directory_id, $listing_id );
+
+					// if ( $preview_enable ) {
+					// 	$listing_data['post_status'] = 'private';
+					// } else {
+					// 	$listing_data['post_status'] = directorist_get_listing_edit_status( $directory_id, $listing_id );
+					// }
 
 					$listing_id = wp_update_post( $listing_data );
 
@@ -404,7 +411,8 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 				$permalink = get_permalink( $listing_id );
 				// no pay extension own yet let treat as general user
 
-				$redirect_page = get_directorist_option( 'edit_listing_redirect', 'view_listing' );
+				$submission_notice = get_directorist_option( 'submission_confirmation', 1 );
+				$redirect_page     = get_directorist_option( 'edit_listing_redirect', 'view_listing' );
 
 				if ( 'view_listing' === $redirect_page ) {
 					$redirect_url = $permalink;
@@ -935,9 +943,6 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 		 * @since 3.1.0
 		 */
 		private function renew_listing( $listing_id ) {
-			if ( ! directorist_can_user_renew_listings() ) {
-				return false;// vail if renewal option is turned off on the site.
-			}
 
 			// Hook for developers
 			do_action( 'atbdp_before_renewal', $listing_id );

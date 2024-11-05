@@ -3,9 +3,9 @@ Contributors: wpwax
 Donate link: https://directorist.com/extensions/
 Tags: member directory, listing, classifieds, directory plugin, business directory
 Requires at least: 4.6
-Tested up to: 6.6
+Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 7.12.7
+Stable tag: 8.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,13 +15,13 @@ A user-centric yet powerful WordPress Business Directory Plugin to create a loca
 
 [Try Admin Demo](https://userdemo.wpwax.com/directorist/) | [Demos](https://directorist.com/demos/) | [Docs](https://directorist.com/documentation/directorist/) | [Themes](https://directorist.com/themes/) | [Extensions](https://directorist.com/extensions/) | [Roadmap](https://directorist.com/roadmap/)
 
-Are you ready to embark on the journey of creating your own online directory and classified ads listing site?
+Are you ready to embark on the journey of creating your own online directory and classified ads listing site with AI? 
 
 If the answer is a resounding YES, then look no further! Directorist Business Directory Plugin is your ultimate companion, making the process not only seamless but also exciting. With Directorist, you'll unlock the power to craft dynamic and impactful business directories and classified websites of any kind, setting the stage for endless possibilities and opportunities. Let's dive in and unleash your creativity!
 
 [youtube https://www.youtube.com/watch?v=28gUzfsGmuk]
 
-Using Directorist, the potential of a directory site is boundless. It serves as a multifaceted platform, offering avenues for generating income, providing community service, supporting business operations, enhancing existing ventures, and more. With thousands of individuals already embarking on this journey, what stands in your way? Take the leap and discover the vast opportunities it presents.
+Using Directorist, the potential of a directory site is boundless. It serves as a multifaceted platform, offering avenues for generating income, providing community service, supporting business operations, enhancing existing ventures, and more. With thousands of individuals already embarking on this journey, what stands in your way? Take the leap and discover the vast opportunities it presents. 
 
 🎉 Use [Best Listing](https://wordpress.org/themes/best-listing/) FREE multi-purpose directory theme for a quick start.
 
@@ -239,7 +239,7 @@ Directorist Business Directory offers cost-effective premium [Extensions](https:
 
 👉 **[BuddyBoss Integration](https://directorist.com/product/directorist-buddyboss-integration/)** - It is used to integrate the giant Directorist with the popular BuddyBoss plugin. It combines all the functionalities needed to create a complete community based WordPress directory website using Directorist plugin and BuddyBoss platform.
 
-👉 **[BuddyPress Integration](https://directorist.com/product/directorist-buddypress-integration/)** - Directorist - BuddyPress Integration is a premium extension which makes Direcorist and BuddyPress work as a single integrated app, allowing you to build a hybrid listings directory and social network together.
+👉 **[BuddyPress Integration](https://directorist.com/product/directorist-buddypress-integration/)** - Directorist - BuddyPress Integration is a premium extension which makes Directorist and BuddyPress work as a single integrated app, allowing you to build a hybrid listings directory and social network together.
 
 👉 **[Multi Directory Linking](https://directorist.com/product/directorist-directory-linking/)** - If you are running multi-directories on your directory website, Multi-directory Linking will be an awesome extension that will allow your users to connect to other types of directories.
 
@@ -304,83 +304,46 @@ Directorist is a complete directory solution and in combination with its advance
 
 == Changelog ==
 
-7.12.7 - Oct 17, 2024
+8.0 - Nov 5, 2024
 
-* Fix -  Missing directorist blocks
-
-7.12.6 - Oct 14, 2024
-
-* Add - Builder single listing header migration
-* Fix -  Empty tag issue
-
-7.12.5 - Oct 02, 2024
-
-* Fix - Expire listing hook
-
-7.12.4 - Sep 25, 2024
-
-* Improve - Email verification link security
-* Fix - Yoast SEO compatibility issue with term archive pages
-
-7.12.3 - Sep 18, 2024
-
-* Fix - Fix with `remove_cap()` function
-
-7.12.2 - Sep 17, 2024
-
-* Improve - File upload permission issue
-* Fix - Validation in admin add listing form submission
-
-7.12.1 - Sep 04, 2024
-
-* Improve - Asset and readme
-
-7.12.0 - Sep 01, 2024
-
-* Add – Dynamic email verification template on user registration
-* Add – Filter hook to control email notice preferences
-* Fix – Extension less image upload issue
-* Fix – Renewal email issue
-* Fix – Category custom field issue
-* Remove – Some unused stuff classes/class-multiple-cat.php file (#1786)
-* Improve – Compatibility with multi site installation
-* Improve – Author profile page
-
-7.11.0 - Aug 14, 2024
-
-* Add - Support Google reCAPTCHA on contact listing owner form (#1777)
-* Merge - User Dashboard, Login & Registration pages (#1677)
-* Refactor - Directorist service api with caching and unification (#1766)
-* Fix - Data deletion issue on uninstall in multi-site installation (#1765)
-* Fix - jQuery 3 compatibility issue (#1784)
-* Fix - Listing meta empty field saving from backend (#1364)
-
-7.10.3 - Jun 13, 2024
-
-* Fix - Renewal email sending issue
-* Fix - Extension update issue
-
-7.10.2 - Jun 13, 2024
-
-* Fix - Extension update issue
-* Fix - Directory type specification issue Listings page
+Enhancements:
+* New: Complete design overhaul for a modern and intuitive interface.
+* New: Improved drag-and-drop builder experience and added live previews for smoother customization.
+* New: Added section navigation in the add listing form for quick navigation to specific sections.
+* New: The “All Listings” page has been redesigned with a modern interface.
+* New: New REST API endpoints for easier integration with external platforms.
+* New: AI-powered directory creation feature (coming in November).
+* New: Redesigned login, and registration, and checkout processes for a better user experience.
+* New: Added a Preferences tab in the dashboard with new customization options for listings.
+* New: Added min/max values, step control, and text display options in Number custom field.
+* New: Pagination added to “All Categories” and “All Locations” pages.
+* New: Introduced Bricks Directorist Blocks (Pro version).
+* New extension: Listing Search Alerts (Pro version) to notify users based on their search criteria.
+* Improved: Optimized performance with reduced database queries for faster page load times.
+* Improved: Improved instant search with AJAX search functionality.
+* Improved: Improved Gutenberg and Elementor block integrations.
+* Improved: Mobile App v2.0 now supports listing submission and payment integration.
+Fixes:
+* Fixed category custom field issue in search forms.
+* Fixed mobile search functionality problems.
+* Fixed category filtering issues in author profile listings.
+* Fixed conflicts with custom field values in the builder.
+* Fixed directory type and listing count issues on “All Categories” and “All Locations” pages.
+Other:
+* Separated the announcement feature into the Directorist Announcement extension.
+* Reorganized and optimized settings for better usability and performance.
 
 
-7.10.0 - Jun 9, 2024
+7.9.0 - Apr 2, 2024
 
-* Add - Listing edit status filter hook directorist_listing_edit_status (#1731)
-* Update - Performance improvement: Listing status migrated to native status from post meta (#1606)
-* Update - Performance improvement: Never expire listings query (#1625)
-* Update - Twitter(X) Logo (#1706)
-* Update - Dynamic Value for Maximum Radius Distance (#1730)
-* Update - Default value of delete_expired_listing is set to false (#1732)
-* Update - atbdp_insert_attachment_from_url function (#1704)
-* Fix - HTML ID conflict on registration and add listing page (#1623)
-* Fix - Open Street Map zipcode radius search (#1701)
-* Fix - Dashboard nav width update (#1676)
-* Fix - Remove empty space from the url parameter (#1739)
-* Fix - Image upload with gallery extension (#1741)
-* Fix - Related listing template on single listing page (#1738)
-* Fix - Warning when no widget pass (#1733)
+* Add - New shortcode to show listing's meta (#1725)
+* Fix - Phone number plus prefix missing issue (#1720)
+* Fix - Single taxonomy archive page title issue for Yoast SEO plugin (#1721)
+* Fix - Contact listing owner email reply to issue (#1712)
+* Fix - widget checkbox boolean value (#1724)
+* Improve - Add listing price field (#1715)
+* Update - Promo banner nonce validation (#1723)
+* Tweak - Directories query and general config use (#1716)
+* Test - Compatibility with WP 6.5
 
 [Full Changelog](https://github.com/sovware/directorist/wiki/Changelogs)

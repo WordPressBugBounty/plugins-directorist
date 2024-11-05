@@ -37,11 +37,10 @@ class ATBDP_Shortcode {
 				'directorist_author_profile' => [ $this, 'author_profile' ],
 				'directorist_user_dashboard' => [ $this, 'user_dashboard' ],
 				'directorist_all_authors' 	 => [ $this, 'all_authors' ],
+				'directorist_signin_signup'  => [ $this, 'directorist_signin_signup' ],
 
 				// Forms
 				'directorist_add_listing'         => [ $this, 'add_listing' ],
-				'directorist_custom_registration' => [ $this, 'user_registration' ],
-				'directorist_user_login'          => [ $this, 'user_login' ],
 
 				// Checkout
 				'directorist_checkout'            => [ new \ATBDP_Checkout, 'display_checkout_content' ],
@@ -178,7 +177,7 @@ class ATBDP_Shortcode {
 					/** Card & Wrapper - Open */
 					if( isset( $atts[ 'card' ] ) && $atts[ 'card' ] === 'true' ) echo '<div class="directorist-card"><div class="directorist-card__body">';
 					if( isset( $atts[ 'wrap' ] ) && $atts[ 'wrap' ] === 'true' ) echo '<div class="directorist-details-info-wrap">';
-					
+
 					$listing->field_template( $field );
 
 					/** Card & Wrapper - Close */
@@ -294,9 +293,6 @@ class ATBDP_Shortcode {
 	}
 
 	public function user_dashboard( $atts ) {
-		if ( ! is_user_logged_in() && get_option( 'directorist_merge_dashboard_login_reg_page' ) ) {
-			return $this->user_login_registration( $atts );
-		}
 		$atts      = ! empty( $atts ) ? $atts : array();
 		$dashboard = Directorist_Listing_Dashboard::instance();
 
@@ -305,13 +301,13 @@ class ATBDP_Shortcode {
 		return $dashboard->render_shortcode( $atts );
 	}
 
-	public function user_login_registration( $atts ) {
+	public function directorist_signin_signup( $atts ) {
 		$atts = !empty( $atts ) ? $atts : array();
-		$account = Directorist_Listing_Dashboard::instance();
+		$account = Directorist_Account::instance();
 
-		$atts[ 'shortcode' ] = 'directorist_user_dashboard';
+		$atts[ 'shortcode' ] = 'directorist_signin_signup';
 
-		return $account->render_shortcode_login_registration( $atts );
+		return $account->render( $atts );
 	}
 
 	public function add_listing( $atts ) {
@@ -324,24 +320,6 @@ class ATBDP_Shortcode {
 		$atts[ 'shortcode' ] = 'directorist_add_listing';
 
 		return $forms->render_shortcode($atts);
-	}
-
-	public function user_registration( $atts ) {
-		$atts = !empty( $atts ) ? $atts : array();
-		$account = Directorist_Account::instance();
-
-		$atts[ 'shortcode' ] = 'directorist_custom_registration';
-
-		return $account->render_shortcode_registration( $atts );
-	}
-
-	public function user_login( $atts ) {
-		$atts = !empty( $atts ) ? $atts : array();
-		$account = Directorist_Account::instance();
-
-		$atts[ 'shortcode' ] = 'directorist_user_login';
-
-		return $account->render_shortcode_login( $atts );
 	}
 
 }

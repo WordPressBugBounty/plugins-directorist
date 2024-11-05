@@ -1217,7 +1217,7 @@ We look forward to seeing you soon'
             
             <p align="center">If you did not sign up for this account you can ignore this email.</p>'
 			);
-			
+
 			$subject = $this->replace_in_content( $subject, null, null, $user );
 
 			$body = $this->replace_in_content( $body, null, null, $user );

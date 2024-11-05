@@ -15,70 +15,19 @@ class ATBDP_Upgrade
 
 	public function __construct()
 	{
-		add_action('init', array($this, 'migrate_single_listing_header_data'));
-
 		if ( !is_admin() ) return;
 
 		add_action('admin_init', array($this, 'configure_notices'));
-		
+
 		add_action('admin_notices', array($this, 'upgrade_notice'), 100);
-		
+
 		add_action('directorist_before_settings_panel_header', array($this, 'promo_banner') );
-		
+
 		add_action('directorist_before_all_directory_types', array($this, 'promo_banner') );
-		
-		add_action('directorist_before_directory_type_edited', array($this, 'promo_banner') );
-		
+
+		// add_action('directorist_before_directory_type_edited', array($this, 'promo_banner') );
+
 		add_action( 'admin_notices', array( $this, 'bfcm_notice') );
-
-	}
-
-	/**
-	 * Migrate single listing header data.
-	 *
-	 * @since 7.0.0
-	 * @return void
-	 */
-	public function migrate_single_listing_header_data() {
-		// Check if migration has already been completed.
-		if (
-			get_option( 'v7_single_listing_header_migration', false ) 
-			|| ! current_user_can( 'manage_options' ) 
-			|| ( 
-				! get_option( 'directorist_builder_header_migrated', false ) 
-				&& version_compare( get_option( 'directorist_db_version', false ), '8.0.0', '<=' ) 
-			)
-		) {
-			return;
-		}
-
-		// Fetch backup data.
-		$header_backup_json  = get_option( 'directorist_builder_backup_data' );
-		$header_backup_array = json_decode( $header_backup_json, true );
-
-		if ( empty( $header_backup_array ) ) {
-			return;
-		}
-
-		// Process each directory type in the backup data.
-		foreach ( $header_backup_array as $directory_type => $data ) {
-			$current_header_data = [];
-
-			// Update listing header data where the key matches 'single_listing_header'.
-			foreach ( $data as $key => $value ) {
-				if ( 'single_listing_header' === $key ) {
-					$current_header_data = $value; // Merge backup options with the current fields.
-				}
-			}
-
-			// Update the term meta with the new structure for each directory type.
-			if ( ! empty( $current_header_data ) ) {
-				update_term_meta( $directory_type, 'single_listing_header', $current_header_data );
-			}
-		}
-
-		// Mark the migration as completed.
-		update_option( 'v7_single_listing_header_migration', true );
 	}
 
 	public function is_pro_user() {
@@ -143,33 +92,72 @@ class ATBDP_Upgrade
 			return;
 		}
 
-		if ( '7.0' !== ATBDP_VERSION ) {
-			return;
+		// v8.0 compatibility notice
+		// theme check
+		$theme = wp_get_theme();
+		if( ( $theme->display( 'Author', FALSE ) === 'wpWax' ) && ( 2 > $theme['Version'] ) ) {
+			// show theme
+			$this->v8_theme_upgrade_notice( $theme );
+		}
+		// extension check
+		$plugins = get_plugins();
+		$outdated_extensions = [];
+		if( ! empty( $plugins ) ) {
+			foreach( $plugins as $key => $plugin ) {
+				if( ( str_starts_with($key, 'directorist') ) && ( 2 > $plugin['Version'] ) ) {
+					$outdated_extensions[] = $plugin['Name'];
+				}
+			}
 		}
 
-		if ( get_user_meta( get_current_user_id(), $this->upgrade_notice_id, true ) || ! empty( $this->directorist_migration[ $this->upgrade_notice_id ] ) ) {
+		if( ! empty( $outdated_extensions ) ) {
+			$this->v8_extension_upgrade_notice( $outdated_extensions );
+		}
+
+	}
+
+	public function v8_extension_upgrade_notice( $list = [] ) {
+		if ( ! self::can_manage_plugins() ) {
 			return;
 		}
 
 		$text = '';
-
 		$link = 'https://directorist.com/blog/directorist-7-0-released/';
 		$membership_page = admin_url('edit.php?post_type=at_biz_dir&page=atbdp-extension');
 
-		$wp_rollback = 'https://wordpress.org/plugins/wp-rollback/';
+		$wp_rollback = admin_url( 'plugin-install.php?s=rollback&tab=search&type=term' );
 
-		$text .= sprintf( __( '<p class="directorist__notice_new"><span>Congratulations!</span> You are now using the latest version of Directorist with some cool <a href="%s" target="blank">new features</a>. If you are using any of our premium theme or extension, please update them from this <a href="%s">page</a> </p>', 'directorist' ), $link, $membership_page );
+		$text .= sprintf( __( '<p class="directorist__notice_new"><span style="font-size: 16px;">📣 Directorist Extension Compatibility Notice!</span><br/> Congratulations and welcome to Directorist v8.0 with some cool <a href="%s" target="_blank">new features</a>.You are using %s of our extensions which are not compatible with v8.0. Please <a target="_blank" href="%s">update your extensions</a> </p>', 'directorist' ), $link, count( $list ), $membership_page );
 
 		$text .= sprintf(
-			__( '<p class="directorist__notice_new_action"><a href="%s" class="directorist__notice_new__btn">Continue using Directorist 7.0</a> or <a target="_blank" href="%s">Roll back to v6.5.8</a></p>', 'directorist' ),
-			add_query_arg( array(
-				'directorist-v7'              => 1,
-				'directorist_migration_nonce' => wp_create_nonce( 'directorist_migration_nonce' )
-			) ),
+			__( '<p class="directorist__notice_new_action">Mistakenly updated? Use <a target="_blank" href="%s">WP Rollback</a> to install your old Directorist</p>', 'directorist' ),
 			$wp_rollback
 		);
 
-		$notice = '<div class="notice notice-warning is-dismissible directorist-plugin-updater-notice" style="font-weight:bold;padding-top: 5px;padding-bottom: 5px;">' . $text . '</div>';
+		$notice = '<div class="notice notice-warning is-dismissible directorist-plugin-updater-notice" style="padding-top: 5px;padding-bottom: 5px;">' . $text . '</div>';
+
+		echo wp_kses_post( $notice );
+	}
+
+	public function v8_theme_upgrade_notice( $theme ) {
+		if ( ! self::can_manage_plugins() ) {
+			return;
+		}
+
+		$text = '';
+		$link = 'https://directorist.com/blog/directorist-7-0-released/';
+		$membership_page = admin_url('edit.php?post_type=at_biz_dir&page=atbdp-extension');
+
+		$wp_rollback = admin_url( 'plugin-install.php?s=rollback&tab=search&type=term' );
+
+		$text .= sprintf( __( '<p class="directorist__notice_new"><span style="font-size: 16px;">📣 Directorist Theme Compatibility Notice!</span><br/> Congratulations and welcome to Directorist v8.0 with some cool <a href="%s" target="_blank">new features</a>.Please update <a target="_blank" href="%s">%s theme</a> </p>', 'directorist' ), $link, $membership_page, $theme['Name'] );
+
+		$text .= sprintf(
+			__( '<p class="directorist__notice_new_action">Mistakenly updated? Use <a target="_blank" href="%s">WP Rollback</a> to install your old Directorist</p>', 'directorist' ),
+			$wp_rollback
+		);
+
+		$notice = '<div class="notice notice-warning is-dismissible directorist-plugin-updater-notice" style="padding-top: 5px;padding-bottom: 5px;">' . $text . '</div>';
 
 		echo wp_kses_post( $notice );
 	}
@@ -180,20 +168,6 @@ class ATBDP_Upgrade
 		}
 
 		$this->directorist_notices      = get_option( 'directorist_notices' );
-		$this->directorist_migration    = get_option( 'directorist_migration' );
-
-		if ( isset( $_GET['directorist-v7'], $_GET['directorist_migration_nonce'] ) && wp_verify_nonce( $_GET['directorist_migration_nonce'], 'directorist_migration_nonce' ) ) {
-			$this->directorist_migration[ $this->upgrade_notice_id ] = 1;
-			update_option( 'directorist_migration', $this->directorist_migration );
-		}
-
-		/**
-		 * Didn't find any use of the 'directorist-depricated-notice'.
-		 */
-		// if ( isset( $_GET['directorist-depricated-notice'] ) ) {
-		// 	$this->directorist_notices[ $this->legacy_notice_id ] = 1;
-		// 	update_option( 'directorist_notices', $this->directorist_notices );
-		// }
 
 		if ( isset( $_GET['close-directorist-promo-version'], $_GET['directorist_promo_nonce'] ) && wp_verify_nonce( $_GET['directorist_promo_nonce'], 'directorist_promo_nonce' ) ) {
 			update_user_meta( get_current_user_id(), '_directorist_promo_closed', directorist_clean( wp_unslash( $_GET['close-directorist-promo-version'] ) ) );

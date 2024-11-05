@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -93,41 +93,42 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-(function ($) {
-  window.addEventListener('DOMContentLoaded', function () {
-    // Recovery Password Modal
-    $("#recover-pass-modal").hide();
-    $(".atbdp_recovery_pass").on("click", function (e) {
-      e.preventDefault();
-      $("#recover-pass-modal").slideToggle().show();
-    });
-
-    // Contact form [on modal closed]
-    $('#atbdp-contact-modal').on('hidden.bs.modal', function (e) {
-      $('#atbdp-contact-message').val('');
-      $('#atbdp-contact-message-display').html('');
-    });
-
-    // Template Restructured
-    // Modal
-    var directoristModal = document.querySelector('.directorist-modal-js');
-    $('body').on('click', '.directorist-btn-modal-js', function (e) {
-      e.preventDefault();
-      var data_target = $(this).attr("data-directorist_target");
-      document.querySelector(".".concat(data_target)).classList.add('directorist-show');
-    });
-    $('body').on('click', '.directorist-modal-close-js', function (e) {
-      e.preventDefault();
-      $(this).closest('.directorist-modal-js').removeClass('directorist-show');
-    });
-    $(document).bind('click', function (e) {
-      if (e.target == directoristModal) {
-        directoristModal.classList.remove('directorist-show');
-      }
-    });
+var $ = jQuery;
+$(document).ready(function () {
+  modalToggle();
+});
+function modalToggle() {
+  // Recovery Password Modal
+  $("#recover-pass-modal").hide();
+  $(".atbdp_recovery_pass").on("click", function (e) {
+    e.preventDefault();
+    $("#recover-pass-modal").slideToggle().show();
   });
-})(jQuery);
+
+  // Contact form [on modal closed]
+  $('#atbdp-contact-modal').on('hidden.bs.modal', function (e) {
+    $('#atbdp-contact-message').val('');
+    $('#atbdp-contact-message-display').html('');
+  });
+
+  // Template Restructured
+  // Modal
+  var directoristModal = document.querySelector('.directorist-modal-js');
+  $('body').on('click', '.directorist-btn-modal-js', function (e) {
+    e.preventDefault();
+    var data_target = $(this).attr("data-directorist_target");
+    document.querySelector(".".concat(data_target)).classList.add('directorist-show');
+  });
+  $('body').on('click', '.directorist-modal-close-js', function (e) {
+    e.preventDefault();
+    $(this).closest('.directorist-modal-js').removeClass('directorist-show');
+  });
+  $(document).bind('click', function (e) {
+    if (e.target == directoristModal) {
+      directoristModal.classList.remove('directorist-show');
+    }
+  });
+}
 
 /***/ }),
 
@@ -146,7 +147,7 @@
   } else {
     return;
   }
-  window.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('load', function () {
     /* Directorist alert dismiss */
     var getUrl = window.location.href;
     var newUrl = getUrl.replace('notice=1', '');
@@ -179,7 +180,7 @@
   } else {
     return;
   }
-  window.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('load', function () {
     // Perform AJAX login on form submit
     $('form#login').on('submit', function (e) {
       e.preventDefault();
@@ -251,7 +252,7 @@
     window.history.pushState(null, null, url.toString());
 
     // Authentication Form Toggle
-    $('body').on('click', '.directorist-authentication__btn', function (e) {
+    $('body').on('click', '.directorist-authentication__btn, .directorist-authentication__toggle', function (e) {
       e.preventDefault();
       $('.directorist-login-wrapper').toggleClass('active');
       $('.directorist-registration-wrapper').toggleClass('active');
@@ -273,30 +274,32 @@ jQuery(function ($) {
     e.preventDefault();
     var formData = new FormData(this);
     formData.append('action', 'directorist_register_form');
+    formData.append('params', JSON.stringify(directorist_signin_signup_params));
     $.ajax({
       url: directorist.ajaxurl,
-      type: "POST",
+      type: 'POST',
       data: formData,
       contentType: false,
       processData: false,
-      cache: false,
-      success: function success(response) {
-        if (response.success) {
-          $('.directorist-register-error').hide();
-          if (response.data.redirect_url) {
-            if (response.data.redirect_message) {
-              $('.directorist-register-error').empty().show().append(response.data.redirect_message).css({
-                'color': '#009114',
-                'background-color': '#d9efdc'
-              });
-            }
-            setTimeout(function () {
-              window.location.href = response.data.redirect_url;
-            }, 500);
-          }
-        } else {
-          $('.directorist-register-error').empty().show().append(response.data);
-        }
+      cache: false
+    }).done(function (_ref) {
+      var data = _ref.data,
+        success = _ref.success;
+      if (!success) {
+        $('.directorist-register-error').empty().show().append(data.error);
+        return;
+      }
+      $('.directorist-register-error').hide();
+      if (data.message) {
+        $('.directorist-register-error').empty().show().append(data.message).css({
+          'color': '#009114',
+          'background-color': '#d9efdc'
+        });
+      }
+      if (data.redirect_url) {
+        setTimeout(function () {
+          return window.location.href = data.redirect_url;
+        }, 500);
       }
     });
   });
@@ -353,7 +356,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 10:
+/***/ 11:
 /*!*******************************************************!*\
   !*** multi ./assets/src/js/public/modules/account.js ***!
   \*******************************************************/

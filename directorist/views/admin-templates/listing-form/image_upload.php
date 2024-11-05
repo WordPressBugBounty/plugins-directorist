@@ -12,7 +12,7 @@ $listing_prv_img 	 		= !empty($listing_prv_img_id) ? atbdp_get_image_source($lis
 $display_prv_field 	 		= get_directorist_option('display_prv_field', 1);
 $display_gallery_field 		= get_directorist_option('display_gallery_field', 1);
 $image_links = []; // define a link placeholder variable
-if( !empty( $listing_imgs ) ) {
+if( !empty( $listing_imgs ) && is_array( $listing_imgs ) ) {
     foreach ($listing_imgs as $id) {
         $image_links[$id] = atbdp_get_image_source($id); // store the attachment id and url
     }
@@ -22,7 +22,7 @@ if( !empty( $listing_imgs ) ) {
 $active_mi_ext = is_multiple_images_active(); // default is no
 ?>
 
-<div class="add_listing_form_wrapper" id="gallery_upload">
+<div class="directorist-form-group add_listing_form_wrapper" id="gallery_upload">
     <?php if (!empty($display_prv_field)) { ?>
         <div class="form-group">
             <!-- image container, which can be manipulated with js -->
