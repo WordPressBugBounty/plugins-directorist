@@ -64,13 +64,13 @@ if ( ! class_exists('ATBDP_Settings_Panel') ) {
             $fields['import_settings'] = [
                 'type'         => 'import',
                 'label'        => 'Import',
-                'button-label' => 'Upload .json File',
+                'button-label' => 'Upload Settings File',
             ];
 
             $fields['export_settings'] = [
                 'type'             => 'export',
                 'label'            => 'Export',
-                'button-label'     => 'Download Export File',
+                'button-label'     => 'Download Settings File',
                 'export-file-name' => 'directory-settings',
             ];
 
@@ -1651,22 +1651,6 @@ Please remember that your order may be canceled if you do not make your payment 
                     'value'         => __('Favorite Listings', 'directorist'),
                     'show-if' => [
                         'where' => "fav_listings_tab",
-                        'conditions' => [
-                            ['key' => 'value', 'compare' => '=', 'value' => true],
-                        ],
-                    ],
-                ],
-                'announcement_tab' => [
-                    'type'  => 'toggle',
-                    'label' => __('Display Announcements Tab', 'directorist'),
-                    'value' => true,
-                ],
-                'announcement_tab_text'    => [
-                    'type'          => 'text',
-                    'label'         => __('"Announcement" Tab Label', 'directorist'),
-                    'value'         => __('Announcements', 'directorist'),
-                    'show-if' => [
-                        'where' => "announcement_tab",
                         'conditions' => [
                             ['key' => 'value', 'compare' => '=', 'value' => true],
                         ],
@@ -3927,7 +3911,7 @@ Please remember that your order may be canceled if you do not make your payment 
                             'sections' => apply_filters( 'atbdp_listing_settings_user_dashboard_sections', [
                                 'general_dashboard' => [
                                     'fields'      => [
-                                         'my_profile_tab', 'my_profile_tab_text', 'fav_listings_tab', 'fav_listings_tab_text', 'announcement_tab', 'announcement_tab_text'
+                                         'my_profile_tab', 'my_profile_tab_text', 'fav_listings_tab', 'fav_listings_tab_text'
                                     ],
                                 ],
                                 'author_dashboard' => [
