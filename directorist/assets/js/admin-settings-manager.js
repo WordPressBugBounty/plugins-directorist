@@ -12644,13 +12644,14 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
 /*!*********************************!*\
   !*** ./assets/src/js/helper.js ***!
   \*********************************/
-/*! exports provided: isObject, findObjectItem */
+/*! exports provided: isObject, findObjectItem, directoristRequestHeaders */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isObject", function() { return isObject; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findObjectItem", function() { return findObjectItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "directoristRequestHeaders", function() { return directoristRequestHeaders; });
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -12688,6 +12689,16 @@ function findObjectItem(path, data, defaultValue) {
     _iterator.f();
   }
   return targetItem;
+}
+function directoristRequestHeaders() {
+  if (window.directorist && window.directorist.request_headers && _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(window.directorist.request_headers) === 'object' && !Array.isArray(window.directorist.request_headers)) {
+    var headers = {};
+    for (var key in window.directorist.request_headers) {
+      headers["Directorist-".concat(key)] = window.directorist.request_headers[key];
+    }
+    return headers;
+  }
+  return {};
 }
 
 /***/ }),
@@ -18851,10 +18862,14 @@ __webpack_require__.r(__webpack_exports__);
       }
       return canTrash;
     },
+    canDrag: function canDrag() {
+      var draggable = this.groupSettings && typeof this.groupSettings.draggable !== "undefined" ? this.groupSettings.draggable : true;
+      return draggable;
+    },
     canShowWidgetDropPlaceholder: function canShowWidgetDropPlaceholder() {
       var show = true;
 
-      // Others Fields Group 
+      // Others Fields Group
       // if (this.groupData.fields && this.groupData.fields.length) {
       //   show = false;
       // }
@@ -18994,6 +19009,9 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
     widgetsExpanded: {
       default: ""
     },
+    draggable: {
+      default: true
+    },
     canTrash: {
       default: false
     },
@@ -19092,18 +19110,18 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
       this.showConfirmationModal = true;
 
       // Add class to parent with class 'atbdp-cpt-manager'
-      var parentElement = this.$el.closest('.atbdp-cpt-manager');
+      var parentElement = this.$el.closest(".atbdp-cpt-manager");
       if (parentElement) {
-        parentElement.classList.add('directorist-overlay-visible');
+        parentElement.classList.add("directorist-overlay-visible");
       }
     },
     closeConfirmationModal: function closeConfirmationModal() {
       this.showConfirmationModal = false;
 
       // Remove class to parent with class 'atbdp-cpt-manager'
-      var parentElement = this.$el.closest('.atbdp-cpt-manager');
+      var parentElement = this.$el.closest(".atbdp-cpt-manager");
       if (parentElement) {
-        parentElement.classList.remove('directorist-overlay-visible');
+        parentElement.classList.remove("directorist-overlay-visible");
       }
     },
     trashGroup: function trashGroup() {
@@ -24617,40 +24635,52 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
       if (!Array.isArray(active_widget_groups)) {
         active_widget_groups = [];
       }
-      var group_index = 0;
-      var _iterator = _createForOfIteratorHelper(active_widget_groups),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var widget_group = _step.value;
-          if (typeof widget_group.label === "undefined") {
-            active_widget_groups[group_index].label = "";
-          }
-          if (typeof widget_group.fields === "undefined" || !Array.isArray(widget_group.fields)) {
-            active_widget_groups[group_index].fields = [];
-          }
-          var field_index = 0;
-          var _iterator2 = _createForOfIteratorHelper(widget_group.fields),
-            _step2;
-          try {
-            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-              var field = _step2.value;
-              if (typeof this.active_widget_fields[field] === "undefined") {
-                delete active_widget_groups[group_index].fields[field_index];
-              }
-              field_index++;
-            }
-          } catch (err) {
-            _iterator2.e(err);
-          } finally {
-            _iterator2.f();
-          }
-          group_index++;
+      var existingGroupIds = [];
+      for (var group_index = 0; group_index < active_widget_groups.length; group_index++) {
+        var widget_group = active_widget_groups[group_index];
+
+        // Ensure label exists
+        if (typeof widget_group.label === "undefined") {
+          widget_group.label = "";
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
+
+        // Ensure fields is an array
+        if (typeof widget_group.fields === "undefined" || !Array.isArray(widget_group.fields)) {
+          widget_group.fields = [];
+        }
+
+        // Filter valid fields
+        var valid_fields = [];
+        var _iterator = _createForOfIteratorHelper(widget_group.fields),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var field = _step.value;
+            if (typeof this.active_widget_fields[field] !== "undefined") {
+              valid_fields.push(field);
+            }
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+        widget_group.fields = valid_fields;
+
+        // Generate ID if missing
+        if (!widget_group.id && widget_group.label) {
+          var baseId = widget_group.label.toLowerCase().trim().replace(/\s+/g, "-");
+          var uniqueId = baseId;
+          var suffix = 1;
+          while (existingGroupIds.includes(uniqueId)) {
+            uniqueId = "".concat(baseId, "-").concat(suffix);
+            suffix++;
+          }
+          widget_group.id = uniqueId;
+        }
+
+        // Track all IDs for uniqueness
+        existingGroupIds.push(widget_group.id);
       }
       return active_widget_groups;
     },
@@ -24729,11 +24759,11 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
       }
       var droppedWidget = this.active_widget_fields[widgetKey];
       var hasMissMatchWidget = false;
-      var _iterator3 = _createForOfIteratorHelper(widget.accepted_widgets),
-        _step3;
+      var _iterator2 = _createForOfIteratorHelper(widget.accepted_widgets),
+        _step2;
       try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var acceptedWidget = _step3.value;
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var acceptedWidget = _step2.value;
           for (var _i = 0, _Object$keys = Object.keys(acceptedWidget); _i < _Object$keys.length; _i++) {
             var acceptedWidgetKey = _Object$keys[_i];
             if (droppedWidget[acceptedWidgetKey] !== acceptedWidget[acceptedWidgetKey]) {
@@ -24743,9 +24773,9 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
           }
         }
       } catch (err) {
-        _iterator3.e(err);
+        _iterator2.e(err);
       } finally {
-        _iterator3.f();
+        _iterator2.f();
       }
       if (hasMissMatchWidget) {
         return false;
@@ -24943,19 +24973,19 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
       if (!Array.isArray(this.active_widget_groups)) {
         return 1;
       }
-      var _iterator4 = _createForOfIteratorHelper(this.active_widget_groups),
-        _step4;
+      var _iterator3 = _createForOfIteratorHelper(this.active_widget_groups),
+        _step3;
       try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var group = _step4.value;
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var group = _step3.value;
           if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(group.section_id) !== undefined && !isNaN(group.section_id)) {
             existing_ids.push(parseInt(group.section_id));
           }
         }
       } catch (err) {
-        _iterator4.e(err);
+        _iterator3.e(err);
       } finally {
-        _iterator4.f();
+        _iterator3.f();
       }
       if (existing_ids.length) {
         return Math.max.apply(Math, existing_ids) + 1;
@@ -25018,17 +25048,17 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
     trashGroup: function trashGroup(widget_group_key) {
       var group_fields = this.active_widget_groups[widget_group_key].fields;
       if (group_fields.length) {
-        var _iterator5 = _createForOfIteratorHelper(group_fields),
-          _step5;
+        var _iterator4 = _createForOfIteratorHelper(group_fields),
+          _step4;
         try {
-          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-            var widget_key = _step5.value;
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var widget_key = _step4.value;
             vue__WEBPACK_IMPORTED_MODULE_2__["default"].delete(this.active_widget_fields, widget_key);
           }
         } catch (err) {
-          _iterator5.e(err);
+          _iterator4.e(err);
         } finally {
-          _iterator5.f();
+          _iterator4.f();
         }
       }
       vue__WEBPACK_IMPORTED_MODULE_2__["default"].delete(this.active_widget_groups, widget_group_key);
@@ -26108,7 +26138,7 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
       return options_values.includes(value);
     }
     /* syncValidationWithLocalState( validation_log ) {
-          return validation_log;
+         return validation_log;
     } */
   }
 });
@@ -29975,6 +30005,7 @@ var render = function render() {
     attrs: {
       "widgets-expanded": _vm.widgetsExpandState,
       "can-trash": _vm.canTrashGroup,
+      "draggable": _vm.canDrag,
       "current-dragging-group": _vm.currentDraggingGroup
     },
     on: {
@@ -30086,7 +30117,7 @@ var render = function render() {
     class: _vm.groupFieldsExpandState ? 'expanded' : ''
   }, [_c('div', {
     staticClass: "cptm-form-builder-group-header"
-  }, [_c('draggable-list-item', {
+  }, [_vm.draggable ? _c('draggable-list-item', {
     attrs: {
       "can-drag": _vm.isEnabledGroupDragging
     },
@@ -30105,7 +30136,7 @@ var render = function render() {
     attrs: {
       "aria-hidden": "true"
     }
-  })])]), _vm._v(" "), _c('form-builder-widget-group-titlebar-component', _vm._b({
+  })])]) : _vm._e(), _vm._v(" "), _c('form-builder-widget-group-titlebar-component', _vm._b({
     attrs: {
       "widgets-expanded": _vm.widgetsExpanded
     },
@@ -33858,7 +33889,7 @@ var render = function render() {
       key: alert_key,
       staticClass: "cptm-form-alert",
       class: 'cptm-' + alert.type
-    }, [_vm._v("\r\n            " + _vm._s(alert.message) + "\r\n        ")]);
+    }, [_vm._v("\n            " + _vm._s(alert.message) + "\n        ")]);
   }), 0) : _vm._e()]);
 };
 var staticRenderFns = [];
