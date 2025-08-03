@@ -12,9 +12,9 @@ $(document).ready(function () {
   modalToggle();
 });
 function modalToggle() {
-  $(".atbdp_recovery_pass").on("click", function (e) {
+  $('.atbdp_recovery_pass').on('click', function (e) {
     e.preventDefault();
-    $("#recover-pass-modal").slideToggle().show();
+    $('#recover-pass-modal').slideToggle().show();
   });
 
   // Contact form [on modal closed]
@@ -28,7 +28,7 @@ function modalToggle() {
   var directoristModal = document.querySelector('.directorist-modal-js');
   $('body').on('click', '.directorist-btn-modal-js', function (e) {
     e.preventDefault();
-    var data_target = $(this).attr("data-directorist_target");
+    var data_target = $(this).attr('data-directorist_target');
     document.querySelector(".".concat(data_target)).classList.add('directorist-show');
   });
   $('body').on('click', '.directorist-modal-close-js', function (e) {
@@ -50,7 +50,6 @@ function modalToggle() {
   \*************************************************************/
 /***/ (function() {
 
-;
 (function ($) {
   // Make sure the codes in this file runs only once, even if enqueued twice
   if (typeof window.directorist_alert_executed === 'undefined') {
@@ -82,7 +81,6 @@ function modalToggle() {
   \**************************************************/
 /***/ (function() {
 
-;
 (function ($) {
   // Make sure the codes in this file runs only once, even if enqueued twice
   if (typeof window.directorist_loginjs_executed === 'undefined') {
@@ -90,6 +88,32 @@ function modalToggle() {
   } else {
     return;
   }
+  function initPasswordToggle() {
+    var passwordGroups = document.querySelectorAll('.directorist-password-group');
+    passwordGroups.forEach(function (group) {
+      var passwordInput = group.querySelector('.directorist-password-group-input');
+      var togglePassword = group.querySelector('.directorist-password-group-toggle');
+      var eyeIcon = group.querySelector('.directorist-password-group-eyeIcon');
+      if (passwordInput && togglePassword) {
+        togglePassword.addEventListener('click', function () {
+          var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+
+          // Toggle eye icon (simple swap for open/closed)
+          if (eyeIcon) {
+            if (type === 'text') {
+              eyeIcon.innerHTML = "\n\t\t\t\t\t\t\t\t<path stroke=\"#888\" stroke-width=\"2\" d=\"M1.5 12S5.5 5.5 12 5.5 22.5 12 22.5 12 18.5 18.5 12 18.5 1.5 12 1.5 12Z\"/>\n\t\t\t\t\t\t\t\t<circle cx=\"12\" cy=\"12\" r=\"3.5\" stroke=\"#888\" stroke-width=\"2\"/>\n\t\t\t\t\t\t\t\t<line x1=\"5\" y1=\"19\" x2=\"19\" y2=\"5\" stroke=\"#888\" stroke-width=\"2\"/>\n\t\t\t\t\t\t\t";
+            } else {
+              eyeIcon.innerHTML = "\n\t\t\t\t\t\t\t\t<path stroke=\"#888\" stroke-width=\"2\" d=\"M1.5 12S5.5 5.5 12 5.5 22.5 12 22.5 12 18.5 18.5 12 18.5 1.5 12 1.5 12Z\"/>\n\t\t\t\t\t\t\t\t<circle cx=\"12\" cy=\"12\" r=\"3.5\" stroke=\"#888\" stroke-width=\"2\"/>\n\t\t\t\t\t\t\t";
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // Call the function after DOM is ready
+  document.addEventListener('DOMContentLoaded', initPasswordToggle);
 
   // Trigger reset on form change
   $('.directorist-authentication__btn').on('click', function () {
@@ -111,11 +135,11 @@ function modalToggle() {
 
       $('#directorist__authentication__login p.status').show().html('<div class="directorist-alert directorist-alert-info"><span>' + directorist.loading_message + '</span></div>');
       var form_data = {
-        'action': 'ajaxlogin',
-        'username': $this.find('#username').val(),
-        'password': $this.find('#password').val(),
-        'rememberme': $this.find('#keep_signed_in').is(':checked') ? 1 : 0,
-        'security': $this.find('#security').val()
+        action: 'ajaxlogin',
+        username: $this.find('#username').val(),
+        password: $this.find('#password').val(),
+        rememberme: $this.find('#keep_signed_in').is(':checked') ? 1 : 0,
+        security: $this.find('#security').val()
       };
       $.ajax({
         type: 'POST',
@@ -149,9 +173,9 @@ function modalToggle() {
     $('form#directorist__authentication__login .status').on('click', 'a', function (e) {
       e.preventDefault();
       if ($(this).attr('href') === '#atbdp_recovery_pass') {
-        $("#recover-pass-modal").slideDown().show();
+        $('#recover-pass-modal').slideDown().show();
         window.scrollTo({
-          top: $("#recover-pass-modal").offset().top - 100,
+          top: $('#recover-pass-modal').offset().top - 100,
           behavior: 'smooth'
         });
       } else {
@@ -244,7 +268,7 @@ jQuery(function ($) {
       $('.directorist-register-error').hide();
       if (data.message) {
         $('.directorist-register-error').empty().show().append(data.message).css({
-          'color': '#009114',
+          color: '#009114',
           'background-color': '#d9efdc'
         });
       }
