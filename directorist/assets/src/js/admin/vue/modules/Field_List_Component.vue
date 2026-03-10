@@ -1,0 +1,229 @@
+<template>
+  <div
+    class="directorist-form-fields-area"
+    v-if="field_list && typeof field_list === 'object'"
+  >
+    <component
+      v-if="field.type"
+      v-for="(field, field_key) in visibleFields"
+      :key="field_key"
+      :is="field.type + '-field'"
+      :section-id="sectionId"
+      :field-id="`${sectionId}_${field_key}`"
+      :root="field_list"
+      v-bind="excludeShowIfCondition(field)"
+      @update="update({ key: field_key, value: $event })"
+      @blur="update({ key: field_key, value: $event, isBlur: true })"
+      @alert="
+        $emit('alert', { key: `${field.type}_${field_key}`, data: $event })
+      "
+    />
+    <button
+      class="cptm-form-builder-group-options__advanced-toggle"
+      @click="toggleAdvanced"
+      v-if="hasAdvancedFields"
+    >
+      {{ showAdvanced ? "Basic options" : "Advanced options" }}
+    </button>
+  </div>
+</template>
+
+<script>
+import helpers from "./../mixins/helpers";
+
+export default {
+  name: "field-list-components",
+  mixins: [helpers],
+  props: {
+    root: {
+      default: "",
+    },
+    sectionId: {
+      default: "",
+    },
+    fieldList: {
+      default: "",
+    },
+    value: {
+      default: "",
+    },
+  },
+
+  created() {
+    this.filterFieldList();
+  },
+
+  watch: {
+    fieldList() {
+      this.filterFieldList();
+    },
+    value: {
+      handler() {
+        this.filterFieldList();
+      },
+      deep: true,
+    },
+  },
+
+  computed: {
+    rootFields() {
+      if (!this.root) {
+        return this.value;
+      }
+      if (typeof this.root !== "object") {
+        return this.value;
+      }
+
+      return this.root;
+    },
+
+    visibleFields() {
+      const basicFields = {};
+      const advancedFields = {};
+
+      // Separate basic and advanced fields
+      Object.keys(this.field_list).forEach((key) => {
+        if (key !== "isAdvanced") {
+          const field = this.field_list[key];
+          if (field.field_type === "advanced") {
+            advancedFields[key] = field;
+          } else {
+            basicFields[key] = field;
+          }
+        }
+      });
+
+      // Show basic fields or advanced fields based on the toggle state
+      return this.showAdvanced
+        ? { ...basicFields, ...advancedFields }
+        : basicFields;
+    },
+
+    hasAdvancedFields() {
+      // Check if there are any advanced fields
+      return Object.values(this.field_list).some(
+        (field) => field.field_type === "advanced",
+      );
+    },
+  },
+
+  data() {
+    return {
+      field_list: null,
+      showAdvanced: false,
+    };
+  },
+
+  methods: {
+    filterFieldList() {
+      this.field_list = this.getFilteredFieldList(this.fieldList);
+    },
+
+    toggleAdvanced() {
+      this.showAdvanced = !this.showAdvanced;
+    },
+
+    excludeShowIfCondition(field) {
+      if (!field) {
+        return field;
+      }
+
+      if (typeof field !== "object") {
+        return field;
+      }
+
+      if (field.showIf) {
+        delete field["showIf"];
+      }
+
+      if (field.show_if) {
+        delete field["show_if"];
+      }
+
+      return field;
+    },
+
+    getFilteredFieldList(field_list) {
+      if (!field_list) {
+        return field_list;
+      }
+
+      let new_fields = JSON.parse(JSON.stringify(this.fieldList));
+
+      for (let field_key in new_fields) {
+        if (
+          this.value &&
+          typeof this.value === "object" &&
+          typeof this.value[field_key] !== "undefined"
+        ) {
+          new_fields[field_key].value = this.value[field_key];
+        }
+      }
+
+      for (let field_key in new_fields) {
+        // Extract conditional logic configuration
+        // Structure from PHP get_conditional_logic_field():
+        // options.conditional_logic = { type: 'conditional-logic', value: { enabled, action, groups } }
+        // The actual config is in conditional_logic.value (not directly in conditional_logic)
+        let conditionalLogic = null;
+
+        const field = new_fields[field_key];
+
+        // Priority 1: options.conditional_logic.value (current structure)
+        // This matches the structure returned by get_conditional_logic_field() in builder-custom-fields.php
+        if (field.options?.conditional_logic?.value) {
+          conditionalLogic = field.options.conditional_logic.value;
+        }
+        // Priority 2: options.conditional_logic (flat structure - backward compatibility)
+        else if (field.options?.conditional_logic?.enabled !== undefined) {
+          conditionalLogic = field.options.conditional_logic;
+        }
+        // Priority 3: field.conditional_logic (direct access - edge cases)
+        else if (field.conditional_logic?.enabled !== undefined) {
+          conditionalLogic = field.conditional_logic;
+        }
+
+        if (conditionalLogic) {
+          let shouldShow = this.evaluateConditionalLogic(
+            conditionalLogic,
+            new_fields,
+          );
+
+          if (!shouldShow) {
+            delete new_fields[field_key];
+            continue;
+          }
+        }
+
+        // Check for legacy show_if format
+        if (!(new_fields[field_key].showIf || new_fields[field_key].show_if)) {
+          continue;
+        }
+
+        let show_if_condition = new_fields[field_key].showIf
+          ? new_fields[field_key].showIf
+          : new_fields[field_key].show_if;
+
+        let checkShowIfCondition = this.checkShowIfCondition({
+          root: new_fields,
+          condition: show_if_condition,
+        });
+
+        if (!checkShowIfCondition.status) {
+          delete new_fields[field_key];
+        }
+      }
+
+      return new_fields;
+    },
+
+    update(payload) {
+      this.$emit("update", payload);
+      // Re-evaluate conditional logic when any field value changes
+      this.$nextTick(() => {
+        this.filterFieldList();
+      });
+    },
+  },
+};
+</script>
