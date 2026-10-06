@@ -5,7 +5,7 @@ Tags: business directory, listings, classifieds, directory plugin, directory
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 8.10
+Stable tag: 8.10.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -299,6 +299,21 @@ Directorist is developer-friendly with plenty of hooks and filters. You can exte
 Directorist comes with an AI-powered directory builder. Use the Create with AI option, provide directory name, location and AI will build the directory for you.
 
 == Changelog ==
+
+= 8.10.3 - Oct 6, 2026 =
+
+**Security**
+- Hardened listing tag submission and taxonomy dropdown rendering to prevent stored XSS. (#3056)
+- Strengthened REST API item permissions to prevent unauthorized access to non-public listing resources. (#3056)
+- Escaped single listing map info window phone and direction URL output to prevent stored XSS. (#3056)
+
+**Fixed**
+- Google Maps initialization before required map libraries finish loading. (#3055)
+- Malformed archive card layouts not recovering correctly. (#3033)
+- Listing address autocomplete not syncing with the map pin. (#3032)
+- Frontend listing submissions not persisting selected taxonomies. (#3031)
+- Review visibility in the featured listing widget. (#2998)
+- Deprecated PHP warning when rendering taxonomy list subterms with empty category or location children.
 
 = 8.10 - Oct 1, 2026 =
 
