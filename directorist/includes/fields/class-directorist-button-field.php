@@ -37,6 +37,11 @@ class Button_Field extends Base_Field {
             return false;
         }
 
+        if ( isset( $value['button_url_label'] ) && ( ! directorist_is_contact_string( $value['button_url_label'] ) || ( '' !== $value['button_url_label'] && '' === esc_url_raw( $value['button_url_label'] ) ) ) ) {
+            $this->add_error( __( 'Invalid URL.', 'directorist' ) );
+            return false;
+        }
+
         return true;
     }
 

@@ -5,7 +5,7 @@ Tags: business directory, listings, classifieds, directory plugin, directory
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 8.10.5
+Stable tag: 8.10.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -299,6 +299,44 @@ Directorist is developer-friendly with plenty of hooks and filters. You can exte
 Directorist comes with an AI-powered directory builder. Use the Create with AI option, provide directory name, location and AI will build the directory for you.
 
 == Changelog ==
+
+= 8.10.6 - Oct 29, 2026 =
+
+**Improved**
+
+- Improved REST API support with checkout provider data and authenticated user order creation, lookup, and pagination. (#3132)
+- Improved Themes & Extensions catalog with Paystack Payment Gateway availability. (#3131)
+- Improved featured listing payment settings with support for extension-provided payment types. (#3101)
+- Improved payment gateway settings extensibility with a filter for Sandbox/Live environment selectors. (#3103)
+
+**Fixed**
+
+- Extension update detection and downloads when package URLs or subscription metadata are missing. (#3013)
+- Missing account verification emails for users created through guest listing submissions. (#3084)
+- Polylang directory type mapping, translated builder configuration, and category/location associations. (#3088)
+- Frontend address and ZIP radius searches ignoring the selected directory's distance unit. (#3093)
+- Instant search results not refreshing after selecting a Google Places address. (#3094)
+- Location list widget pagination and nested location toggles after changing pages. (#3095)
+- Listing deletion emails not being sent to owners and admins from dashboard and admin actions. (#3098)
+- Listing renewal emails sharing admin and owner templates, missing admin delivery, and inconsistent email layouts. (#3099)
+- REST API fatal errors when updating listings or retrieving single-listing builder data. (#3100)
+- Selected directory and listing view being lost after clearing search filters. (#3104)
+- Conditionally hidden field values and gallery thumbnails being removed during admin listing edits. (#3106)
+- Negative values and signed bounds being handled incorrectly in custom Number range filters. (#3107)
+- Missing multilingual rewrite rules and repeated frontend rewrite flushes with WPML. (#3108)
+- Custom listing card fields disappearing after saving or reloading Directory Builder. (#3109)
+- Enquiry reply email links and Received unread badges not updating correctly. (#3110)
+- Settings JSON imports failing when fields from unavailable extensions are present. (#3112)
+- Category-dependent search fields affecting other search forms on the same page. (#3113)
+- Enquiry dashboard labels and guest-facing text using the wrong language. (#3115)
+- Inactive conditional fields remaining visible on single listing pages. (#3118)
+- Google Places autocomplete and required address validation in listing forms. (#3119)
+- Empty search field groups not expanding in Directory Builder. (#3120)
+- Directory Builder preview URLs losing directory selection with Plain permalinks and early taxonomy lookup warnings. (#3121)
+- Duplicate listing expiry notifications and premature renewal reminders. (#3122)
+- Redundant featured metadata joins slowing filtered listing archives and search queries. (#3123)
+- Checkout and payment receipt login notices appearing outside the page content for guests. (#3125)
+- Leading and trailing whitespace causing invalid contact field values and incorrect listing links. (#3130)
 
 = 8.10.5 - Oct 18, 2026 =
 

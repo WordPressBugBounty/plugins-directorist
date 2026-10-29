@@ -1,6 +1,8 @@
 <?php
 /**
- * @author AazzTech
+ * Elementor integration announcement.
+ *
+ * @package Directorist
  */
 
 namespace AazzTech\Directorist\Elementor;
@@ -10,108 +12,111 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class DeprecatedNotice {
-    public string $parent_label        = 'Addonskit for Elementor';
+    const DISMISSED_META_KEY = 'directorist_elementor_integration_notice_dismissed';
+    const DISMISS_ACTION     = 'directorist_dismiss_elementor_integration_notice';
 
-    public string $core_plugin         = 'Directorist';
-
-    public string $addon_slug          = 'addonskit-for-elementor/addonskit-for-elementor.php';
-
-    public string $addon_url           = 'https://wordpress.org/plugins/addonskit-for-elementor/';
-
-    public ?string $addon_requires_php = '7.4';
-
-    public ?string $addon_requires_wp  = '6.0';
-
-    public bool $is_installed          = false;
-
-    public bool $is_active             = false;
-
-    public bool $is_valid              = false;
-
-    public string $min_addon_version   = '8.0';
-
-    public function __construct() {
-        $parent_path        = WP_PLUGIN_DIR . "/{$this->addon_slug}";
-        $this->is_installed = is_file( $parent_path );
-
-        if ( $this->is_installed ) {
-            $this->is_active = in_array( $parent_path, wp_get_active_and_valid_plugins(), true );
+    /**
+     * Persist dismissal for the current administrator.
+     */
+    public function maybe_dismiss_notice() {
+        if ( ! isset( $_GET[ self::DISMISS_ACTION ] ) || ! current_user_can( 'activate_plugins' ) ) {
+            return;
         }
 
-        if ( $this->is_active ) {
-            if ( ! function_exists( 'get_plugin_data' ) ) {
-                require_once ABSPATH . 'wp-admin/includes/plugin.php';
-            }
+        check_admin_referer( self::DISMISS_ACTION );
+        update_user_meta( get_current_user_id(), self::DISMISSED_META_KEY, 1 );
 
-            $parent_plugin_data    = get_plugin_data( $parent_path );
-            $parent_plugin_version = explode( "-", $parent_plugin_data["Version"] )[0];
-            $this->is_valid        = version_compare( $parent_plugin_version, $this->min_addon_version ) > -1;
-        }
+        wp_safe_redirect( remove_query_arg( [ self::DISMISS_ACTION, '_wpnonce' ] ) );
+        exit;
     }
 
+    /**
+     * Show available integrations, including the paid option for free-addon users.
+     */
     public function maybe_show_notice_for_required_plugins() {
         global $pagenow;
 
-        if ( 'update.php' === $pagenow ) {
+        if ( 'update.php' === $pagenow || ! current_user_can( 'activate_plugins' ) ) {
             return;
         }
 
-        if ( $this->is_active ) {
-            if ( ! $this->is_valid ) {
-                $this->parent_plugin_invalid_notice();
-            }
-
+        if ( get_user_meta( get_current_user_id(), self::DISMISSED_META_KEY, true ) ) {
             return;
         }
 
-        if ( ! $this->is_installed ) {
-            $this->admin_notice_callback_to_install_plugin();
+        $pro_slug = 'directorist-elementor/directorist-elementor.php';
+
+        // This also detects network-active installations.
+        if ( is_plugin_active( $pro_slug ) ) {
+            return;
         }
+
+        $free_slug      = 'addonskit-for-elementor/addonskit-for-elementor.php';
+        $free_active    = is_plugin_active( $free_slug );
+        $free_installed = is_file( WP_PLUGIN_DIR . '/' . $free_slug );
+        $pro_installed  = is_file( WP_PLUGIN_DIR . '/' . $pro_slug );
+        $dismiss_url    = wp_nonce_url( add_query_arg( self::DISMISS_ACTION, '1' ), self::DISMISS_ACTION );
+        ?>
+        <div class="notice notice-info directorist-elementor-integration-notice" style="position: relative; padding-right: 38px;">
+            <p><strong>
+                <?php if ( $pro_installed ) : ?>
+                    <?php esc_html_e( 'Build your directory with Elementor', 'directorist' ); ?>
+                <?php elseif ( $free_installed ) : ?>
+                    <?php esc_html_e( 'Ready for more design flexibility with Directorist?', 'directorist' ); ?>
+                <?php else : ?>
+                    <?php esc_html_e( 'Choose how you want to build with Directorist', 'directorist' ); ?>
+                <?php endif; ?>
+            </strong></p>
+            <p>
+                <?php if ( $pro_installed ) : ?>
+                    <?php esc_html_e( 'Directorist Elementor Integration is installed but inactive. Activate it to use custom listing layouts, individual listing fields, and dynamic templates.', 'directorist' ); ?>
+                <?php elseif ( $free_installed ) : ?>
+                    <?php esc_html_e( 'Go beyond ready-made widgets with custom listing layouts, fields, and dynamic templates.', 'directorist' ); ?>
+                <?php else : ?>
+                    <?php esc_html_e( 'Use free, ready-made Elementor widgets or create fully customized listing layouts with Elementor Integration.', 'directorist' ); ?>
+                <?php endif; ?>
+            </p>
+            <p>
+                <?php if ( ! $free_active ) : ?>
+                    <?php if ( $free_installed ) : ?>
+                        <?php if ( current_user_can( 'activate_plugin', $free_slug ) ) : ?>
+                            <a class="button button-secondary" href="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'activate', 'plugin' => $free_slug ], self_admin_url( 'plugins.php' ) ), 'activate-plugin_' . $free_slug ) ); ?>"><?php esc_html_e( 'Activate Free AddonsKit', 'directorist' ); ?></a>
+                        <?php else : ?>
+                            <a class="button button-secondary" href="<?php echo esc_url( self_admin_url( 'plugins.php' ) ); ?>"><?php esc_html_e( 'Manage Free AddonsKit', 'directorist' ); ?></a>
+                        <?php endif; ?>
+                    <?php elseif ( current_user_can( 'install_plugins' ) && is_php_version_compatible( '7.4' ) && is_wp_version_compatible( '6.0' ) ) : ?>
+                        <a class="button button-secondary" href="<?php echo esc_url( $this->get_plugin_installation_url( $free_slug ) ); ?>"><?php esc_html_e( 'Get Free AddonKit', 'directorist' ); ?></a>
+                    <?php else : ?>
+                        <a class="button button-secondary" href="<?php echo esc_url( 'https://wordpress.org/plugins/addonskit-for-elementor/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get Free AddonKit', 'directorist' ); ?></a>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <?php if ( $pro_installed ) : ?>
+                    <?php if ( current_user_can( 'activate_plugin', $pro_slug ) ) : ?>
+                        <a class="button button-primary" href="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'activate', 'plugin' => $pro_slug ], self_admin_url( 'plugins.php' ) ), 'activate-plugin_' . $pro_slug ) ); ?>"><?php esc_html_e( 'Activate Elementor Integration', 'directorist' ); ?></a>
+                    <?php else : ?>
+                        <a class="button button-primary" href="<?php echo esc_url( self_admin_url( 'plugins.php' ) ); ?>"><?php esc_html_e( 'Manage Elementor Integration', 'directorist' ); ?></a>
+                    <?php endif; ?>
+                <?php else : ?>
+                    <a class="button button-primary" href="<?php echo esc_url( 'https://directorist.com/product/directorist-elementor/' ); ?>" target="_blank" rel="noopener noreferrer">
+                        <?php if ( $free_installed ) : ?>
+                            <?php esc_html_e( 'Explore Elementor Integration', 'directorist' ); ?>
+                        <?php else : ?>
+                            <?php esc_html_e( 'Create Custom Layouts', 'directorist' ); ?>
+                        <?php endif; ?>
+                    </a>
+                <?php endif; ?>
+            </p>
+            <a class="notice-dismiss" href="<?php echo esc_url( $dismiss_url ); ?>" style="text-decoration: none;"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'directorist' ); ?></span></a>
+        </div>
+        <?php
     }
 
-    public function parent_plugin_invalid_notice() {
-        ?>
-        <div class="notice notice-error" style="display: flex; flex-wrap:wrap; justify-content:space-between">
-            <p style="display: flex; align-items: center;">
-                The current version of your &nbsp; <strong><?php echo esc_html( $this->parent_label ); ?> is not compatible with <?php echo esc_html( $this->core_plugin ); ?></strong>. To ensure compatibility and access new features,&nbsp;<strong>update <?php echo esc_html( $this->parent_label ); ?> to version <?php echo esc_html( $this->min_addon_version ) ?> or later</strong>.
-            </p>
-        </div>
-    <?php }
-
-    public function admin_notice_callback_to_install_plugin(): void {
-        $can_install_plugin = $this->is_plugin_compatible( 'install_plugins', $this->addon_requires_php, $this->addon_requires_wp );
-        ?>
-        <div class="notice notice-warning" style="display: flex; flex-wrap:wrap; justify-content:space-between">
-            <p style="display: flex; align-items: center;">
-                <span>
-                    <?php echo wp_kses(
-                        sprintf(
-                            __( '<b>Directorist Announcement!</b> We\'ve enhanced our Elementor support! Introducing <a href="%1$s" target="_blank">Directorist Addonskit for Elementor</a> - a dedicated, feature-rich extension that\'s completely free. This specialized addon provides more powerful Elementor widgets and functionality that ever before.', 'directorist' ),
-                            esc_url( $this->addon_url ),
-                            esc_html( $this->parent_label ),
-                            esc_html( $this->core_plugin ) 
-                        ),
-                        ['a' => ['href' => true, 'target' => true], 'b' => []] 
-                    );
-                    ?>
-                </span>
-            </p>
-            <?php if ( $can_install_plugin ) : ?>
-                <p>
-                    <a class="button button-primary" href="<?php echo esc_url( $this->get_plugin_installation_url( $this->addon_slug ) ); ?>">Install <?php echo esc_html( $this->parent_label ); ?></a>
-                </p>
-            <?php endif;?>
-        </div>
-    <?php }
-
-    public function is_plugin_compatible( string $context, ?string $requires_php = null, ?string $requires_wp = null ) {
-        $can_use_plugin = current_user_can( $context );
-        $compatible_php = is_php_version_compatible( $requires_php );
-        $compatible_wp  = is_wp_version_compatible( $requires_wp );
-
-        return $can_use_plugin && $compatible_php && $compatible_wp;
-    }
-
+    /**
+     * Get WordPress's nonce-protected installation URL for the free addon.
+     *
+     * @param string $path Plugin basename.
+     * @return string
+     */
     public function get_plugin_installation_url( $path ): string {
         $slug = preg_replace( '/\/.+$/', '', $path );
 

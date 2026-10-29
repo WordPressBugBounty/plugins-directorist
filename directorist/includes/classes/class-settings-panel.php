@@ -462,6 +462,16 @@ Please remember that your order may be canceled if you do not make your payment 
             $default_size = directorist_default_preview_size();
             $default_preview_size_text = $default_size['width'] . 'x' . $default_size['height'] . ' px';
 
+            $featured_listing_payment_types = apply_filters(
+                'directorist_featured_listing_payment_type_options',
+                [
+                    [
+                        'value' => 'directorist',
+                        'label' => __( 'Directorist', 'directorist' ),
+                    ],
+                ]
+            );
+
 
             $this->fields = apply_filters(
                 'atbdp_listing_type_settings_field_list', [
@@ -3595,6 +3605,16 @@ Please remember that your order may be canceled if you do not make your payment 
                         'label'       => __( 'Admin Email Body', 'directorist' ),
                         'value'       => ATBDP()->email->get_listing_deleted_admin_tmpl(),
                     ],
+                    'email_sub_renewed_listing_admin' => [
+                        'type'        => 'text',
+                        'label'       => __( 'Admin Email Subject', 'directorist' ),
+                        'value'       => __( '[==SITE_NAME==] The Listing #==LISTING_ID== has been renewed on your website', 'directorist' ),
+                    ],
+                    'email_tmpl_renewed_listing_admin' => [
+                        'type'        => 'textarea',
+                        'label'       => __( 'Admin Email Body', 'directorist' ),
+                        'value'       => ATBDP()->email->get_listing_renewed_admin_tmpl(),
+                    ],
                     'email_sub_new_order_admin' => [
                         'type'        => 'text',
                         'label'       => __( 'Admin Email Subject', 'directorist' ),
@@ -3982,6 +4002,21 @@ Best regards,
                     ],
                 ]
             );
+
+            if ( is_array( $featured_listing_payment_types ) && count( $featured_listing_payment_types ) > 1 ) {
+                $this->fields['featured_listing_payment_type'] = [
+                    'label'   => __( 'Payment Type', 'directorist' ),
+                    'type'    => 'select',
+                    'value'   => 'directorist',
+                    'options' => array_values( $featured_listing_payment_types ),
+                    'show-if' => [
+                        'where'      => 'enable_featured_listing',
+                        'conditions' => [
+                            [ 'key' => 'value', 'compare' => '=', 'value' => true ],
+                        ],
+                    ],
+                ];
+            }
 
             $this->register_web_push_backup_fields();
 
@@ -4716,6 +4751,7 @@ Best regards,
                                             'featured' => [
                                                 'fields'      => [
                                                     'enable_featured_listing',
+                                                    'featured_listing_payment_type',
                                                     'featured_listing_desc',
                                                     'featured_listing_price',
                                                     'featured_listing_time',
@@ -4890,6 +4926,18 @@ Best regards,
 
             $this->config = [
                 'fields_theme' => 'butterfly',
+                /**
+                 * Filters setting keys that select a payment gateway environment.
+                 *
+                 * Registered selectors keep their sections enabled in either mode
+                 * and exclude inactive environment fields from settings search.
+                 *
+                 * @param string[] $keys Gateway environment selector setting keys.
+                 */
+                'gateway_mode_keys' => array_values( array_filter( (array) apply_filters(
+                    'directorist_settings_gateway_mode_keys',
+                    ['stripe_gateway_test_mode', 'paypal_gateway_test_mode']
+                ), 'is_string' ) ),
                 'submission' => [
                     'url' => admin_url( 'admin-ajax.php' ),
                     'with' => [

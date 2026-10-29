@@ -9,6 +9,18 @@ use Elementor\Plugin;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+// Register notices independently of the legacy AddonsKit widget integration.
+add_action(
+    'after_setup_theme', function() {
+        if ( is_admin() && did_action( 'elementor/loaded' ) ) {
+            require_once __DIR__ . '/deprecated-notice.php';
+            $notice = new DeprecatedNotice();
+            add_action( 'admin_init', [ $notice, 'maybe_dismiss_notice' ] );
+            add_action( 'admin_notices', [ $notice, 'maybe_show_notice_for_required_plugins' ] );
+        }
+    }
+);
+
 if ( class_exists( 'AddonskitForELementor' ) ) {
     return;
 }
@@ -113,10 +125,6 @@ add_action(
             if ( $activated ) {
                 Widget_Init::instance();
             }
-
-            include_once 'deprecated-notice.php';
-            $dn = new DeprecatedNotice();
-            add_action( 'admin_notices', [$dn, 'maybe_show_notice_for_required_plugins'] );
         }
     } 
 );

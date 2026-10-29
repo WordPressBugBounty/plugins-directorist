@@ -597,7 +597,7 @@ class Users_Controller extends Abstract_Controller {
             'last_name'      => $user->last_name,
             'description'    => $user->description,
             'email'          => $can_view_private ? $user->user_email : null,
-            'url'            => $user->user_url,
+            'url'            => directorist_contact_url_for_display( $user->user_url ),
             'phone'          => $can_view_private ? get_user_meta( $id, 'atbdp_phone', true ) : null,
             'address'        => $can_view_private ? get_user_meta( $id, 'address', true ) : null,
             'avater'         => null,
@@ -691,7 +691,7 @@ class Users_Controller extends Abstract_Controller {
         if ( isset( $request['social_links'] ) ) {
             foreach ( array_keys( $schema['properties']['social_links']['properties'] ) as $field ) {
                 if ( isset( $request['social_links'][ $field ] ) ) {
-                    update_user_meta( $id, 'atbdp_' . $field, esc_url_raw( $request['social_links'][ $field ] ) );
+                    update_user_meta( $id, 'atbdp_' . $field, esc_url_raw( directorist_contact_url_for_display( $request['social_links'][ $field ] ) ) );
                 }
             }
         }
@@ -809,6 +809,10 @@ class Users_Controller extends Abstract_Controller {
                     'description' => __( 'The email address for the user.', 'directorist' ),
                     'type'        => 'string',
                     'format'      => 'email',
+                    'arg_options' => array(
+                        'validate_callback' => 'directorist_validate_contact_rest_arg',
+                        'sanitize_callback' => 'directorist_normalize_contact_value',
+                    ),
                     'context'     => array( 'view', 'edit' ),
                 ),
                 'url' => array(
@@ -920,6 +924,10 @@ class Users_Controller extends Abstract_Controller {
                 'social_links' => array(
                     'description' => __( 'User social links.', 'directorist' ),
                     'type'        => 'object',
+                    'arg_options' => array(
+                        'validate_callback' => 'directorist_validate_social_rest_arg',
+                        'sanitize_callback' => 'directorist_normalize_social_rest_arg',
+                    ),
                     'context'     => array( 'view', 'edit' ),
                     'properties'  => array(
                         'facebook' => array(

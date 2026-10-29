@@ -563,7 +563,7 @@ if ( ! class_exists( 'ATBDP_Business_Hours_CSV' ) ) :
                 return '';
             }
 
-            $url    = trim( (string) $url );
+            $url    = directorist_contact_url_for_display( (string) $url );
             $scheme = wp_parse_url( $url, PHP_URL_SCHEME );
 
             if ( ! in_array( strtolower( (string) $scheme ), [ 'http', 'https' ], true ) ) {

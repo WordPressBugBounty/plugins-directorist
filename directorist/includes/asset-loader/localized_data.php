@@ -402,6 +402,10 @@ class Localized_Data {
         $directories = directorist_get_directories();
         $relation    = [];
 
+        if ( is_wp_error( $directories ) ) {
+            return $relation;
+        }
+
         foreach ( $directories as $directory ) {
             $relation[ $directory->term_id ] = directorist_get_category_custom_field_relations( $directory->term_id );
         }
@@ -411,6 +415,37 @@ class Localized_Data {
 
     public static function formgent_data() {
         $data = [
+            // Also expose JS modal strings through PHP so Loco MO catalogs are sufficient.
+            'translations' => [
+                'Guest' => __( 'Guest', 'directorist' ),
+                'New' => __( 'New', 'directorist' ),
+                'Read' => __( 'Read', 'directorist' ),
+                /* translators: %s: listing title. */
+                'Enquiry Details - %s' => __( 'Enquiry Details - %s', 'directorist' ),
+                'Regarding Listing' => __( 'Regarding Listing', 'directorist' ),
+                'Send Email' => __( 'Send Email', 'directorist' ),
+                'Marked as read' => __( 'Marked as read', 'directorist' ),
+                'Mark as read' => __( 'Mark as read', 'directorist' ),
+                'Delete' => __( 'Delete', 'directorist' ),
+                'Close enquiry details' => __( 'Close enquiry details', 'directorist' ),
+                'Loading enquiry details...' => __( 'Loading enquiry details...', 'directorist' ),
+                'Submitted' => __( 'Submitted', 'directorist' ),
+                'Unknown Listing' => __( 'Unknown Listing', 'directorist' ),
+                'Answer' => __( 'Answer', 'directorist' ),
+                'No answer provided' => __( 'No answer provided', 'directorist' ),
+                'Failed to load enquiry details' => __( 'Failed to load enquiry details', 'directorist' ),
+                'Reply by email' => __( 'Reply by email', 'directorist' ),
+                'To' => __( 'To', 'directorist' ),
+                'Subject' => __( 'Subject', 'directorist' ),
+                /* translators: %s: listing title. */
+                'Your Enquiry on %s' => __( 'Your Enquiry on %s', 'directorist' ),
+                'Choose where to write your reply. You will review and send it from your email account.' => __( 'Choose where to write your reply. You will review and send it from your email account.', 'directorist' ),
+                'Open email app' => __( 'Open email app', 'directorist' ),
+                'Open Gmail' => __( 'Open Gmail', 'directorist' ),
+                'If your email app does not open, use Gmail or copy the address and subject into your webmail.' => __( 'If your email app does not open, use Gmail or copy the address and subject into your webmail.', 'directorist' ),
+                'Unable to load enquiry details. Please try again.' => __( 'Unable to load enquiry details. Please try again.', 'directorist' ),
+                'No email address found for this enquiry.' => __( 'No email address found for this enquiry.', 'directorist' ),
+            ],
             'strings' => [
                 'enquiries'                    => __( 'Enquiries', 'directorist' ),
                 'my_enquiries'                 => __( 'My Enquiries', 'directorist' ),
@@ -421,6 +456,7 @@ class Localized_Data {
                 'total_enquiries'              => __( 'Total Enquiries', 'directorist' ),
                 'total_sent'                   => __( 'Total Sent', 'directorist' ),
                 'new_messages'                 => __( 'New Messages', 'directorist' ),
+                'new'                          => __( 'new', 'directorist' ),
                 'this_week'                    => __( 'This Week', 'directorist' ),
                 'sent_this_week'               => __( 'Sent This Week', 'directorist' ),
                 'total_resolved'               => __( 'Total Resolved', 'directorist' ),

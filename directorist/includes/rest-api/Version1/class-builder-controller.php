@@ -182,9 +182,11 @@ class Builder_Controller extends Abstract_Controller {
     }
 
     protected function get_single_listing_data( $directory_id, $request ) {
+        $data = directorist_single_listings_contents( $directory_id );
+
         return array(
-            'groups' => directorist_get_single_listing_groups( $directory_id ),
-            'fields' => directorist_get_single_listing_fields( $directory_id ),
+            'groups' => $data['groups'] ?? array(),
+            'fields' => $data['fields'] ?? array(),
         );
     }
 

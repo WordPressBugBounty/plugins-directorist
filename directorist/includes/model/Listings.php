@@ -222,7 +222,7 @@ class Directorist_Listings {
     ];
 
     public function __construct( $atts = [], $type = 'listing', $query_args = false, array $caching_options = [] ) {
-        $this->atts = ! empty( $atts ) ? $atts : [];
+        $this->atts = apply_filters( 'directorist_directory_attributes', ! empty( $atts ) ? $atts : [] );
         $this->type = ! empty( $type ) ? $type : 'listing';
 
         $this->set_options();
@@ -451,7 +451,12 @@ class Directorist_Listings {
         $this->popular_by                  = $this->options['listing_popular_by'];
         $this->average_review_for_popular  = $this->options['average_review_for_popular'];
         $this->view_to_popular             = $this->options['views_for_popular'];
-        $this->radius_search_unit          = $this->options['radius_search_unit'];
+
+        // Match the unit displayed by this directory's native radius field.
+        $radius_unit              = $this->build_search_data( 'radius_search', 'radius_search_unit' );
+        $this->radius_search_unit = in_array( $radius_unit, [ 'miles', 'kilometers' ], true )
+            ? $radius_unit : $this->options['radius_search_unit'];
+
         $this->default_radius_distance     = $this->options['listing_default_radius_distance'];
         $this->select_listing_map          = $this->options['select_listing_map'];
         $this->filters_display             = $this->options['listings_display_filter'];
@@ -704,13 +709,13 @@ class Directorist_Listings {
             }
         }
 
+        // Reuse the named featured clause so sorting does not add another postmeta join.
         switch ( $current_order ) {
             case 'title-asc':
                 if ( $this->has_featured ) {
-                    $args['meta_key'] = '_featured';
-                    $args['orderby']  = [
-                        'meta_value_num' => 'DESC',
-                        'title'          => 'ASC',
+                    $args['orderby'] = [
+                        '_featured' => 'DESC',
+                        'title'     => 'ASC',
                     ];
                 } else {
                     $args['orderby'] = 'title';
@@ -721,10 +726,9 @@ class Directorist_Listings {
 
             case 'title-desc':
                 if ( $this->has_featured ) {
-                    $args['meta_key'] = '_featured';
-                    $args['orderby']  = [
-                        'meta_value_num' => 'DESC',
-                        'title'          => 'DESC',
+                    $args['orderby'] = [
+                        '_featured' => 'DESC',
+                        'title'     => 'DESC',
                     ];
                 } else {
                     $args['orderby'] = 'title';
@@ -735,10 +739,9 @@ class Directorist_Listings {
 
             case 'date-asc':
                 if ( $this->has_featured ) {
-                    $args['meta_key'] = '_featured';
-                    $args['orderby']  = [
-                        'meta_value_num' => 'DESC',
-                        'date'           => 'ASC',
+                    $args['orderby'] = [
+                        '_featured' => 'DESC',
+                        'date'      => 'ASC',
                     ];
                 } else {
                     $args['orderby'] = 'date';
@@ -749,10 +752,9 @@ class Directorist_Listings {
 
             case 'date-desc':
                 if ( $this->has_featured ) {
-                    $args['meta_key'] = '_featured';
-                    $args['orderby']  = [
-                        'meta_value_num' => 'DESC',
-                        'date'           => 'DESC',
+                    $args['orderby'] = [
+                        '_featured' => 'DESC',
+                        'date'      => 'DESC',
                     ];
                 } else {
                     $args['orderby'] = 'date';
@@ -800,8 +802,7 @@ class Directorist_Listings {
 
             case 'rand':
                 if ( $this->has_featured ) {
-                    $args['meta_key'] = '_featured';
-                    $args['orderby']  = 'meta_value_num rand';
+                    $args['orderby'] = '_featured rand';
                 } else {
                     $args['orderby'] = 'rand';
                 }
@@ -922,10 +923,9 @@ class Directorist_Listings {
         }
 
         if ( $this->has_featured ) {
-            $args['meta_key'] = '_featured';
-            $args['orderby']  = [
-                'meta_value_num' => 'DESC',
-                'title'          => 'ASC',
+            $args['orderby'] = [
+                '_featured' => 'DESC',
+                'title'     => 'ASC',
             ];
         } else {
             $args['orderby'] = 'title';
@@ -1033,15 +1033,13 @@ class Directorist_Listings {
                 } else {
                     $field_type = str_replace( 'custom-', '', $key );
                     $field_type = preg_replace( '/([!^0-9])|(-)/', '', $field_type ); //replaces any additional numbering to just keep the field name, for example if previous line gives us "text-2", this line makes it "text"
-                    // Check if $values contains a hyphen
-                    if ( 'number' === $field_type && strpos( $values, '-' ) !== false ) {
-                        // If $values is in the format "40-50", create a range query
-                        list( $min_value, $max_value ) = array_map( 'intval', explode( '-', $values ) );
-                        
-                        if ( ! empty( $max_value ) && 0 < $max_value ) {
+                    $number_range = 'number' === $field_type ? directorist_parse_number_range( $values ) : null;
+                    if ( null !== $number_range ) {
+                        // "0-0" is the slider's existing inactive/reset value.
+                        if ( [ 0, 0 ] !== $number_range ) {
                             $meta_query = [
                                 'key'     => '_' . $key,
-                                'value'   => [ $min_value, $max_value ],
+                                'value'   => $number_range,
                                 'type'    => 'NUMERIC',
                                 'compare' => 'BETWEEN',
                             ];
@@ -1563,6 +1561,9 @@ class Directorist_Listings {
             $directory = array_key_first( $this->get_listing_types() );
         }
 
+        // Resolve source-language slugs before Polylang filters the term lookup.
+        $directory = apply_filters( 'directorist_current_directory', $directory );
+
         if ( ! is_numeric( $directory ) ) {
             $directory_term = get_term_by( 'slug', $directory, ATBDP_DIRECTORY_TYPE );
             $directory      = $directory_term ? $directory_term->term_id : 0;
@@ -1572,7 +1573,7 @@ class Directorist_Listings {
             return (int) $directory;
         }
 
-        return directorist_get_default_directory();
+        return (int) apply_filters( 'directorist_current_directory', directorist_get_default_directory() );
     }
 
     public function get_directory_type_slug() {
@@ -2665,11 +2666,11 @@ class Directorist_Listings {
         $style_attr    = Helper::badge_style_attr( $badge );
         $badge_content = esc_html( $badge['label'] );
 
-		if ( ! empty( $badge['type'] ) && 'icon' === $badge['type'] && ! empty( $badge['icon'] ) ) {
-			$badge_icon = Helper::badge_icon_markup( $badge['icon'], $badge );
+        if ( ! empty( $badge['type'] ) && 'icon' === $badge['type'] && ! empty( $badge['icon'] ) ) {
+            $badge_icon = Helper::badge_icon_markup( $badge['icon'], $badge );
 
-			if ( $badge_icon ) {
-				$badge_content = wp_kses_post( $badge_icon );
+            if ( $badge_icon ) {
+                $badge_content = wp_kses_post( $badge_icon );
             }
         } elseif ( ! empty( $badge['icon'] ) ) {
             $badge_icon = Helper::badge_icon_markup( $badge['icon'], $badge );

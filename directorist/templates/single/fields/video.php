@@ -8,6 +8,11 @@
 use \Directorist\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+
+$value = directorist_contact_url_for_display( $value );
+if ( '' === $value ) {
+    return;
+}
 ?>
 
 <iframe class="directorist-embaded-video embed-responsive-item" src="<?php echo esc_url( Helper::parse_video( $value ) ); ?>" allowfullscreen title="Single Listing Video"></iframe>

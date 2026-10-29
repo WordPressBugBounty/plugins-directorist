@@ -20,5 +20,5 @@
 		'wp-url',
 		'wp-viewport'
 	),
-	'version' => '6087995cb1693dda95d8'
+	'version' => 'f1632d39d80505d4f7f1'
 );

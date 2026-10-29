@@ -35,9 +35,10 @@ if ( ! class_exists( 'ATBDP_Email' ) ) :
             add_action( 'atbdp_send_renewal_reminder', [ $this, 'notify_owner_to_renew' ] );
             /*Listing Status changed from expired to renewed*/
             add_action( 'atbdp_after_renewal', [ $this, 'notify_owner_listing_renewed' ] );
+            add_action( 'atbdp_after_renewal', [ $this, 'notify_admin_listing_renewed' ] );
             /*Fire up email for deleted/trashed listings*/
-            add_action( 'atbdp_deleted_expired_listings', [ $this, 'notify_owner_listing_deleted' ] );
-            add_action( 'atbdp_deleted_expired_listings', [ $this, 'notify_admin_listing_deleted' ] );
+            add_action( 'trashed_post', [ $this, 'notify_listing_deleted' ] );
+            add_action( 'before_delete_post', [ $this, 'notify_before_listing_deleted' ] );
             /*Fire up emails when a general user apply for become author user*/
             add_action( 'atbdp_become_author', [ $this, 'notify_admin_become_author' ] );
             // add_action('atbdp_become_author', array($this, 'notify_owner_become_author'));
@@ -264,6 +265,29 @@ Listing Summary:
 ID: ==LISTING_ID==
 Title: ==LISTING_TITLE==
 
+
+This email is sent automatically for information purpose only. Please do not respond to this.
+',
+                'directorist'
+            );
+        }
+
+        /**
+         * Get the default admin listing renewal email body.
+         *
+         * @return string Email template.
+         */
+        public function get_listing_renewed_admin_tmpl() {
+            return __(
+                '
+Dear Administrator,
+
+The following listing has been renewed on your website ==SITE_NAME==.
+
+Listing Summary:
+ID: ==LISTING_ID==
+Title: ==LISTING_TITLE==
+Listing: ==LISTING_URL==
 
 This email is sent automatically for information purpose only. Please do not respond to this.
 ',
@@ -1031,8 +1055,56 @@ This email is sent automatically for information purpose only. Please do not res
             $user = $this->get_owner( $listing_id );
             $sub = $this->replace_in_content( get_directorist_option( 'email_sub_renewed_listing' ), null, $listing_id, $user );
             $body = $this->replace_in_content( get_directorist_option( 'email_tmpl_renewed_listing' ), null, $listing_id, $user );
+            $message = atbdp_email_html( $sub, $body );
 
-            return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
+            return $this->send_mail( $user->user_email, $sub, $message, $this->get_email_headers() );
+        }
+
+        /**
+         * Notify administrators when a listing has been renewed.
+         *
+         * @param int $listing_id Listing ID.
+         * @return bool Whether the email was sent successfully.
+         */
+        public function notify_admin_listing_renewed( $listing_id ) {
+            if ( get_directorist_option( 'disable_email_notification' ) || ! directorist_is_admin_notifiable_event( 'listing_renewed' ) ) {
+                return false;
+            }
+
+            $subject = get_directorist_option( 'email_sub_renewed_listing_admin', __( '[==SITE_NAME==] The Listing #==LISTING_ID== has been renewed on your website', 'directorist' ) );
+            $subject = $this->replace_in_content( $subject, null, $listing_id );
+            $body = get_directorist_option( 'email_tmpl_renewed_listing_admin', $this->get_listing_renewed_admin_tmpl() );
+            $body = $this->replace_in_content( $body, null, $listing_id );
+            $message = atbdp_email_html( $subject, $body );
+
+            return $this->send_mail( $this->get_admin_email_list(), $subject, $message, $this->get_email_headers() );
+        }
+
+        /**
+         * Send deletion emails while the listing data is still available.
+         *
+         * @param int $listing_id Listing ID.
+         */
+        public function notify_listing_deleted( $listing_id ) {
+            if ( ATBDP_POST_TYPE !== get_post_type( $listing_id ) ) {
+                return;
+            }
+
+            $this->notify_owner_listing_deleted( $listing_id );
+            $this->notify_admin_listing_deleted( $listing_id );
+        }
+
+        /**
+         * Notify for direct permanent deletion, skipping previously trashed listings.
+         *
+         * @param int $listing_id Listing ID.
+         */
+        public function notify_before_listing_deleted( $listing_id ) {
+            if ( 'trash' === get_post_status( $listing_id ) ) {
+                return;
+            }
+
+            $this->notify_listing_deleted( $listing_id );
         }
 
         /**

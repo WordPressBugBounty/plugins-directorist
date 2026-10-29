@@ -262,7 +262,9 @@ if ( ! class_exists( 'ATBDP_Formgent' ) ) {
                 return rest_ensure_response( [ 'success' => false, 'message' => __( 'Response not found.', 'directorist' ) ] );
             }
 
-            $response = $this->get_responses_query( $this->get_response_box( $request ) )->where( 'response.id', $response_id )->first();
+            $response = $this->get_responses_query( $this->get_response_box( $request ) )
+                ->select( 'response.*', 'UNIX_TIMESTAMP(response.created_at) as created_at_timestamp' )
+                ->where( 'response.id', $response_id )->first();
 
             if ( empty( $response ) ) {
                 return rest_ensure_response( [ 'success' => false, 'message' => __( 'Response not found.', 'directorist' ) ] );
@@ -270,7 +272,9 @@ if ( ! class_exists( 'ATBDP_Formgent' ) ) {
 
             $dto = ( new ResponseSingleDTO )->set_form_id( $response->form_id )->set_is_completed( 1 );
 
+            $created_at_timestamp = $response->created_at_timestamp;
             $response = formgent_response_repository()->get_single( $dto, $response_id );
+            $response->created_at_timestamp = $created_at_timestamp;
 
             $form = formgent_get_form_by_id( $response->form_id );
 
@@ -367,7 +371,8 @@ if ( ! class_exists( 'ATBDP_Formgent' ) ) {
 
             $count_query = clone $query;
 
-            $responses = $query->select( 'response.*', 'post.post_title as listing_title', 'post.post_author as listing_owner' )->order_by_desc( 'response.created_at' )->order_by_desc( 'response.id' )->with(
+            // TIMESTAMP strings use the database session timezone, which may differ from WordPress.
+            $responses = $query->select( 'response.*', 'UNIX_TIMESTAMP(response.created_at) as created_at_timestamp', 'post.post_title as listing_title', 'post.post_author as listing_owner' )->order_by_desc( 'response.created_at' )->order_by_desc( 'response.id' )->with(
                 'user', function( $query ) {
                     $query->select( 'ID', 'user_email', 'display_name' );
                 }

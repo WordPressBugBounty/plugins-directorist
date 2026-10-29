@@ -25,7 +25,13 @@ if ( empty( $socials ) ) {
 
     <div class="directorist-social-links">
         <?php  foreach ( $socials as $social ) : ?>
-            <?php $icon = 'lab la-' . $social['id']; ?>
+            <?php
+            $social['url'] = directorist_contact_url_for_display( $social['url'] ?? '' );
+            if ( '' === $social['url'] ) {
+                continue;
+            }
+            $icon = 'lab la-' . $social['id'];
+            ?>
             <a target='_blank' href="<?php echo esc_url( $social['url'] ); ?>" class="<?php echo esc_attr( $social['id'] ); ?>">
                 <?php directorist_icon( $icon ); ?>
             </a>

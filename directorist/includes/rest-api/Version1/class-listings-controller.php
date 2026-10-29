@@ -1215,9 +1215,15 @@ class Listings_Controller extends Posts_Controller {
                     break;
                 case 'email':
                     $base_data['email'] = get_post_meta( $listing->ID, '_email', true );
+                    if ( 'view' === $context ) {
+                        $base_data['email'] = directorist_contact_email_for_display( $base_data['email'] );
+                    }
                     break;
                 case 'website':
                     $base_data['website'] = get_post_meta( $listing->ID, '_website', true );
+                    if ( 'view' === $context ) {
+                        $base_data['website'] = directorist_contact_url_for_display( $base_data['website'] );
+                    }
                     break;
                 case 'social_links':
                     $base_data['social_links'] = $this->get_listing_social_links( $listing->ID );
@@ -1298,7 +1304,7 @@ class Listings_Controller extends Posts_Controller {
             }
             $data[] = array(
                 'id' => $link['id'],
-                'url' => $link['url']
+                'url' => directorist_contact_url_for_display( $link['url'] )
             );
         }
 
@@ -1499,6 +1505,10 @@ class Listings_Controller extends Posts_Controller {
                     'description' => __( 'Email address.', 'directorist' ),
                     'type'        => 'string',
                     'format'      => 'email',
+                    'arg_options' => array(
+                        'validate_callback' => 'directorist_validate_listing_email_rest_arg',
+                        'sanitize_callback' => 'directorist_normalize_contact_value',
+                    ),
                     'context'     => array( 'view', 'edit' ),
                 ),
                 'website'                => array(

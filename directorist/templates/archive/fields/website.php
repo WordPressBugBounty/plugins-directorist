@@ -6,6 +6,11 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+
+$value = directorist_contact_url_for_display( $value );
+if ( '' === $value ) {
+    return;
+}
 ?>
 
 <li class="directorist-listing-card-website">

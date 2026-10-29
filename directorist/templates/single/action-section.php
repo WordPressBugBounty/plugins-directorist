@@ -33,7 +33,7 @@ foreach ( $actions as $action ) {
             break;
 
         case 'email':
-            $email = get_post_meta( $listing_id, '_email', true );
+            $email = directorist_contact_email_for_display( get_post_meta( $listing_id, '_email', true ) );
             if ( $email ) {
                 $action_data[] = [
                     'type'   => 'email',
@@ -48,7 +48,7 @@ foreach ( $actions as $action ) {
             $btn_raw   = get_post_meta( $listing_id, '_' . $field_key, true );
             $btn_value = is_array( $btn_raw ) ? $btn_raw : [];
             $btn_text  = $btn_value['button_text'] ?? '';
-            $btn_url   = $btn_value['button_url_label'] ?? '';
+            $btn_url   = directorist_contact_url_for_display( $btn_value['button_url_label'] ?? '' );
 
             if ( $btn_text && $btn_url ) {
                 $action_data[] = [

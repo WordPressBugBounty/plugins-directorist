@@ -136,6 +136,7 @@ class Asset_Loader {
                 wp_enqueue_script( 'directorist-dashboard' );
                 wp_enqueue_script( 'directorist-select2-script' );
                 wp_enqueue_script( 'directorist-formgent-integration' );
+                wp_set_script_translations( 'directorist-formgent-integration', 'directorist', ATBDP_DIR . 'languages' );
                 wp_enqueue_style( 'directorist-formgent-integration-style' );
                 Enqueue::style( 'directorist/frontend', 'build/css/public/app', ['wp-components'] );
                 Enqueue::script( 'directorist-listing-owner-dashboard', 'build/js/react/frontend/listing-owner-dashboard' );

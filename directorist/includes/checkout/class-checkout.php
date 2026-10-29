@@ -51,9 +51,12 @@ class ATBDP_Checkout {
     }
 
     public function payment_receipt() {
+        // Keep the legacy helper's notice inside the shortcode/block content.
+        ob_start();
         if ( ! atbdp_is_user_logged_in() ) {
-            return null;
+            return ob_get_clean();
         }
+        ob_end_clean();
 
         $order_id = (int) get_query_var( 'atbdp_order_id' );
 
@@ -104,10 +107,12 @@ class ATBDP_Checkout {
     }
 
     public function checkout() {
-        // return null if user is not logged in
+        // Keep the legacy helper's notice inside the shortcode/block content.
+        ob_start();
         if ( ! atbdp_is_user_logged_in() ) {
-            return null;
+            return ob_get_clean();
         }
+        ob_end_clean();
 
         $request   = Helpers::request();
         $validator = new Validator( $request, new Mime );

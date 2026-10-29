@@ -73,7 +73,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                                                     <li><?php directorist_icon( 'las la-phone' ); ?> <a href="tel:<?php Helper::formatted_tel( $phone ); ?>"><?php echo esc_html( $phone ); ?></a></li>
                                                 <?php endif; ?>
 
-                                                <?php if ( is_user_logged_in() && in_array( 'email', $authors->contact_info() ) && $email = Helper::user_info( $author, 'email' ) ) : ?>
+                                                <?php if ( is_user_logged_in() && in_array( 'email', $authors->contact_info() ) && $email = directorist_contact_email_for_display( Helper::user_info( $author, 'email' ) ) ) : ?>
                                                     <li><?php directorist_icon( 'las la-envelope' ); ?> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
                                                 <?php endif; ?>
 
@@ -82,7 +82,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                                                 <?php endif; ?>
 
                                                 <?php if ( in_array( 'website', $authors->contact_info() ) && $website = Helper::user_info( $author, 'website' ) ) : ?>
-                                                    <li><?php directorist_icon( 'las la-globe' ); ?> <a href="<?php echo esc_url( $website ); ?>"><?php echo esc_html( $website ); ?></a></li>
+                                                    <li><?php directorist_icon( 'las la-globe' ); ?> <a href="<?php echo esc_url( directorist_contact_url_for_display( $website ) ); ?>"><?php echo esc_html( $website ); ?></a></li>
                                                 <?php endif; ?>
 
                                             </ul>
@@ -99,25 +99,25 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
                                                 <?php if ( $facebook = Helper::user_info( $author, 'facebook' ) ) : ?>
                                                     <li class="directorist-author-social-item">
-                                                        <a target="_blank" href="<?php echo esc_url( $facebook ); ?>"><?php directorist_icon( 'lab la-facebook' ); ?></a>
+                                                        <a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $facebook ) ); ?>"><?php directorist_icon( 'lab la-facebook' ); ?></a>
                                                     </li>
                                                 <?php endif; ?>
 
                                                 <?php if ( $twitter = Helper::user_info( $author, 'twitter' ) ) : ?>
                                                     <li class="directorist-author-social-item">
-                                                        <a target="_blank" href="<?php echo esc_url( $twitter ); ?>"><?php directorist_icon( 'lab la-twitter' ); ?></a>
+                                                        <a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $twitter ) ); ?>"><?php directorist_icon( 'lab la-twitter' ); ?></a>
                                                     </li>
                                                 <?php endif; ?>
 
                                                 <?php if ( $linkedin = Helper::user_info( $author, 'linkedin' ) ) : ?>
                                                     <li class="directorist-author-social-item">
-                                                        <a target="_blank" href="<?php echo esc_url( $linkedin ); ?>"><?php directorist_icon( 'lab la-linkedin' ); ?></a>
+                                                        <a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $linkedin ) ); ?>"><?php directorist_icon( 'lab la-linkedin' ); ?></a>
                                                     </li>
                                                 <?php endif; ?>
 
                                                 <?php if ( $youtube = Helper::user_info( $author, 'youtube' ) ) : ?>
                                                     <li class="directorist-author-social-item">
-                                                        <a target="_blank" href="<?php echo esc_url( $youtube ); ?>"><?php directorist_icon( 'lab la-youtube' ); ?></span></a>
+                                                        <a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $youtube ) ); ?>"><?php directorist_icon( 'lab la-youtube' ); ?></span></a>
                                                     </li>
                                                 <?php endif; ?>
 

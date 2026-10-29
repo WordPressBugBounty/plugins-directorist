@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 $button_value     = is_array( $value ) ? $value : [];
 $button_text      = isset( $button_value['button_text'] ) ? $button_value['button_text'] : '';
-$button_url_label = isset( $button_value['button_url_label'] ) ? $button_value['button_url_label'] : '';
+$button_url_label = isset( $button_value['button_url_label'] ) ? directorist_contact_url_for_display( $button_value['button_url_label'] ) : '';
 
 if ( ! $button_text || ! $button_url_label ) {
     return;

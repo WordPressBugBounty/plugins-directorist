@@ -194,6 +194,7 @@ class Directorist_AI_Setup_Wizard {
     public function handle_generate() {
         $this->verify_ajax_request();
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified by verify_ajax_request() above.
         $prompt = isset( $_POST['prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) ) : '';
 
         if ( strlen( trim( $prompt ) ) < 5 ) {
@@ -218,8 +219,11 @@ class Directorist_AI_Setup_Wizard {
     public function handle_regenerate_fields() {
         $this->verify_ajax_request();
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified by verify_ajax_request() above.
         $prompt = isset( $_POST['prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) ) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified above; structured JSON is normalized by the setup pipeline.
         $fields = isset( $_POST['fields'] ) ? json_decode( wp_unslash( $_POST['fields'] ), true ) : [];
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified above; structured JSON is normalized by the setup pipeline.
         $selected = isset( $_POST['selected'] ) ? json_decode( wp_unslash( $_POST['selected'] ), true ) : [];
 
         $response = $this->request_waxai(
@@ -246,7 +250,9 @@ class Directorist_AI_Setup_Wizard {
 
         $coordinates = $this->normalize_coordinates(
             [
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified by verify_ajax_request() above.
                 'lat' => isset( $_POST['latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['latitude'] ) ) : null,
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified by verify_ajax_request() above.
                 'lng' => isset( $_POST['longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['longitude'] ) ) : null,
             ]
         );
@@ -293,6 +299,7 @@ class Directorist_AI_Setup_Wizard {
     public function handle_launch() {
         $this->verify_ajax_request();
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified above; structured JSON is normalized by the setup pipeline.
         $raw_setup = isset( $_POST['setup'] ) ? wp_unslash( $_POST['setup'] ) : '';
         $setup     = json_decode( $raw_setup, true );
 
@@ -2214,15 +2221,15 @@ class Directorist_AI_Setup_Wizard {
                 return [];
 
             case 'email':
-                update_post_meta( $post_id, '_email', sanitize_email( $this->get_demo_value( $row, [ 'email' ] ) ) );
+                update_post_meta( $post_id, '_email', directorist_contact_email_for_display( $this->get_demo_value( $row, [ 'email' ] ) ) );
                 return [];
 
             case 'website':
-                update_post_meta( $post_id, '_website', esc_url_raw( $this->get_demo_value( $row, [ 'website' ] ) ) );
+                update_post_meta( $post_id, '_website', esc_url_raw( directorist_contact_url_for_display( $this->get_demo_value( $row, [ 'website' ] ) ) ) );
                 return [];
 
             case 'video':
-                update_post_meta( $post_id, '_videourl', esc_url_raw( $this->get_demo_value( $row, [ 'video' ] ) ) );
+                update_post_meta( $post_id, '_videourl', esc_url_raw( directorist_contact_url_for_display( $this->get_demo_value( $row, [ 'video' ] ) ) ) );
                 return [];
 
             case 'image_upload':
@@ -2263,10 +2270,10 @@ class Directorist_AI_Setup_Wizard {
 
         switch ( $widget_name ) {
             case 'email':
-                return sanitize_email( $this->get_demo_value( $row, [ 'email' ], 'example@example.com' ) );
+                return directorist_contact_email_for_display( $this->get_demo_value( $row, [ 'email' ], 'example@example.com' ) );
 
             case 'url':
-                return esc_url_raw( $this->get_demo_value( $row, [ 'website' ], 'https://example.com' ) );
+                return esc_url_raw( directorist_contact_url_for_display( $this->get_demo_value( $row, [ 'website' ], 'https://example.com' ) ) );
 
             case 'textarea':
             case 'html':
@@ -2295,11 +2302,11 @@ class Directorist_AI_Setup_Wizard {
             case 'button':
                 return [
                     'button_text'      => $this->get_button_text( $label ),
-                    'button_url_label' => esc_url_raw( $this->get_demo_value( $row, [ 'website' ], 'https://example.com' ) ),
+                    'button_url_label' => esc_url_raw( directorist_contact_url_for_display( $this->get_demo_value( $row, [ 'website' ], 'https://example.com' ) ) ),
                 ];
 
             case 'file':
-                return esc_url_raw( $this->get_demo_value( $row, [ 'website' ], 'https://example.com' ) );
+                return esc_url_raw( directorist_contact_url_for_display( $this->get_demo_value( $row, [ 'website' ], 'https://example.com' ) ) );
         }
 
         if ( false !== strpos( $label, 'phone' ) ) {
@@ -2346,7 +2353,7 @@ class Directorist_AI_Setup_Wizard {
     }
 
     private function import_demo_image( $post_id, array $row ) {
-        $image = esc_url_raw( $this->get_demo_value( $row, [ 'image' ] ) );
+        $image = esc_url_raw( directorist_contact_url_for_display( $this->get_demo_value( $row, [ 'image' ] ) ) );
 
         if ( empty( $image ) ) {
             return 0;

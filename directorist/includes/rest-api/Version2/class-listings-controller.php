@@ -261,8 +261,18 @@ class Listings_Controller extends Legacy_Listings_Controller {
     }
 
     protected function hydrate_global_post( $request ) {
-        $directory_id = $request['directory'];
-        $plan_id      = $request['plan'];
+        if ( ! isset( $request['directory'] ) && ! empty( $request['id'] ) ) {
+            $request->set_param( 'directory', directorist_get_listing_directory( (int) $request['id'] ) );
+        }
+
+        $directory_id = $this->get_create_item_directory_id( $request );
+
+        if ( is_wp_error( $directory_id ) ) {
+            return $directory_id;
+        }
+
+        $request->set_param( 'directory', $directory_id );
+        $plan_id = $request['plan'];
 
         $form_fields           = directorist_get_listing_form_fields( $directory_id );
         $map                   = $this->get_schema_to_post_fields_map();
@@ -385,7 +395,11 @@ class Listings_Controller extends Legacy_Listings_Controller {
             return $timezone_validation;
         }
 
-        $this->hydrate_global_post( $request );
+        $hydrated = $this->hydrate_global_post( $request );
+
+        if ( is_wp_error( $hydrated ) ) {
+            return $hydrated;
+        }
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         $controller_response = SubmissionController::submit( wp_unslash( $_POST ), 'api' );
 
@@ -430,7 +444,11 @@ class Listings_Controller extends Legacy_Listings_Controller {
             return $timezone_validation;
         }
 
-        $this->hydrate_global_post( $request );
+        $hydrated = $this->hydrate_global_post( $request );
+
+        if ( is_wp_error( $hydrated ) ) {
+            return $hydrated;
+        }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         $controller_response = SubmissionController::submit( wp_unslash( $_POST ), 'api' );
@@ -632,9 +650,15 @@ class Listings_Controller extends Legacy_Listings_Controller {
                     $data[ $field_key ] = $this->get_images( $listing, $context );
                     break;
 
+                case 'website':
                 case 'url':
                     $field_value       = get_post_meta( $listing->ID, '_' . $field_key, true );
-                    $data[ $field_key ] = ( 'view' === $context ? esc_url( $field_value ) : esc_url_raw( $field_value ) );
+                    $data[ $field_key ] = ( 'view' === $context ? esc_url( directorist_contact_url_for_display( $field_value ) ) : esc_url_raw( directorist_contact_url_for_display( $field_value ) ) );
+                    break;
+
+                case 'email':
+                    $email = get_post_meta( $listing->ID, '_' . $field_key, true );
+                    $data[ $field_key ] = 'view' === $context ? directorist_contact_email_for_display( $email ) : $email;
                     break;
 
                 case 'textarea':
@@ -1481,6 +1505,10 @@ class Listings_Controller extends Legacy_Listings_Controller {
                 'fields'             => array(
                     'description' => __( 'Fields data.', 'directorist' ),
                     'type'        => 'object',
+                    'arg_options' => array(
+                        'validate_callback' => 'directorist_validate_listing_rest_fields',
+                        'sanitize_callback' => 'directorist_sanitize_listing_rest_fields',
+                    ),
                     'context'     => array( 'view', 'edit' ),
                     'properties'  => $fields,
                 ),

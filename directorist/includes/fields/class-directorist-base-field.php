@@ -95,11 +95,14 @@ class Base_Field {
     }
 
     public function get_value( $posted_data ) {
-        return directorist_get_var( $posted_data[ $this->get_key() ] );
+        return directorist_normalize_contact_field( directorist_get_var( $posted_data[ $this->get_key() ] ), $this->type );
     }
 
     public function is_value_empty( $posted_data ) {
         $value = $this->get_value( $posted_data );
+        if ( in_array( $this->type, [ 'url', 'email', 'video' ], true ) ) {
+            return is_null( $value ) || '' === $value;
+        }
         return ( is_null( $value ) || ( is_string( $value ) && $value === '' ) || ( is_array( $value ) && empty( $value ) ) );
     }
 

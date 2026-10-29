@@ -312,7 +312,7 @@ class Scripts {
             'directorist-formgent-integration' => [
                 'type' => 'js',
                 'path' => DIRECTORIST_BUILD_ASSETS . 'js/public/formgent-integration',
-                'dep' => ['wp-element', 'wp-api-fetch'],
+                'dep' => ['wp-element', 'wp-api-fetch', 'wp-i18n'],
             ],
         ];
 

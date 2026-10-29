@@ -13,20 +13,38 @@ class Social_Info_Field extends Base_Field {
     public $type = 'social_info';
 
     public function get_value( $posted_data ) {
-        if ( ! isset( $posted_data['social'] ) || ! is_array( $posted_data['social'] ) ) {
+        if ( ! isset( $posted_data['social'] ) ) {
             return [];
         }
 
-        return $posted_data['social'];
+        $items = directorist_normalize_contact_field( $posted_data['social'], $this->type );
+        return is_array( $items ) ? array_values(
+            array_filter(
+                $items, static function( $item ) {
+                    return ! is_array( $item ) || ! isset( $item['url'] ) || '' !== $item['url'];
+                }
+            )
+        ) : $items;
     }
 
     public function validate( $posted_data ) {
         $items = $this->get_value( $posted_data );
 
+        if ( ! is_array( $items ) ) {
+            $this->add_error( __( 'Invalid social info.', 'directorist' ) );
+            return false;
+        }
+        foreach ( $items as $item ) {
+            if ( ! is_array( $item ) || empty( $item['id'] ) || ! is_string( $item['id'] ) || ! isset( $item['url'] ) || ! directorist_is_contact_string( $item['url'] ) || '' === esc_url_raw( $item['url'] ) ) {
+                $this->add_error( __( 'Invalid social info.', 'directorist' ) );
+                return false;
+            }
+        }
+
         $items = array_filter(
             $items, static function( $item ) {
                 return ! ( empty( $item['id'] ) || empty( $item['url'] ) );
-            } 
+            }
         );
 
         if ( ! count( $items ) ) {
@@ -39,6 +57,10 @@ class Social_Info_Field extends Base_Field {
 
     public function sanitize( $posted_data ) {
         $_items = $this->get_value( $posted_data );
+
+        if ( ! is_array( $_items ) ) {
+            return [];
+        }
 
         $items = [];
 

@@ -7,6 +7,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+$value = directorist_contact_email_for_display( $value );
+if ( '' === $value ) {
+    return;
+}
+
 $is_action = ! empty( $before ) && 'div' === $before;
 ?>
 

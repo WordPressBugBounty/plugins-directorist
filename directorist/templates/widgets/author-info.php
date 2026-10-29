@@ -93,8 +93,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             if ( ! empty( $website ) ) { ?>
                 <li>
                     <?php directorist_icon( 'fas fa-globe-americas' ); ?>
-                    <a href="<?php echo esc_url( $website ); ?>"
-                        class="directorist-single-author-contact-info-text" <?php echo is_directoria_active() ? 'style="text-transform: none;"' : ''; ?>><?php echo esc_url( $website ); ?></a>
+                    <a href="<?php echo esc_url( directorist_contact_url_for_display( $website ) ); ?>"
+                        class="directorist-single-author-contact-info-text" <?php echo is_directoria_active() ? 'style="text-transform: none;"' : ''; ?>><?php echo esc_url( directorist_contact_url_for_display( $website ) ); ?></a>
                 </li>
             <?php } ?>
 
@@ -106,11 +106,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <ul class="directorist-author-social">
 
             <?php if ( $facebook ) : ?>
-                <li class="directorist-author-social__item"><a target="_blank" href="<?php echo esc_url( $facebook ); ?>"><?php directorist_icon( 'lab la-facebook' ); ?></a></li>
+                <li class="directorist-author-social__item"><a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $facebook ) ); ?>"><?php directorist_icon( 'lab la-facebook' ); ?></a></li>
             <?php endif; ?>
 
             <?php if ( $twitter ) : ?>
-                <li class="directorist-author-social__item"><a target="_blank" href="<?php echo esc_url( $twitter ); ?>"><?php directorist_icon( 'lab la-twitter' ); ?></a></li>
+                <li class="directorist-author-social__item"><a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $twitter ) ); ?>"><?php directorist_icon( 'lab la-twitter' ); ?></a></li>
             <?php endif; ?>
 
             <?php if ( $linkedIn ) : ?>
@@ -118,7 +118,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <?php endif; ?>
 
             <?php if ( $youtube ) : ?>
-                <li class="directorist-author-social__item"><a target="_blank" href="<?php echo esc_url( $youtube ); ?>"><?php directorist_icon( 'lab la-youtube' ); ?></a></li>
+                <li class="directorist-author-social__item"><a target="_blank" href="<?php echo esc_url( directorist_contact_url_for_display( $youtube ) ); ?>"><?php directorist_icon( 'lab la-youtube' ); ?></a></li>
             <?php endif; ?>
 
         </ul>

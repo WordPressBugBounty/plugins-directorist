@@ -1186,21 +1186,36 @@ if ( ! class_exists( 'ATBDP_User' ) ) :
          * @return bool It returns true on success and false on failure
          */
         public function update_profile( $data ) {
+            foreach ( [ 'website', 'facebook', 'twitter', 'linkedIn', 'youtube', 'user_email' ] as $key ) {
+                if ( ! isset( $data[ $key ] ) ) {
+                    continue;
+                }
+                $data[ $key ] = directorist_normalize_contact_value( $data[ $key ] );
+                if ( ! directorist_is_contact_string( $data[ $key ] ) ) {
+                    return false;
+                }
+                if ( 'user_email' !== $key && '' !== $data[ $key ] && '' === esc_url_raw( $data[ $key ] ) ) {
+                    return false;
+                }
+                if ( 'user_email' === $key && ( ! is_email( $data[ $key ] ) || sanitize_email( $data[ $key ] ) !== $data[ $key ] ) ) {
+                    return false;
+                }
+            }
             $userdata = [];
             // we need to sanitize the data and then save it.
             $ID = get_current_user_id();
             $userdata['ID'] = $ID;
             $userdata['display_name'] = ! empty( $data['full_name'] ) ? sanitize_text_field( trim( $data['full_name'] ) ) : '';
             $userdata['user_email'] = ! empty( $data['user_email'] ) ? sanitize_email( $data['user_email'] ) : '';
-            $userdata['user_url'] = ! empty( $data['website'] ) ? sanitize_url( trim( $data['website'] ) ) : '';
+            $userdata['user_url'] = ! empty( $data['website'] ) ? sanitize_url( directorist_contact_url_for_display( $data['website'] ) ) : '';
             $phone = ! empty( $data['phone'] ) ? sanitize_text_field( trim( $data['phone'] ) ) : '';
             $first_name = ! empty( $data['first_name'] ) ? sanitize_text_field( trim( $data['first_name'] ) ) : '';
             $last_name = ! empty( $data['last_name'] ) ? sanitize_text_field( trim( $data['last_name'] ) ) : '';
             $address = ! empty( $data['address'] ) ? sanitize_text_field( trim( $data['address'] ) ) : '';
-            $facebook = ! empty( $data['facebook'] ) ? sanitize_url( trim( $data['facebook'] ) ) : '';
-            $twitter = ! empty( $data['twitter'] ) ? sanitize_url( trim( $data['twitter'] ) ) : '';
-            $linkedIn = ! empty( $data['linkedIn'] ) ? sanitize_url( trim( $data['linkedIn'] ) ) : '';
-            $youtube = ! empty( $data['youtube'] ) ? sanitize_url( trim( $data['youtube'] ) ) : '';
+            $facebook = ! empty( $data['facebook'] ) ? sanitize_url( directorist_contact_url_for_display( $data['facebook'] ) ) : '';
+            $twitter = ! empty( $data['twitter'] ) ? sanitize_url( directorist_contact_url_for_display( $data['twitter'] ) ) : '';
+            $linkedIn = ! empty( $data['linkedIn'] ) ? sanitize_url( directorist_contact_url_for_display( $data['linkedIn'] ) ) : '';
+            $youtube = ! empty( $data['youtube'] ) ? sanitize_url( directorist_contact_url_for_display( $data['youtube'] ) ) : '';
             $bio = ! empty( $data['bio'] ) ? sanitize_textarea_field( trim( $data['bio'] ) ) : '';
             $new_pass = ! empty( $data['new_pass'] ) ? $data['new_pass'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
             $confirm_pass = ! empty( $data['confirm_pass'] ) ? $data['confirm_pass'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash

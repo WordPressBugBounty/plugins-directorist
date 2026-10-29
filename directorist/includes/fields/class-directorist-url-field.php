@@ -13,11 +13,14 @@ class Url_Field extends Base_Field {
     public $type = 'url';
 
     public function validate( $posted_data ) {
+        if ( ! directorist_is_contact_string( $this->get_value( $posted_data ) ) ) {
+            $this->add_error( __( 'Invalid URL.', 'directorist' ) );
+            return false;
+        }
         $value      = $this->sanitize( $posted_data );
         $parsed_url = wp_parse_url( $value );
 
-        if (
-            ! filter_var( $value, FILTER_VALIDATE_URL ) ||
+        if ( ! filter_var( $value, FILTER_VALIDATE_URL ) ||
             false === $parsed_url ||
             isset( $parsed_url['user'] ) ||
             isset( $parsed_url['pass'] )
@@ -36,7 +39,7 @@ class Url_Field extends Base_Field {
             return $value;
         }
 
-        return esc_url_raw( $value, [ 'http', 'https' ] );
+        return directorist_is_contact_string( $value ) ? esc_url_raw( $value, [ 'http', 'https' ] ) : '';
     }
 }
 

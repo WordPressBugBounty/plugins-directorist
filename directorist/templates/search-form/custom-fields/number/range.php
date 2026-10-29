@@ -13,10 +13,10 @@ $max_value = ! empty( $data['options']['max_value'] ) ? $data['options']['max_va
 $default_min_value = $min_value;
 $default_max_value = $max_value;
 
-
-if ( ! empty( $value ) && strpos( $value, '-' ) !== false ) {
-    list($min_value, $max_value) = explode( '-', $value );
-} 
+$number_range = directorist_parse_number_range( $value );
+if ( null !== $number_range ) {
+    list( $min_value, $max_value ) = $number_range;
+}
 
 $range_value = ( is_numeric( $min_value ) && is_numeric( $max_value ) ) ? "{$min_value}-{$max_value}" : '';
 

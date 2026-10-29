@@ -258,6 +258,7 @@ if ( ! class_exists( 'ATBDP_Tools' ) ) :
             $listing_status        = ! empty( $_POST['listing_status'] ) ? directorist_clean( wp_unslash( $_POST['listing_status'] ) ) : '';
             $description           = ! empty( $_POST['listing_content'] ) ? directorist_clean( wp_unslash( $_POST['listing_content'] ) ) : '';
             $metas                 = ! empty( $_POST['meta'] ) ? directorist_clean( wp_unslash( $_POST['meta'] ) ) : [];
+            $contact_fields        = directorist_get_contact_fields( $directory_id );
             $tax_inputs            = ! empty( $_POST['tax_input'] ) ? directorist_clean( wp_unslash( $_POST['tax_input'] ) ) : [];
             $publish_date          = ! empty( $metas['publish_date'] ) ? directorist_clean( $metas['publish_date'] ) : '';
             $reviews               = ! empty( $metas['reviews'] ) ? directorist_clean( $metas['reviews'] ) : '';
@@ -311,6 +312,30 @@ if ( ! class_exists( 'ATBDP_Tools' ) ) :
                 }
 
                 $post = array_combine( $header, $row );
+
+                // Validate contact columns before creating a listing or importing media.
+                $contact_values = [];
+                $contact_errors = [];
+                foreach ( $metas as $index => $column ) {
+                    if ( ! isset( $contact_fields[ '_' . $index ] ) ) {
+                        continue;
+                    }
+                    $raw = $this->maybe_unserialize_csv_string( self::unescape_data( $post[ $column ] ?? '' ) );
+                    $prepared = directorist_prepare_contact_field( $contact_fields[ '_' . $index ], $raw );
+                    if ( is_wp_error( $prepared ) ) {
+                        $contact_errors[] = $index . ': ' . $prepared->get_error_message();
+                    } else {
+                        $contact_values[ $index ] = $prepared;
+                    }
+                }
+                if ( $contact_errors ) {
+                    $processed_logs[] = sprintf( '[%d]: %s', $position, implode( ' ', $contact_errors ) );
+                    if ( $this->time_exceeded() || $this->memory_exceeded() || $batch_size === $batch_processed ) {
+                        break;
+                    }
+                    ++$batch_processed;
+                    continue;
+                }
 
                 // /**
                 //  * Filters whether the listing import process should start.
@@ -413,6 +438,9 @@ if ( ! class_exists( 'ATBDP_Tools' ) ) :
                 foreach ( $metas as $index => $value ) {
                     $meta_value = isset( $post[ $value ] ) && $post[ $value ] ? self::unescape_data( $post[ $value ] ) : '';
                     $meta_value = $this->maybe_unserialize_csv_string( $meta_value );
+                    if ( array_key_exists( $index, $contact_values ) ) {
+                        $meta_value = $contact_values[ $index ];
+                    }
 
                     if ( $meta_value ) {
                         update_post_meta( $post_id, '_' . $index, $meta_value );

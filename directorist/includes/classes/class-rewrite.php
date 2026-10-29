@@ -47,8 +47,28 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
             return $this->pages;
         }
 
-        protected function get_page_ids() {
-            return array_unique( array_values( $this->get_pages() ) );
+        protected function get_page_ids( $option_key = null ) {
+            $page_ids = null === $option_key ? array_values( $this->get_pages() ) : [ $this->get_page_id( $option_key ) ];
+
+            foreach ( $page_ids as $page_id ) {
+                if ( ! $page_id ) {
+                    continue;
+                }
+
+                $trid = apply_filters( 'wpml_element_trid', null, $page_id, 'post_page' );
+                if ( ! $trid ) {
+                    continue;
+                }
+
+                $translations = apply_filters( 'wpml_get_element_translations', [], $trid, 'post_page' );
+                foreach ( (array) $translations as $translation ) {
+                    if ( ! empty( $translation->element_id ) && 'publish' === get_post_status( $translation->element_id ) ) {
+                        $page_ids[] = (int) $translation->element_id;
+                    }
+                }
+            }
+
+            return array_values( array_unique( array_filter( $page_ids ) ) );
         }
 
         protected function get_page_id( $option_key ) {
@@ -62,6 +82,13 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
             $slug     = rtrim( $slug, '/' );
             $slug     = preg_match( '/([?])/', $slug ) ? $default_slug : $slug;
 
+            // WPML may adjust get_permalink() to the request language. Rewrite
+            // paths must instead use each translated page's own URI.
+            if ( has_filter( 'wpml_element_trid' ) && get_option( 'permalink_structure' ) ) {
+                global $wp_rewrite;
+                $slug = trim( str_replace( '%pagename%', get_page_uri( $page_id ), $wp_rewrite->get_page_permastruct() ), '/' );
+            }
+
             return apply_filters( 'directorist_rewrite_get_page_slug', $slug, $page_id, $default_slug );
         }
 
@@ -72,16 +99,14 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
                 ]
             );
 
-            $page_id = $this->get_page_id( 'all_listing_page' );
-            if ( $page_id ) {
+            foreach ( $this->get_page_ids( 'all_listing_page' ) as $page_id ) {
                 $link = $this->get_page_slug( $page_id, 'directory-all-listing' );
 
                 add_rewrite_rule( "$link/page/?([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&paged=$matches[1]', 'top' );
             }
 
             // Author profile page URL Rewrite
-            $page_id = $this->get_page_id( 'author_profile_page' );
-            if ( $page_id ) {
+            foreach ( $this->get_page_ids( 'author_profile_page' ) as $page_id ) {
                 $link = $this->get_page_slug( $page_id, 'directory-profile' );
 
                 // Link > Page
@@ -101,8 +126,7 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
             }
 
             // Checkout page URL Rewrite
-            $page_id = $this->get_page_id( 'checkout_page' );
-            if ( $page_id ) {
+            foreach ( $this->get_page_ids( 'checkout_page' ) as $page_id ) {
                 $link = $this->get_page_slug( $page_id, 'directory-checkout' );
 
                 add_rewrite_rule( "$link/submit/([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&atbdp_action=submission&atbdp_listing_id=$matches[1]', 'top' );
@@ -112,8 +136,7 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
             }
 
             // Payment receipt page
-            $page_id = $this->get_page_id( 'payment_receipt_page' );
-            if ( $page_id ) {
+            foreach ( $this->get_page_ids( 'payment_receipt_page' ) as $page_id ) {
                 $link = $this->get_page_slug( $page_id, 'directory-payment-receipt' );
 
                 add_rewrite_rule( "$link/order/([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&atbdp_action=order&atbdp_order_id=$matches[1]', 'top' );
@@ -121,8 +144,7 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
 
 
             // Edit Listing/Renew Listing/Delete listings etc
-            $page_id = $this->get_page_id( 'add_listing_page' );
-            if ( $page_id ) {
+            foreach ( $this->get_page_ids( 'add_listing_page' ) as $page_id ) {
                 $link = $this->get_page_slug( $page_id, 'directory-add-listing' );
 
                 add_rewrite_rule( "$link/([^/]+)/([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&atbdp_action=$matches[1]&atbdp_listing_id=$matches[2]', 'top' );
@@ -130,16 +152,14 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
 
             if ( ! directorist_is_archive_template_enabled() ) {
                 // Single Category page
-                $page_id = $this->get_page_id( 'single_category_page' );
-                if ( $page_id ) {
+                foreach ( $this->get_page_ids( 'single_category_page' ) as $page_id ) {
                     $link = $this->get_page_slug( $page_id, 'directory-single-category' );
                     add_rewrite_rule( "$link/([^/]+)/page/?([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&atbdp_category=$matches[1]&paged=$matches[2]', 'top' );
                     add_rewrite_rule( "$link/([^/]+)/?$", 'index.php?page_id=' . $page_id . '&atbdp_category=$matches[1]', 'top' );
                 }
 
                 // Single Location page
-                $page_id = $this->get_page_id( 'single_location_page' );
-                if ( $page_id ) {
+                foreach ( $this->get_page_ids( 'single_location_page' ) as $page_id ) {
                     $link = $this->get_page_slug( $page_id, 'directory-single-location' );
 
                     add_rewrite_rule( "$link/([^/]+)/page/?([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&atbdp_location=$matches[1]&paged=$matches[2]', 'top' );
@@ -147,8 +167,7 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
                 }
 
                 // Single Tag page
-                $page_id = $this->get_page_id( 'single_tag_page' );
-                if ( $page_id ) {
+                foreach ( $this->get_page_ids( 'single_tag_page' ) as $page_id ) {
                     $link = $this->get_page_slug( $page_id, 'directory-single-tag' );
 
                     add_rewrite_rule( "$link/([^/]+)/page/?([0-9]{1,})/?$", 'index.php?page_id=' . $page_id . '&atbdp_tag=$matches[1]&paged=$matches[2]', 'top' );
@@ -181,6 +200,10 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
          * @access   public
          */
         public function flush_rewrite_rules_on_demand() {
+
+            if ( ! is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+                return;
+            }
 
             $rewrite_rules = get_option( 'rewrite_rules' );
 

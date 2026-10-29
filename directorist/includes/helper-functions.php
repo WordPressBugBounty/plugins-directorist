@@ -2425,7 +2425,11 @@ function atbdp_guest_submission( $guest_email ) {
      */
     $notify = apply_filters( 'directorist_guest_submission_email_notification', true, $user_id );
     if ( $notify ) {
-        ATBDP()->email->custom_wp_new_user_notification_email( $user_id );
+        if ( directorist_is_email_verification_enabled() ) {
+            ATBDP()->email->send_user_confirmation_email( get_user_by( 'ID', $user_id ) );
+        } else {
+            ATBDP()->email->custom_wp_new_user_notification_email( $user_id );
+        }
     }
 }
 
@@ -2983,11 +2987,9 @@ if ( ! function_exists( 'directorist_get_default_directory' ) ) {
             ]
         );
 
-        if ( empty( $directories ) || is_wp_error( $directories ) || ! isset( $directories[0] ) ) {
-            return 0;
-        }
+        $directory = ! is_wp_error( $directories ) && isset( $directories[0] ) ? $directories[0] : 0;
 
-        return $directories[0];
+        return apply_filters( 'directorist_default_directory', $directory, $return );
     }
 }
 
@@ -4843,6 +4845,20 @@ function directorist_get_featured_listing_status( $listing_id, $default_status )
     }
 
     return $default_status;
+}
+
+/**
+ * Parse the signed integer bounds serialized by a custom Number slider.
+ *
+ * @param string $value Range such as "-100000-50000" or "-100000--50000".
+ * @return int[]|null Bounds, or null when the value is not a range.
+ */
+function directorist_parse_number_range( $value ) {
+    if ( ! is_scalar( $value ) || ! preg_match( '/\A(-?\d+)-(-?\d+)\z/', (string) $value, $matches ) ) {
+        return null;
+    }
+
+    return [ (int) $matches[1], (int) $matches[2] ];
 }
 
 function directorist_get_distance_range( $miles ) {
