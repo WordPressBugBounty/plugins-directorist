@@ -1885,7 +1885,8 @@ class Helper {
             }
         }
 
-        return sprintf( '<div class="directorist-single-dummy-shortcode">%s%s</div>', $shortcode, $atts_string );
+        // Shortcode attributes may contain decoded HTML; display the placeholder as text.
+        return sprintf( '<div class="directorist-single-dummy-shortcode">%s</div>', esc_html( $shortcode . $atts_string ) );
     }
 
     /**
