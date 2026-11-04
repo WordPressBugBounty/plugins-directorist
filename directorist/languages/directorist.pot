@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29 06:19+0000\n"
+"POT-Creation-Date: 2026-11-04 08:48+0000\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../blocks/init.php:109, ../includes/classes/class-custom-post.php:681, ../includes/classes/class-settings-panel.php:470, ../includes/elementor/init.php:53, ../views/admin-templates/setup-wizard/ai-setup-wizard.php:13, ../views/admin-templates/theme-extensions/theme-extension.php:916, ../views/admin-templates/theme-extensions/theme-extension.php:1710, ../views/admin-templates/theme-extensions/theme-extension.php:1748
+#: ../blocks/init.php:109, ../includes/classes/class-custom-post.php:681, ../includes/classes/class-settings-panel.php:470, ../includes/elementor/init.php:53, ../includes/modules/mcp/transport/class-ability-registrar.php:24, ../views/admin-templates/setup-wizard/ai-setup-wizard.php:13, ../views/admin-templates/theme-extensions/theme-extension.php:916, ../views/admin-templates/theme-extensions/theme-extension.php:1710, ../views/admin-templates/theme-extensions/theme-extension.php:1748
 msgid "Directorist"
 msgstr ""
 
@@ -298,99 +298,99 @@ msgstr ""
 msgid "Open account"
 msgstr ""
 
-#: ../directorist-base.php:508, ../directorist-base.php:520
+#: ../directorist-base.php:511, ../directorist-base.php:523
 msgid "Cheatin&#8217; huh?"
 msgstr ""
 
-#: ../directorist-base.php:534
+#: ../directorist-base.php:537
 msgid "Directorist - Listing Right Sidebar"
 msgstr ""
 
-#: ../directorist-base.php:536
+#: ../directorist-base.php:539
 msgid "Add widgets for the right sidebar on single listing page"
 msgstr ""
 
-#: ../directorist-base.php:662
+#: ../directorist-base.php:665
 msgid "Directorist Add Listing"
 msgstr ""
 
-#: ../directorist-base.php:665
+#: ../directorist-base.php:668
 msgid "Directorist All Listings"
 msgstr ""
 
-#: ../directorist-base.php:668, ../includes/classes/class-extension.php:3002
+#: ../directorist-base.php:671, ../includes/classes/class-extension.php:3011
 msgid "Directorist Dashboard"
 msgstr ""
 
-#: ../directorist-base.php:671
+#: ../directorist-base.php:674
 msgid "Directorist Author Profile"
 msgstr ""
 
-#: ../directorist-base.php:674
+#: ../directorist-base.php:677
 msgid "Directorist All Categories"
 msgstr ""
 
-#: ../directorist-base.php:677
+#: ../directorist-base.php:680
 msgid "Directorist Single Category"
 msgstr ""
 
-#: ../directorist-base.php:680
+#: ../directorist-base.php:683
 msgid "Directorist All Locations"
 msgstr ""
 
-#: ../directorist-base.php:683
+#: ../directorist-base.php:686
 msgid "Directorist Single Location"
 msgstr ""
 
-#: ../directorist-base.php:686
+#: ../directorist-base.php:689
 msgid "Directorist Single Tag"
 msgstr ""
 
-#: ../directorist-base.php:689
+#: ../directorist-base.php:692
 msgid "Directorist Listing Search Form"
 msgstr ""
 
-#: ../directorist-base.php:692
+#: ../directorist-base.php:695
 msgid "Directorist Search Result"
 msgstr ""
 
-#: ../directorist-base.php:695
+#: ../directorist-base.php:698
 msgid "Directorist Checkout"
 msgstr ""
 
-#: ../directorist-base.php:698
+#: ../directorist-base.php:701
 msgid "Directorist Payment Receipt"
 msgstr ""
 
-#: ../directorist-base.php:701
+#: ../directorist-base.php:704
 msgid "Directorist Payment Failure"
 msgstr ""
 
-#: ../directorist-base.php:704
+#: ../directorist-base.php:707
 msgid "Directorist Privacy Policy"
 msgstr ""
 
-#: ../directorist-base.php:707
+#: ../directorist-base.php:710
 msgid "Directorist Terms & Conditions"
 msgstr ""
 
-#: ../directorist-base.php:710
+#: ../directorist-base.php:713
 msgid "Directorist Pricing Plan"
 msgstr ""
 
-#: ../directorist-base.php:713
+#: ../directorist-base.php:716
 msgid "Directorist Sign In"
 msgstr ""
 
-#: ../directorist-base.php:721, ../includes/classes/class-settings-panel.php:4914, ../views/admin-templates/theme-extensions/theme-extension.php:1918
+#: ../directorist-base.php:724, ../includes/classes/class-settings-panel.php:4914, ../views/admin-templates/theme-extensions/theme-extension.php:1918
 msgid "Uninstall"
 msgstr ""
 
-#: ../directorist-base.php:728
+#: ../directorist-base.php:731
 msgid "Uninstall Settings"
 msgstr ""
 
-#: ../directorist-base.php:735, ../directorist-base.php:742
+#: ../directorist-base.php:738, ../directorist-base.php:745
 msgid "Listings Import"
 msgstr ""
 
@@ -486,7 +486,7 @@ msgstr ""
 msgid "Badge"
 msgstr ""
 
-#: ../includes/class-helper.php:2186
+#: ../includes/class-helper.php:2187
 msgid "The plugin is not installed."
 msgstr ""
 
@@ -522,11 +522,11 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: ../includes/directorist-directory-functions.php:176, ../includes/classes/class-featured-listing-checkout.php:100, ../includes/review/class-comment-form-processor.php:45, ../includes/review/class-comment-form-renderer.php:54, ../includes/review/class-comment-form-renderer.php:63, ../includes/rest-api/Version1/class-listings-actions-controller.php:112
+#: ../includes/directorist-directory-functions.php:176, ../includes/classes/class-featured-listing-checkout.php:100, ../includes/classes/class-featured-listing-checkout.php:106, ../includes/review/class-comment-form-processor.php:45, ../includes/review/class-comment-form-renderer.php:54, ../includes/review/class-comment-form-renderer.php:63, ../includes/rest-api/Version1/class-listings-actions-controller.php:112
 msgid "Invalid listing id."
 msgstr ""
 
-#: ../includes/directorist-directory-functions.php:180, ../includes/classes/class-submission-controller.php:577, ../includes/rest-api/Version1/class-builder-controller.php:103, ../includes/rest-api/Version1/class-categories-controller.php:281, ../includes/rest-api/Version1/class-listings-controller.php:414, ../includes/rest-api/Version1/class-locations-controller.php:265
+#: ../includes/directorist-directory-functions.php:180, ../includes/classes/class-submission-controller.php:577, ../includes/rest-api/Version1/class-builder-controller.php:103, ../includes/rest-api/Version1/class-categories-controller.php:281, ../includes/rest-api/Version1/class-listings-controller.php:422, ../includes/rest-api/Version1/class-locations-controller.php:265
 msgid "Invalid directory id."
 msgstr ""
 
@@ -534,7 +534,7 @@ msgstr ""
 msgid "You need to be logged in to view the content of this page"
 msgstr ""
 
-#: ../includes/helper-functions.php:882, ../includes/checkout/class-checkout.php:292, ../includes/classes/class-custom-post.php:778, ../includes/classes/class-custom-post.php:786, ../includes/classes/class-settings-panel.php:1670, ../includes/model/Listings.php:308, ../includes/payments/class-order.php:464, ../includes/modules/multi-directory-setup/class-builder-data.php:1536, ../views/admin-templates/listing-form/expiration-featured-fields.php:57
+#: ../includes/helper-functions.php:882, ../includes/checkout/class-checkout.php:296, ../includes/classes/class-custom-post.php:778, ../includes/classes/class-custom-post.php:786, ../includes/classes/class-settings-panel.php:1670, ../includes/model/Listings.php:308, ../includes/payments/class-order.php:464, ../includes/modules/multi-directory-setup/class-builder-data.php:1536, ../views/admin-templates/listing-form/expiration-featured-fields.php:57
 msgid "Featured"
 msgstr ""
 
@@ -682,7 +682,7 @@ msgstr ""
 msgid "Author Profile"
 msgstr ""
 
-#: ../includes/helper-functions.php:2619, ../includes/classes/class-extension.php:3003, ../includes/classes/class-settings-panel.php:4528, ../includes/elementor/user-dashboard.php:14, ../views/admin-templates/theme-extensions/theme-extension.php:920
+#: ../includes/helper-functions.php:2619, ../includes/classes/class-extension.php:3012, ../includes/classes/class-settings-panel.php:4528, ../includes/elementor/user-dashboard.php:14, ../views/admin-templates/theme-extensions/theme-extension.php:920
 msgid "Dashboard"
 msgstr ""
 
@@ -792,7 +792,7 @@ msgstr ""
 msgid "Please make sure you selected the user type."
 msgstr ""
 
-#: ../includes/helper-functions.php:3273, ../includes/classes/class-user.php:869
+#: ../includes/helper-functions.php:3273, ../includes/classes/class-user.php:879
 msgid "Username too long. A maximum of 60 characters is allowed."
 msgstr ""
 
@@ -832,7 +832,7 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: ../includes/helper-functions.php:3638, ../includes/classes/class-metabox.php:203, ../templates/dashboard/tab-my-listings.php:34
+#: ../includes/helper-functions.php:3638, ../includes/classes/class-metabox.php:213, ../templates/dashboard/tab-my-listings.php:34
 msgid "Rejected"
 msgstr ""
 
@@ -855,7 +855,7 @@ msgid_plural "Invalid pin code. You have %s attempts left."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/helper-functions.php:4691, ../includes/classes/class-extension.php:2574
+#: ../includes/helper-functions.php:4691, ../includes/classes/class-extension.php:2583
 msgid "Invalid download link"
 msgstr ""
 
@@ -863,7 +863,7 @@ msgstr ""
 msgid "Could not create temp directory"
 msgstr ""
 
-#: ../includes/helper-functions.php:4783, ../includes/classes/class-extension.php:2705
+#: ../includes/helper-functions.php:4783, ../includes/classes/class-extension.php:2714
 msgid "The plugin has been downloaded successfully"
 msgstr ""
 
@@ -1119,7 +1119,7 @@ msgstr ""
 msgid "Wrong username or password."
 msgstr ""
 
-#: ../includes/asset-loader/localized_data.php:421, ../includes/classes/class-ai-setup-wizard.php:511, ../includes/classes/class-extension-activity.php:365, ../includes/classes/class-extension.php:572, ../includes/classes/class-extension.php:581, ../includes/classes/class-extension.php:590, ../includes/classes/class-extension.php:599, ../includes/classes/class-extension.php:609, ../includes/classes/class-extension.php:618, ../includes/classes/class-extension.php:627, ../includes/classes/class-extension.php:636, ../includes/classes/class-extension.php:647, ../includes/classes/class-extension.php:686, ../includes/classes/class-extension.php:696, ../includes/classes/class-extension.php:706, ../includes/classes/class-extension.php:931, ../includes/classes/class-extension.php:971, ../includes/classes/class-settings-panel.php:1638, ../includes/modules/multi-directory-setup/class-builder-data.php:1543, ../includes/modules/multi-directory-setup/class-multi-directory-migration.php:1611
+#: ../includes/asset-loader/localized_data.php:421, ../includes/classes/class-ai-setup-wizard.php:511, ../includes/classes/class-extension-activity.php:365, ../includes/classes/class-extension.php:572, ../includes/classes/class-extension.php:581, ../includes/classes/class-extension.php:590, ../includes/classes/class-extension.php:599, ../includes/classes/class-extension.php:609, ../includes/classes/class-extension.php:618, ../includes/classes/class-extension.php:627, ../includes/classes/class-extension.php:636, ../includes/classes/class-extension.php:647, ../includes/classes/class-extension.php:686, ../includes/classes/class-extension.php:696, ../includes/classes/class-extension.php:706, ../includes/classes/class-extension.php:931, ../includes/classes/class-extension.php:971, ../includes/classes/class-extension.php:980, ../includes/classes/class-settings-panel.php:1638, ../includes/modules/multi-directory-setup/class-builder-data.php:1543, ../includes/modules/multi-directory-setup/class-multi-directory-migration.php:1611
 msgid "New"
 msgstr ""
 
@@ -1325,31 +1325,35 @@ msgstr ""
 msgid "Loading enquiries..."
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:70, ../includes/checkout/class-checkout.php:266
+#: ../includes/checkout/class-checkout.php:70, ../includes/checkout/class-checkout.php:270
 msgid "Sorry! No order id has been provided."
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:78, ../includes/repositories/refund-repository.php:64
+#: ../includes/checkout/class-checkout.php:78, ../includes/repositories/refund-repository.php:65
 msgid "Order not found"
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:124, ../includes/checkout/class-checkout.php:169
+#: ../includes/checkout/class-checkout.php:82
+msgid "You are not allowed to view this order."
+msgstr ""
+
+#: ../includes/checkout/class-checkout.php:128, ../includes/checkout/class-checkout.php:173
 msgid "Monetization is not active on this site. if you are an admin, you can enable it from the settings panel."
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:134
+#: ../includes/checkout/class-checkout.php:138
 msgid "Invalid checkout type."
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:181
+#: ../includes/checkout/class-checkout.php:185
 msgid "Sorry, Something went wrong. Listing ID is missing. Please try again."
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:220
+#: ../includes/checkout/class-checkout.php:224
 msgid "Sorry, Nothing is available to buy. Please try again."
 msgstr ""
 
-#: ../includes/checkout/class-checkout.php:272
+#: ../includes/checkout/class-checkout.php:276
 msgid "Sorry! order not found."
 msgstr ""
 
@@ -1402,31 +1406,31 @@ msgstr ""
 msgid "Payment required! Redirecting to checkout..."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:851, ../includes/classes/class-submission-controller.php:404
+#: ../includes/classes/class-add-listing.php:857, ../includes/classes/class-submission-controller.php:404
 msgid "Tag names cannot contain HTML."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:918, ../includes/classes/class-submission-controller.php:75, ../includes/fields/class-directorist-button-field.php:35, ../includes/fields/class-directorist-image-upload-field.php:41, ../includes/helpers/contact-fields.php:72
+#: ../includes/classes/class-add-listing.php:924, ../includes/classes/class-submission-controller.php:75, ../includes/fields/class-directorist-button-field.php:35, ../includes/fields/class-directorist-image-upload-field.php:41, ../includes/helpers/contact-fields.php:72
 msgid "This field is required."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:976, ../includes/classes/class-ajax-handler.php:873, ../includes/classes/class-ajax-handler.php:2096, ../includes/classes/class-custom-post.php:607, ../includes/classes/class-upgrade.php:1182, ../includes/classes/class-upgrade.php:1189, ../includes/classes/class-upgrade.php:1196
+#: ../includes/classes/class-add-listing.php:982, ../includes/classes/class-ajax-handler.php:873, ../includes/classes/class-ajax-handler.php:2096, ../includes/classes/class-custom-post.php:607, ../includes/classes/class-upgrade.php:1182, ../includes/classes/class-upgrade.php:1189, ../includes/classes/class-upgrade.php:1196
 msgid "Security check failed."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:984
+#: ../includes/classes/class-add-listing.php:990
 msgid "You need to be logged in to renew this listing."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:989
+#: ../includes/classes/class-add-listing.php:995
 msgid "Invalid renewal token."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:1009
+#: ../includes/classes/class-add-listing.php:1015
 msgid "This listing is not eligible for renewal."
 msgstr ""
 
-#: ../includes/classes/class-add-listing.php:1046
+#: ../includes/classes/class-add-listing.php:1052
 msgid "Could not submit this listing for renewal."
 msgstr ""
 
@@ -1678,7 +1682,7 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-#: ../includes/classes/class-ai-setup-wizard.php:467, ../includes/classes/class-ai-setup-wizard.php:512, ../includes/classes/class-ai-setup-wizard.php:535, ../includes/classes/class-custom-post.php:773, ../includes/model/SingleListing.php:1585, ../includes/modules/multi-directory-setup/class-multi-directory-migration.php:671
+#: ../includes/classes/class-ai-setup-wizard.php:467, ../includes/classes/class-ai-setup-wizard.php:512, ../includes/classes/class-ai-setup-wizard.php:535, ../includes/classes/class-custom-post.php:773, ../includes/model/SingleListing.php:1586, ../includes/modules/multi-directory-setup/class-multi-directory-migration.php:671
 msgid "Location"
 msgstr ""
 
@@ -2154,7 +2158,7 @@ msgstr ""
 msgid "Invalid directory."
 msgstr ""
 
-#: ../includes/classes/class-ajax-handler.php:623, ../includes/classes/class-ajax-handler.php:869, ../includes/classes/class-extension.php:1183, ../includes/classes/class-extension.php:1636, ../includes/classes/class-extension.php:1736, ../includes/classes/class-extension.php:1762, ../includes/classes/class-extension.php:1802, ../includes/classes/class-extension.php:1955, ../includes/classes/class-extension.php:2101, ../includes/classes/class-extension.php:2205, ../includes/classes/class-extension.php:2354, ../includes/classes/class-extension.php:2471
+#: ../includes/classes/class-ajax-handler.php:623, ../includes/classes/class-ajax-handler.php:869, ../includes/classes/class-extension.php:1192, ../includes/classes/class-extension.php:1645, ../includes/classes/class-extension.php:1745, ../includes/classes/class-extension.php:1771, ../includes/classes/class-extension.php:1811, ../includes/classes/class-extension.php:1964, ../includes/classes/class-extension.php:2110, ../includes/classes/class-extension.php:2214, ../includes/classes/class-extension.php:2363, ../includes/classes/class-extension.php:2480
 msgid "You do not have permission to perform this action."
 msgstr ""
 
@@ -2431,7 +2435,7 @@ msgstr ""
 msgid "This listing could not be approved because it appears to be spam, misleading, or not a legitimate business listing."
 msgstr ""
 
-#: ../includes/classes/class-custom-post.php:507, ../includes/classes/class-custom-post.php:771, ../includes/classes/class-custom-taxonomy.php:298, ../includes/classes/class-custom-taxonomy.php:359, ../includes/classes/class-custom-taxonomy.php:460, ../includes/classes/class-custom-taxonomy.php:502, ../includes/classes/class-custom-taxonomy.php:657, ../includes/classes/class-custom-taxonomy.php:670, ../includes/classes/class-extension-recommendations.php:311, ../includes/classes/class-metabox.php:411, ../views/admin-templates/theme-extensions/theme-extension.php:1468, ../views/admin-templates/theme-extensions/theme-extension.php:1616
+#: ../includes/classes/class-custom-post.php:507, ../includes/classes/class-custom-post.php:771, ../includes/classes/class-custom-taxonomy.php:298, ../includes/classes/class-custom-taxonomy.php:359, ../includes/classes/class-custom-taxonomy.php:460, ../includes/classes/class-custom-taxonomy.php:502, ../includes/classes/class-custom-taxonomy.php:657, ../includes/classes/class-custom-taxonomy.php:670, ../includes/classes/class-extension-recommendations.php:311, ../includes/classes/class-metabox.php:421, ../views/admin-templates/theme-extensions/theme-extension.php:1468, ../views/admin-templates/theme-extensions/theme-extension.php:1616
 msgid "Directory"
 msgstr ""
 
@@ -2443,11 +2447,11 @@ msgstr ""
 msgid "View Count"
 msgstr ""
 
-#: ../includes/classes/class-custom-post.php:540, ../includes/classes/class-metabox.php:360, ../views/admin-templates/listing-form/expiration-featured-fields.php:10
+#: ../includes/classes/class-custom-post.php:540, ../includes/classes/class-metabox.php:370, ../views/admin-templates/listing-form/expiration-featured-fields.php:10
 msgid "Expiration"
 msgstr ""
 
-#: ../includes/classes/class-custom-post.php:541, ../includes/classes/class-metabox.php:361, ../views/admin-templates/listing-form/expiration-featured-fields.php:11
+#: ../includes/classes/class-custom-post.php:541, ../includes/classes/class-metabox.php:371, ../views/admin-templates/listing-form/expiration-featured-fields.php:11
 msgid "Date & Time"
 msgstr ""
 
@@ -3163,179 +3167,179 @@ msgstr ""
 msgid "[==NAME==] Verify Your Email Address"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:445
+#: ../includes/classes/class-extension-activity.php:455
 msgid "Manage directory type"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:446
+#: ../includes/classes/class-extension-activity.php:456
 msgid "Create a directory type"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:452
+#: ../includes/classes/class-extension-activity.php:462
 msgid "Manage listing categories"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:453
+#: ../includes/classes/class-extension-activity.php:463
 msgid "Add your real categories"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:464
+#: ../includes/classes/class-extension-activity.php:474
 msgid "Manage published listings"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:465
+#: ../includes/classes/class-extension-activity.php:475
 msgid "Publish your first real listing"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:484
+#: ../includes/classes/class-extension-activity.php:494
 msgid "Your directory foundation is ready"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:485, ../views/admin-templates/theme-extensions/theme-extension.php:1293
+#: ../includes/classes/class-extension-activity.php:495, ../views/admin-templates/theme-extensions/theme-extension.php:1293
 msgid "A few steps to launch your directory"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:487
+#: ../includes/classes/class-extension-activity.php:497
 msgid "Core setup is complete. Use these links whenever you need to make changes."
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:488, ../views/admin-templates/theme-extensions/theme-extension.php:1294
+#: ../includes/classes/class-extension-activity.php:498, ../views/admin-templates/theme-extensions/theme-extension.php:1294
 msgid "Complete the remaining setup tasks before accepting live submissions."
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:529
+#: ../includes/classes/class-extension-activity.php:539
 msgid "Configure a payment gateway"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:547, ../includes/classes/class-settings-panel.php:559, ../includes/classes/class-settings-panel.php:574, ../includes/gateways/class-gateway.php:258, ../includes/gateways/class-gateway.php:277
+#: ../includes/classes/class-extension-activity.php:557, ../includes/classes/class-settings-panel.php:559, ../includes/classes/class-settings-panel.php:574, ../includes/gateways/class-gateway.php:258, ../includes/gateways/class-gateway.php:277
 msgid "Bank Transfer (Offline Gateway)"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:592
+#: ../includes/classes/class-extension-activity.php:602
 msgid "Review payment gateways"
 msgstr ""
 
 #. translators: %s: one or more payment gateway names.
-#: ../includes/classes/class-extension-activity.php:599
+#: ../includes/classes/class-extension-activity.php:609
 msgid "Review %s payment gateway"
 msgid_plural "Review %s payment gateways"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/classes/class-extension-activity.php:859
+#: ../includes/classes/class-extension-activity.php:869
 msgid "Listing awaiting review"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:860
+#: ../includes/classes/class-extension-activity.php:870
 msgid "Listing published"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:860
+#: ../includes/classes/class-extension-activity.php:870
 msgid "Listing draft saved"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:861, ../includes/classes/class-extension-activity.php:941, ../includes/classes/class-extension-activity.php:1414, ../includes/review/class-admin.php:55, ../includes/review/class-settings-screen.php:23, ../includes/modules/multi-directory-setup/class-builder-data.php:359
+#: ../includes/classes/class-extension-activity.php:871, ../includes/classes/class-extension-activity.php:951, ../includes/classes/class-extension-activity.php:1424, ../includes/review/class-admin.php:55, ../includes/review/class-settings-screen.php:23, ../includes/modules/multi-directory-setup/class-builder-data.php:359
 msgid "Review"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:861, ../includes/review/directorist-review-functions.php:110, ../templates/dashboard/listing-row.php:62, ../templates/single/top-actions.php:36, ../views/admin-templates/post-types-manager/all-listing-types.php:185
+#: ../includes/classes/class-extension-activity.php:871, ../includes/review/directorist-review-functions.php:110, ../templates/dashboard/listing-row.php:62, ../templates/single/top-actions.php:36, ../views/admin-templates/post-types-manager/all-listing-types.php:185
 msgid "Edit"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:868, ../includes/classes/class-extension-activity.php:936, ../includes/classes/class-extension-activity.php:1405
+#: ../includes/classes/class-extension-activity.php:878, ../includes/classes/class-extension-activity.php:946, ../includes/classes/class-extension-activity.php:1415
 msgid "Untitled listing"
 msgstr ""
 
 #. translators: %s: Listing author display name.
-#: ../includes/classes/class-extension-activity.php:871, ../includes/classes/class-metabox.php:211
+#: ../includes/classes/class-extension-activity.php:881, ../includes/classes/class-metabox.php:221
 msgid "by %s"
 msgstr ""
 
 #. translators: 1: Review rating, 2: Reviewer name.
-#: ../includes/classes/class-extension-activity.php:919
+#: ../includes/classes/class-extension-activity.php:929
 msgid "%1$s-star review by %2$s"
 msgstr ""
 
 #. translators: %s: Reviewer name.
-#: ../includes/classes/class-extension-activity.php:925
+#: ../includes/classes/class-extension-activity.php:935
 msgid "Review by %s"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:934
+#: ../includes/classes/class-extension-activity.php:944
 msgid "Review awaiting moderation"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:935
+#: ../includes/classes/class-extension-activity.php:945
 msgid "New review received"
 msgstr ""
 
 #. translators: %s: Customer display name.
-#: ../includes/classes/class-extension-activity.php:1029, ../includes/classes/class-extension-activity.php:1110
+#: ../includes/classes/class-extension-activity.php:1039, ../includes/classes/class-extension-activity.php:1120
 msgid "from %s"
 msgstr ""
 
 #. translators: %s: Listing title.
-#: ../includes/classes/class-extension-activity.php:1037, ../includes/classes/class-extension-activity.php:1118
+#: ../includes/classes/class-extension-activity.php:1047, ../includes/classes/class-extension-activity.php:1128
 msgid "for %s"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1046, ../includes/classes/class-extension-activity.php:1127
+#: ../includes/classes/class-extension-activity.php:1056, ../includes/classes/class-extension-activity.php:1137
 msgid "Payment received"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1052, ../includes/classes/class-extension-activity.php:1133
+#: ../includes/classes/class-extension-activity.php:1062, ../includes/classes/class-extension-activity.php:1143
 msgid "View order"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1326
+#: ../includes/classes/class-extension-activity.php:1336
 msgid "New user registered"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1329
+#: ../includes/classes/class-extension-activity.php:1339
 msgid "Registered as a listing owner"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1330
+#: ../includes/classes/class-extension-activity.php:1340
 msgid "Registered for the directory"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1334
+#: ../includes/classes/class-extension-activity.php:1344
 msgid "View user"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1404
+#: ../includes/classes/class-extension-activity.php:1414
 msgid "Listing expiring soon"
 msgstr ""
 
 #. translators: %d: Number of days before listing expiration.
-#: ../includes/classes/class-extension-activity.php:1408
+#: ../includes/classes/class-extension-activity.php:1418
 msgid "Expires in %d day"
 msgid_plural "Expires in %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/classes/class-extension-activity.php:1485
+#: ../includes/classes/class-extension-activity.php:1495
 msgid "Open"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1546
+#: ../includes/classes/class-extension-activity.php:1556
 msgid "Today"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1547
+#: ../includes/classes/class-extension-activity.php:1557
 msgid "Yesterday"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1548
+#: ../includes/classes/class-extension-activity.php:1558
 msgid "Earlier"
 msgstr ""
 
-#: ../includes/classes/class-extension-activity.php:1549
+#: ../includes/classes/class-extension-activity.php:1559
 msgid "Upcoming"
 msgstr ""
 
 #. translators: %s: Human-readable time difference.
-#: ../includes/classes/class-extension-activity.php:1573
+#: ../includes/classes/class-extension-activity.php:1583
 msgid "%s ago"
 msgstr ""
 
@@ -3548,7 +3552,7 @@ msgstr ""
 msgid "Import Google Maps and feeds into Directorist automatically, effortlessly."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:648, ../includes/classes/class-extension.php:744, ../includes/classes/class-extension.php:913, ../includes/classes/class-extension.php:948, ../includes/classes/class-extension.php:989, ../includes/classes/class-extension.php:1008
+#: ../includes/classes/class-extension.php:648, ../includes/classes/class-extension.php:744, ../includes/classes/class-extension.php:913, ../includes/classes/class-extension.php:948, ../includes/classes/class-extension.php:998, ../includes/classes/class-extension.php:1017
 msgid "Trending"
 msgstr ""
 
@@ -3588,7 +3592,7 @@ msgstr ""
 msgid "Show your listings with the interactive maps and make your business visible comprehensively. This awesome extension will make your website the brand recognition it deserves."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:733, ../includes/classes/class-extension.php:743, ../includes/classes/class-extension.php:754, ../includes/classes/class-extension.php:763, ../includes/classes/class-extension.php:821, ../includes/classes/class-extension.php:847, ../includes/classes/class-extension.php:980, ../includes/classes/class-extension.php:1007, ../includes/classes/class-extension.php:1042, ../includes/classes/class-extension.php:1067, ../includes/classes/class-settings-panel.php:1693, ../includes/model/Listings.php:307, ../includes/modules/multi-directory-setup/class-builder-data.php:1550, ../includes/modules/multi-directory-setup/class-multi-directory-migration.php:1618
+#: ../includes/classes/class-extension.php:733, ../includes/classes/class-extension.php:743, ../includes/classes/class-extension.php:754, ../includes/classes/class-extension.php:763, ../includes/classes/class-extension.php:821, ../includes/classes/class-extension.php:847, ../includes/classes/class-extension.php:989, ../includes/classes/class-extension.php:1016, ../includes/classes/class-extension.php:1051, ../includes/classes/class-extension.php:1076, ../includes/classes/class-settings-panel.php:1693, ../includes/model/Listings.php:307, ../includes/modules/multi-directory-setup/class-builder-data.php:1550, ../includes/modules/multi-directory-setup/class-multi-directory-migration.php:1618
 msgid "Popular"
 msgstr ""
 
@@ -3697,478 +3701,482 @@ msgid "Directorist GamiPress Integration Connects Directorist with GamiPress in 
 msgstr ""
 
 #: ../includes/classes/class-extension.php:966
-msgid "dJobs is a beautiful WordPress directory theme for jobs, employment, and other job-related businesses."
+msgid "DTour is a Gutenberg block theme for travel and tour directories, with global colors, typography, headers, and footers that can be customized in the WordPress Site Editor."
 msgstr ""
 
 #: ../includes/classes/class-extension.php:975
-msgid "dHotels is a beautiful WordPress directory theme for hotels, motels, resorts, and other hospitality-related businesses."
+msgid "dJobs is a beautiful WordPress directory theme for jobs, employment, and other job-related businesses."
 msgstr ""
 
 #: ../includes/classes/class-extension.php:984
-msgid "dClassified is a beautiful WordPress directory theme for classifieds, ads, and other classified-related businesses."
+msgid "dHotels is a beautiful WordPress directory theme for hotels, motels, resorts, and other hospitality-related businesses."
 msgstr ""
 
 #: ../includes/classes/class-extension.php:993
+msgid "dClassified is a beautiful WordPress directory theme for classifieds, ads, and other classified-related businesses."
+msgstr ""
+
+#: ../includes/classes/class-extension.php:1002
 msgid "Onelisting is a beautiful WordPress directory theme for cars, motorcycles, and other vehicle-related businesses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1001
+#: ../includes/classes/class-extension.php:1010
 msgid "Onelisting Pro is a beautiful WordPress directory theme for doctor, nurse, medical techonologist, hospital, clinic, and other medical-related businesses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1013
+#: ../includes/classes/class-extension.php:1022
 msgid "dPlace theme is tailored to meet all the nitty gritties to build attractive mobile responsive travel agency directory websites. As a full-fledged theme, it will allow you to create travel & tour directories with booking and reservation features."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1021
+#: ../includes/classes/class-extension.php:1030
 msgid "Are you looking for the best restaurant directory theme that brings you more business? Then, nothing can beat dRestaurant, as it is the most powerful theme that checks all your visual needs with the concept of scalability in mind."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1029
+#: ../includes/classes/class-extension.php:1038
 msgid "dRealEstate is a beautiful WordPress directory theme for real estate, property, and other real estate-related businesses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1037
+#: ../includes/classes/class-extension.php:1046
 msgid "dCar is a beautiful WordPress directory theme for cars, motorcycles, and other vehicle-related businesses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1046
+#: ../includes/classes/class-extension.php:1055
 msgid "DList is a listing directory WordPress theme that provides immense opportunities to build any kind of directory or listing site. You may design pages on the front-end and watch them instantly come to life."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1054
+#: ../includes/classes/class-extension.php:1063
 msgid "DService is a kind of listing Directory WordPress theme that brings business owners and customers on the same platform. This multifunctional WordPress theme provides them the opportunity to interact with one another for business purposes."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1062
+#: ../includes/classes/class-extension.php:1071
 msgid "dDoctors is a beautiful WordPress directory theme for doctor, nurse, medical techonologist, hospital, clinic, and other medical-related businesses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1071
+#: ../includes/classes/class-extension.php:1080
 msgid "dLawyers is a beautiful WordPress directory theme for legal, legal adviser companies, legal offices, court consultants, lawyers, counsel bureau, attorney agencies, and other law-related businesses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1213
+#: ../includes/classes/class-extension.php:1222
 msgid "All plugins are up to date"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1236
+#: ../includes/classes/class-extension.php:1245
 msgid "The plugin is up to date"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1245
+#: ../includes/classes/class-extension.php:1254
 msgid "No purchased extensions found"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1255
+#: ../includes/classes/class-extension.php:1264
 msgid "License not found for this extension"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1263, ../includes/classes/class-extension.php:1874
+#: ../includes/classes/class-extension.php:1272, ../includes/classes/class-extension.php:1883
 msgid "Download link could not be retrieved"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1279
+#: ../includes/classes/class-extension.php:1288
 msgid "The plugin has been updated successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1271
+#: ../includes/classes/class-extension.php:1280
 msgid "The plugin could not update"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1331
+#: ../includes/classes/class-extension.php:1340
 msgid "No plugins could be updated"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1328
+#: ../includes/classes/class-extension.php:1337
 msgid "All plugins have been updated successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1325
+#: ../includes/classes/class-extension.php:1334
 msgid "Some of the plugins could not update"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1659
+#: ../includes/classes/class-extension.php:1668
 msgid "Invalid plugin action."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1677
+#: ../includes/classes/class-extension.php:1686
 msgid "Plugin files were not found."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1703
+#: ../includes/classes/class-extension.php:1712
 msgid "Deactivate the plugin before deleting it."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1715
+#: ../includes/classes/class-extension.php:1724
 msgid "WordPress could not delete this plugin."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1698
+#: ../includes/classes/class-extension.php:1707
 msgid "WordPress could not deactivate this plugin."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1727
+#: ../includes/classes/class-extension.php:1736
 msgid "Plugin action completed successfully."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1750
+#: ../includes/classes/class-extension.php:1759
 msgid "Theme's stylesheet is missing"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1777
+#: ../includes/classes/class-extension.php:1786
 msgid "Please specefy which plugin to activate"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1834
+#: ../includes/classes/class-extension.php:1843
 msgid "All themes are up to date"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1840
+#: ../includes/classes/class-extension.php:1849
 msgid "The theme is up to date"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1854
+#: ../includes/classes/class-extension.php:1863
 msgid "The theme is already upto date"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1861
+#: ../includes/classes/class-extension.php:1870
 msgid "License not found for this theme"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1887
+#: ../includes/classes/class-extension.php:1896
 msgid "The theme has been updated successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1883
+#: ../includes/classes/class-extension.php:1892
 msgid "The theme could not update"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1923
+#: ../includes/classes/class-extension.php:1932
 msgid "Some of the theme could not update"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1928
+#: ../includes/classes/class-extension.php:1937
 msgid "All the themes are updated successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1933
+#: ../includes/classes/class-extension.php:1942
 msgid "No themes could not update"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1980
+#: ../includes/classes/class-extension.php:1989
 msgid "Username or email address is required"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1989, ../includes/classes/class-extension.php:2144
+#: ../includes/classes/class-extension.php:1998, ../includes/classes/class-extension.php:2153
 msgid "Password is required"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:1998
+#: ../includes/classes/class-extension.php:2007
 msgid "Username or email address and password are required"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2030
+#: ../includes/classes/class-extension.php:2039
 msgid "Something went wrong"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2137
+#: ../includes/classes/class-extension.php:2146
 msgid "Connect your Directorist account to refresh purchases."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2154
+#: ../includes/classes/class-extension.php:2163
 msgid "Sassion is destroyed, please sign-in again"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2197
+#: ../includes/classes/class-extension.php:2206
 msgid "Your purchase has been refreshed successfuly"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2310, ../includes/classes/class-extension.php:3524
+#: ../includes/classes/class-extension.php:2319, ../includes/classes/class-extension.php:3533
 msgid "Connect your Directorist account to manage licenses."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2392
+#: ../includes/classes/class-extension.php:2401
 msgid "Item key is missing"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2399
+#: ../includes/classes/class-extension.php:2408
 msgid "Type not specified"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2406
+#: ../includes/classes/class-extension.php:2415
 msgid "Invalid type"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2421
+#: ../includes/classes/class-extension.php:2430
 msgid "Nothing available in subscriptions"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2428
+#: ../includes/classes/class-extension.php:2437
 msgid "The item is not available in your subscriptions"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2440
+#: ../includes/classes/class-extension.php:2449
 msgid "The license is not valid, please check you subscription."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2463
+#: ../includes/classes/class-extension.php:2472
 msgid "Installed Successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2510, ../includes/classes/class-extension.php:3584
+#: ../includes/classes/class-extension.php:2519, ../includes/classes/class-extension.php:3593
 msgid "Activation failed"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2543
+#: ../includes/classes/class-extension.php:2552
 msgid "Download failed"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2548
+#: ../includes/classes/class-extension.php:2557
 msgid "Downloaded"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2579
+#: ../includes/classes/class-extension.php:2588
 msgid "Invalid product type"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2590
+#: ../includes/classes/class-extension.php:2599
 msgid "Could not initialize the WordPress filesystem."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2595
+#: ../includes/classes/class-extension.php:2604
 msgid "The WordPress filesystem is unavailable."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2617
+#: ../includes/classes/class-extension.php:2626
 msgid "Could not create a temporary product directory."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2642
+#: ../includes/classes/class-extension.php:2651
 msgid "The product package contains an invalid directory name."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2656
+#: ../includes/classes/class-extension.php:2665
 msgid "The staged product files are invalid."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2669
+#: ../includes/classes/class-extension.php:2678
 msgid "Could not prepare the existing product files for replacement."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2677
+#: ../includes/classes/class-extension.php:2686
 msgid "Could not move the staged product files into place."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2706
+#: ../includes/classes/class-extension.php:2715
 msgid "The theme has been downloaded successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2755
+#: ../includes/classes/class-extension.php:2764
 msgid "The downloaded archive does not contain valid product files."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:2759
+#: ../includes/classes/class-extension.php:2768
 msgid "The downloaded archive contains multiple plugin directories."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:3002, ../includes/classes/class-extension.php:3031, ../includes/classes/class-extension.php:3034, ../views/admin-templates/theme-extensions/theme-extension.php:1782
+#: ../includes/classes/class-extension.php:3011, ../includes/classes/class-extension.php:3040, ../includes/classes/class-extension.php:3043, ../views/admin-templates/theme-extensions/theme-extension.php:1782
 msgid "Themes & Extensions"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:3530
+#: ../includes/classes/class-extension.php:3539
 msgid "Nothing to activate"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:3581, ../includes/classes/class-extension.php:3591
+#: ../includes/classes/class-extension.php:3590, ../includes/classes/class-extension.php:3600
 msgid "License activated successfully"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:3597, ../views/admin-templates/theme-extensions/theme-extension.php:1804
+#: ../includes/classes/class-extension.php:3606, ../views/admin-templates/theme-extensions/theme-extension.php:1804
 msgid "Could not reach Directorist.com. Please try again."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:3601, ../views/admin-templates/theme-extensions/theme-extension.php:1802
+#: ../includes/classes/class-extension.php:3610, ../views/admin-templates/theme-extensions/theme-extension.php:1802
 msgid "The username, email address, or password is incorrect. Please check your details and try again."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4000
+#: ../includes/classes/class-extension.php:4009
 msgid "Your lifetime plan is active, so every theme and extension is unlocked."
 msgstr ""
 
 #. translators: %s: Subscription expiration date.
-#: ../includes/classes/class-extension.php:4005
+#: ../includes/classes/class-extension.php:4014
 msgid "Your plan is active until %s, so every theme and extension is unlocked."
 msgstr ""
 
 #. translators: 1: Plan name, 2: Subscription expiration date.
-#: ../includes/classes/class-extension.php:4010
+#: ../includes/classes/class-extension.php:4019
 msgid "Your %1$s plan is active until %2$s."
 msgstr ""
 
 #. translators: %s: Subscription expiration date.
-#: ../includes/classes/class-extension.php:4015
+#: ../includes/classes/class-extension.php:4024
 msgid "Your plan is active until %s."
 msgstr ""
 
 #. translators: %s: Subscription expiration date.
-#: ../includes/classes/class-extension.php:4022
+#: ../includes/classes/class-extension.php:4031
 msgid "Your plan expired on %s. Renew it to receive subscription updates and installs."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4025
+#: ../includes/classes/class-extension.php:4034
 msgid "Your plan has expired. Renew it to receive subscription updates and installs."
 msgstr ""
 
 #. translators: %s: Subscription access end date.
-#: ../includes/classes/class-extension.php:4032
+#: ../includes/classes/class-extension.php:4041
 msgid "Your plan is cancelled. Your access remains available until %s."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4035
+#: ../includes/classes/class-extension.php:4044
 msgid "Your plan is cancelled. Check your Directorist account for current access details."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4039
+#: ../includes/classes/class-extension.php:4048
 msgid "Your Directorist account is connected. Your subscribed themes and extensions are ready to manage."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4040
+#: ../includes/classes/class-extension.php:4049
 msgid "Your Directorist account is connected, but no subscribed products were found. Refresh purchases to sync your account."
 msgstr ""
 
 #. translators: %s: Connected Directorist subscription plan name.
-#: ../includes/classes/class-extension.php:4061
+#: ../includes/classes/class-extension.php:4070
 msgid "%s plan"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4065
+#: ../includes/classes/class-extension.php:4074
 msgid "Lifetime plan"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4071
+#: ../includes/classes/class-extension.php:4080
 msgid "Active plan"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4075
+#: ../includes/classes/class-extension.php:4084
 msgid "Expired plan"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4079
+#: ../includes/classes/class-extension.php:4088
 msgid "Cancelled plan"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4082, ../views/admin-templates/theme-extensions/theme-extension.php:34
+#: ../includes/classes/class-extension.php:4091, ../views/admin-templates/theme-extensions/theme-extension.php:34
 msgid "Connected account"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4132, ../views/admin-templates/theme-extensions/theme-extension.php:1240
+#: ../includes/classes/class-extension.php:4141, ../views/admin-templates/theme-extensions/theme-extension.php:1240
 msgid "Welcome back"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4130
+#: ../includes/classes/class-extension.php:4139
 msgid "Good evening"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4128
+#: ../includes/classes/class-extension.php:4137
 msgid "Good afternoon"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4126
+#: ../includes/classes/class-extension.php:4135
 msgid "Good morning"
 msgstr ""
 
 #. translators: 1: Time-aware greeting. 2: Connected Directorist account owner's display name.
-#: ../includes/classes/class-extension.php:4137
+#: ../includes/classes/class-extension.php:4146
 msgid "%1$s, %2$s"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4187, ../views/admin-templates/theme-extensions/theme-extension.php:1254
+#: ../includes/classes/class-extension.php:4196, ../views/admin-templates/theme-extensions/theme-extension.php:1254
 msgid "Add listing"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4188, ../includes/classes/class-extension.php:4318
+#: ../includes/classes/class-extension.php:4197, ../includes/classes/class-extension.php:4327
 msgid "Create directory"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4244
+#: ../includes/classes/class-extension.php:4253
 msgid "Add a listing"
 msgstr ""
 
 #. translators: %s: Directory type name.
-#: ../includes/classes/class-extension.php:4246
+#: ../includes/classes/class-extension.php:4255
 msgid "Create a new %s listing"
 msgstr ""
 
 #. translators: %s: Directory type name.
-#: ../includes/classes/class-extension.php:4248
+#: ../includes/classes/class-extension.php:4257
 msgid "Add a listing for %s"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4260
+#: ../includes/classes/class-extension.php:4269
 msgid "Manage categories"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4261
+#: ../includes/classes/class-extension.php:4270
 msgid "Organize how listings are grouped"
 msgstr ""
 
 #. translators: %s: Directory type name.
-#: ../includes/classes/class-extension.php:4263
+#: ../includes/classes/class-extension.php:4272
 msgid "Manage categories for %s"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4276
+#: ../includes/classes/class-extension.php:4285
 msgid "Customize listing layout"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4277
+#: ../includes/classes/class-extension.php:4286
 msgid "Design the single listing page"
 msgstr ""
 
 #. translators: %s: Directory type name.
-#: ../includes/classes/class-extension.php:4279
+#: ../includes/classes/class-extension.php:4288
 msgid "Customize the listing layout for %s"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4285
+#: ../includes/classes/class-extension.php:4294
 msgid "Submission form settings"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4286
+#: ../includes/classes/class-extension.php:4295
 msgid "Control what users can submit"
 msgstr ""
 
 #. translators: %s: Directory type name.
-#: ../includes/classes/class-extension.php:4288
+#: ../includes/classes/class-extension.php:4297
 msgid "Edit submission form settings for %s"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4319
+#: ../includes/classes/class-extension.php:4328
 msgid "Set up your first directory type"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4320
+#: ../includes/classes/class-extension.php:4329
 msgid "Create a directory"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4326
+#: ../includes/classes/class-extension.php:4335
 msgid "Email notifications"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4327
+#: ../includes/classes/class-extension.php:4336
 msgid "Set who gets notified, and when"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4328
+#: ../includes/classes/class-extension.php:4337
 msgid "Manage Directorist email notifications"
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4346
+#: ../includes/classes/class-extension.php:4355
 msgid "You are not allowed to load this activity."
 msgstr ""
 
-#: ../includes/classes/class-extension.php:4366
+#: ../includes/classes/class-extension.php:4375
 msgid "You are not allowed to dismiss these setup steps."
 msgstr ""
 
@@ -4176,12 +4184,16 @@ msgstr ""
 msgid "Listing ID is required."
 msgstr ""
 
-#: ../includes/classes/class-featured-listing-checkout.php:240, ../templates/checkout/featured_listing-summary.php:15
+#: ../includes/classes/class-featured-listing-checkout.php:110, ../includes/classes/class-payment-checkout-service.php:62, ../includes/rest-api/Version1/class-checkout-controller.php:227
+msgid "You do not have permission to pay for this listing."
+msgstr ""
+
+#: ../includes/classes/class-featured-listing-checkout.php:256, ../templates/checkout/featured_listing-summary.php:15
 msgid "Featured Listing"
 msgstr ""
 
 #. translators: %s is the listing title
-#: ../includes/classes/class-featured-listing-checkout.php:252
+#: ../includes/classes/class-featured-listing-checkout.php:268
 msgid "Featured Listing: %s"
 msgstr ""
 
@@ -4253,39 +4265,43 @@ msgstr ""
 msgid "Invalid nonce!"
 msgstr ""
 
-#: ../includes/classes/class-metabox.php:166
+#: ../includes/classes/class-metabox.php:50, ../includes/classes/class-submission-controller.php:562
+msgid "You are not allowed to edit this listing."
+msgstr ""
+
+#: ../includes/classes/class-metabox.php:176
 msgid "Listing Information"
 msgstr ""
 
-#: ../includes/classes/class-metabox.php:171
+#: ../includes/classes/class-metabox.php:181
 msgid "Moderation history"
 msgstr ""
 
-#: ../includes/classes/class-metabox.php:189
+#: ../includes/classes/class-metabox.php:199
 msgid "No moderation history available yet."
 msgstr ""
 
-#: ../includes/classes/class-metabox.php:197
+#: ../includes/classes/class-metabox.php:207
 msgid "Unknown date"
 msgstr ""
 
-#: ../includes/classes/class-metabox.php:326
+#: ../includes/classes/class-metabox.php:336
 msgid "admin"
 msgstr ""
 
-#: ../includes/classes/class-metabox.php:413
+#: ../includes/classes/class-metabox.php:423
 msgid "Select a directory..."
 msgstr ""
 
-#: ../includes/classes/class-payment-checkout-service.php:54, ../includes/classes/class-payment-checkout-service.php:127, ../includes/rest-api/Version1/class-checkout-controller.php:119, ../includes/rest-api/Version1/class-checkout-controller.php:211
+#: ../includes/classes/class-payment-checkout-service.php:54, ../includes/classes/class-payment-checkout-service.php:131, ../includes/rest-api/Version1/class-checkout-controller.php:119, ../includes/rest-api/Version1/class-checkout-controller.php:215, ../includes/modules/mcp/extensions/class-read-contributions.php:57, ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:76, ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:81
 msgid "Order not found."
 msgstr ""
 
-#: ../includes/classes/class-payment-checkout-service.php:58
+#: ../includes/classes/class-payment-checkout-service.php:58, ../includes/rest-api/Version1/class-checkout-controller.php:221
 msgid "You do not have permission to pay for this order."
 msgstr ""
 
-#: ../includes/classes/class-payment-checkout-service.php:62
+#: ../includes/classes/class-payment-checkout-service.php:66
 msgid "This order is not pending payment."
 msgstr ""
 
@@ -4507,7 +4523,7 @@ msgstr ""
 msgid "Pending Confirmation Message"
 msgstr ""
 
-#: ../includes/classes/class-settings-panel.php:302, ../includes/model/ListingDashboard.php:557, ../includes/model/SingleListing.php:1173
+#: ../includes/classes/class-settings-panel.php:302, ../includes/model/ListingDashboard.php:557, ../includes/model/SingleListing.php:1174
 msgid "Thank you for your submission. Your listing is being reviewed and it may take up to 24 hours to complete the review."
 msgstr ""
 
@@ -4515,7 +4531,7 @@ msgstr ""
 msgid "Publish Confirmation Message"
 msgstr ""
 
-#: ../includes/classes/class-settings-panel.php:314, ../includes/model/ListingDashboard.php:552, ../includes/model/SingleListing.php:1168
+#: ../includes/classes/class-settings-panel.php:314, ../includes/model/ListingDashboard.php:552, ../includes/model/SingleListing.php:1169
 msgid "Congratulations! Your listing has been approved/published. Now it is publicly available."
 msgstr ""
 
@@ -4905,7 +4921,7 @@ msgstr ""
 msgid "Sort Options"
 msgstr ""
 
-#: ../includes/classes/class-settings-panel.php:1104, ../includes/classes/class-settings-panel.php:2433, ../includes/model/Listings.php:1517
+#: ../includes/classes/class-settings-panel.php:1104, ../includes/classes/class-settings-panel.php:2433, ../includes/model/Listings.php:1518
 msgid "Nearby"
 msgstr ""
 
@@ -6944,10 +6960,6 @@ msgstr ""
 msgid "Uploaded file (%s) is larger than supported size (%s)."
 msgstr ""
 
-#: ../includes/classes/class-submission-controller.php:562
-msgid "You are not allowed to edit this listing."
-msgstr ""
-
 #: ../includes/classes/class-submission-controller.php:595
 msgid "Privacy policy is required."
 msgstr ""
@@ -7149,7 +7161,7 @@ msgstr ""
 msgid "Registration completed. Please check your email for confirmation. You will be redirected..."
 msgstr ""
 
-#: ../includes/classes/class-user.php:328, ../includes/classes/class-user.php:548
+#: ../includes/classes/class-user.php:328, ../includes/classes/class-user.php:558
 msgid "Request email verification"
 msgstr ""
 
@@ -7161,7 +7173,7 @@ msgstr ""
 msgid "Mark as email unverified"
 msgstr ""
 
-#: ../includes/classes/class-user.php:352, ../includes/classes/class-user.php:715
+#: ../includes/classes/class-user.php:352, ../includes/classes/class-user.php:725
 msgid "Email Verified?"
 msgstr ""
 
@@ -7169,109 +7181,109 @@ msgstr ""
 msgid "Check this option to mark user email as verified"
 msgstr ""
 
-#: ../includes/classes/class-user.php:481
+#: ../includes/classes/class-user.php:491
 msgid "Email verification request sent to %s user."
 msgid_plural "Email verification request sent to %s users."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/classes/class-user.php:491
+#: ../includes/classes/class-user.php:501
 msgid "%s user marked as email verified."
 msgid_plural "%s users marked as email verified."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/classes/class-user.php:501
+#: ../includes/classes/class-user.php:511
 msgid "%s user marked as email unverified."
 msgid_plural "%s users marked as email unverified."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/classes/class-user.php:610
+#: ../includes/classes/class-user.php:620
 msgid "Your account is not yet verified. Please check your email to verify your account. If you did not receive the verification email, please click on the %s"
 msgstr ""
 
-#: ../includes/classes/class-user.php:611
+#: ../includes/classes/class-user.php:621
 msgid "Resend confirmation email"
 msgstr ""
 
-#: ../includes/classes/class-user.php:688, ../includes/payments/functions.php:47, ../includes/enums/payment/status.php:32, ../includes/modules/multi-directory-setup/class-builder-data.php:2283, ../includes/modules/multi-directory-setup/class-builder-data.php:2299, ../templates/dashboard/tab-my-listings.php:28
+#: ../includes/classes/class-user.php:698, ../includes/payments/functions.php:47, ../includes/enums/payment/status.php:32, ../includes/modules/multi-directory-setup/class-builder-data.php:2283, ../includes/modules/multi-directory-setup/class-builder-data.php:2299, ../templates/dashboard/tab-my-listings.php:28
 msgid "Pending"
 msgstr ""
 
-#: ../includes/classes/class-user.php:689
+#: ../includes/classes/class-user.php:699
 msgid "Approve"
 msgstr ""
 
-#: ../includes/classes/class-user.php:690
+#: ../includes/classes/class-user.php:700
 msgid "Deny"
 msgstr ""
 
-#: ../includes/classes/class-user.php:717
+#: ../includes/classes/class-user.php:727
 msgid "User Type"
 msgstr ""
 
-#: ../includes/classes/class-user.php:861
+#: ../includes/classes/class-user.php:871
 msgid "Required form field is missing. Please fill all required fields."
 msgstr ""
 
-#: ../includes/classes/class-user.php:865
+#: ../includes/classes/class-user.php:875
 msgid "Username too short. At least 4 characters is required"
 msgstr ""
 
-#: ../includes/classes/class-user.php:873
+#: ../includes/classes/class-user.php:883
 msgid "Sorry, that username already exists!"
 msgstr ""
 
-#: ../includes/classes/class-user.php:876
+#: ../includes/classes/class-user.php:886
 msgid "Sorry, space is not allowed in username!"
 msgstr ""
 
-#: ../includes/classes/class-user.php:879
+#: ../includes/classes/class-user.php:889
 msgid "Sorry, the username you entered is not valid"
 msgstr ""
 
-#: ../includes/classes/class-user.php:883
+#: ../includes/classes/class-user.php:893
 msgid "Password length must be greater than 5"
 msgstr ""
 
-#: ../includes/classes/class-user.php:887
+#: ../includes/classes/class-user.php:897
 msgid "Privacy field is required"
 msgstr ""
 
-#: ../includes/classes/class-user.php:890, ../includes/classes/class-user.php:894
+#: ../includes/classes/class-user.php:900, ../includes/classes/class-user.php:904
 msgid "Terms and Condition field is required"
 msgstr ""
 
-#: ../includes/classes/class-user.php:898
+#: ../includes/classes/class-user.php:908
 msgid "Email is not valid"
 msgstr ""
 
-#: ../includes/classes/class-user.php:901
+#: ../includes/classes/class-user.php:911
 msgid "Email Already in use"
 msgstr ""
 
-#: ../includes/classes/class-user.php:905
+#: ../includes/classes/class-user.php:915
 msgid "First Name must be letters or combination of letters and number"
 msgstr ""
 
-#: ../includes/classes/class-user.php:910
+#: ../includes/classes/class-user.php:920
 msgid "Last Name must be letters or combination of letters and number"
 msgstr ""
 
-#: ../includes/classes/class-user.php:916
+#: ../includes/classes/class-user.php:926
 msgid "Website is not a valid URL"
 msgstr ""
 
-#: ../includes/classes/class-user.php:1251
+#: ../includes/classes/class-user.php:1261
 msgid "Password should be matched and more than five character"
 msgstr ""
 
-#: ../includes/classes/class-user.php:1270
+#: ../includes/classes/class-user.php:1280
 msgid "Oops! Something wrong."
 msgstr ""
 
-#: ../includes/classes/class-user.php:1266
+#: ../includes/classes/class-user.php:1276
 msgid "Congratulations! Your profile updated successfully"
 msgstr ""
 
@@ -7951,36 +7963,36 @@ msgid_plural "Reviews"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/model/Listings.php:1441
+#: ../includes/model/Listings.php:1442
 msgid "No listing found."
 msgstr ""
 
-#: ../includes/model/Listings.php:2009
+#: ../includes/model/Listings.php:2010
 msgid "Posted %s ago"
 msgstr ""
 
-#: ../includes/model/Listings.php:2069
+#: ../includes/model/Listings.php:2070
 msgctxt "search result header"
 msgid "%s result"
 msgid_plural "%s results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/model/Listings.php:2067
+#: ../includes/model/Listings.php:2068
 msgctxt "search result header"
 msgid "%s result in %s"
 msgid_plural "%s results in %s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/model/Listings.php:2065
+#: ../includes/model/Listings.php:2066
 msgctxt "search result header"
 msgid "%s result for %s"
 msgid_plural "%s results for %s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/model/Listings.php:2063
+#: ../includes/model/Listings.php:2064
 msgctxt "search result header"
 msgid "%s result for %s in %s"
 msgid_plural "%s results for %s in %s"
@@ -8023,22 +8035,22 @@ msgstr ""
 msgid "Message..."
 msgstr ""
 
-#: ../includes/model/SingleListing.php:1289
+#: ../includes/model/SingleListing.php:1290
 msgctxt "Number of reviews"
 msgid "Review"
 msgid_plural "Reviews"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/model/SingleListing.php:1317
+#: ../includes/model/SingleListing.php:1318
 msgid "Email Address"
 msgstr ""
 
-#: ../includes/model/SingleListing.php:1321
+#: ../includes/model/SingleListing.php:1322
 msgid "Enter email address"
 msgstr ""
 
-#: ../includes/model/SingleListing.php:1492, ../includes/widgets/single-map.php:72
+#: ../includes/model/SingleListing.php:1493, ../includes/widgets/single-map.php:72
 msgid "No Title"
 msgstr ""
 
@@ -8216,28 +8228,28 @@ msgstr ""
 msgid "Invalid"
 msgstr ""
 
-#: ../includes/repositories/order-repository.php:271
+#: ../includes/repositories/order-repository.php:273
 msgid "Discount ( %s%% )"
 msgstr ""
 
-#: ../includes/repositories/order-repository.php:271, ../templates/checkout/checkout-order-discount.php:11, ../templates/checkout/receipt.php:109, ../templates/payment/payment-receipt.php:141
+#: ../includes/repositories/order-repository.php:273, ../templates/checkout/checkout-order-discount.php:11, ../templates/checkout/receipt.php:109, ../templates/payment/payment-receipt.php:141
 msgid "Discount"
 msgstr ""
 
-#: ../includes/repositories/order-repository.php:280
+#: ../includes/repositories/order-repository.php:282
 msgid "Tax ( %s%% )"
 msgstr ""
 
-#: ../includes/repositories/order-repository.php:280, ../templates/checkout/checkout-order-tax.php:11, ../templates/checkout/receipt.php:120
+#: ../includes/repositories/order-repository.php:282, ../templates/checkout/checkout-order-tax.php:11, ../templates/checkout/receipt.php:120
 msgid "Tax"
 msgstr ""
 
-#: ../includes/repositories/refund-repository.php:78
+#: ../includes/repositories/refund-repository.php:79
 msgid "Order is already refunded"
 msgstr ""
 
 #. translators: %s is the remaining amount
-#: ../includes/repositories/refund-repository.php:87
+#: ../includes/repositories/refund-repository.php:88
 msgid "You cannot refund more than the remaining amount: %s"
 msgstr ""
 
@@ -9910,7 +9922,7 @@ msgstr ""
 msgid "Name for the resource."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-abstract-terms-controller.php:80, ../includes/rest-api/Version1/class-categories-controller.php:113, ../includes/rest-api/Version1/class-directories-controller.php:104, ../includes/rest-api/Version1/class-listing-reviews-controller.php:53, ../includes/rest-api/Version1/class-listing-reviews-controller.php:402, ../includes/rest-api/Version1/class-listings-controller.php:69, ../includes/rest-api/Version1/class-listings-controller.php:95, ../includes/rest-api/Version1/class-listings-controller.php:1428, ../includes/rest-api/Version1/class-locations-controller.php:110, ../includes/rest-api/Version1/class-plans-controller.php:857, ../includes/rest-api/Version1/class-tags-controller.php:83, ../includes/rest-api/Version1/class-users-controller.php:73, ../includes/rest-api/Version1/class-users-controller.php:757, ../includes/rest-api/Version2/class-listings-controller.php:90, ../includes/rest-api/Version2/class-listings-controller.php:1305
+#: ../includes/rest-api/Version1/class-abstract-terms-controller.php:80, ../includes/rest-api/Version1/class-categories-controller.php:113, ../includes/rest-api/Version1/class-directories-controller.php:104, ../includes/rest-api/Version1/class-listing-reviews-controller.php:53, ../includes/rest-api/Version1/class-listing-reviews-controller.php:402, ../includes/rest-api/Version1/class-listings-controller.php:69, ../includes/rest-api/Version1/class-listings-controller.php:95, ../includes/rest-api/Version1/class-listings-controller.php:1436, ../includes/rest-api/Version1/class-locations-controller.php:110, ../includes/rest-api/Version1/class-plans-controller.php:857, ../includes/rest-api/Version1/class-tags-controller.php:83, ../includes/rest-api/Version1/class-users-controller.php:73, ../includes/rest-api/Version1/class-users-controller.php:757, ../includes/rest-api/Version2/class-listings-controller.php:90, ../includes/rest-api/Version2/class-listings-controller.php:1305
 msgid "Unique identifier for the resource."
 msgstr ""
 
@@ -9938,7 +9950,7 @@ msgstr ""
 msgid "The resource cannot be deleted."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-abstract-terms-controller.php:751, ../includes/rest-api/Version1/class-listing-reviews-controller.php:506, ../includes/rest-api/Version1/class-listings-controller.php:1846, ../includes/rest-api/Version1/class-users-controller.php:1009
+#: ../includes/rest-api/Version1/class-abstract-terms-controller.php:751, ../includes/rest-api/Version1/class-listing-reviews-controller.php:506, ../includes/rest-api/Version1/class-listings-controller.php:1854, ../includes/rest-api/Version1/class-users-controller.php:1009
 msgid "Ensure result set excludes specific IDs."
 msgstr ""
 
@@ -9950,7 +9962,7 @@ msgstr ""
 msgid "Offset the result set by a specific number of items. Applies to hierarchical taxonomies only."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-abstract-terms-controller.php:775, ../includes/rest-api/Version1/class-listing-reviews-controller.php:526, ../includes/rest-api/Version1/class-listings-controller.php:1865, ../includes/rest-api/Version1/class-orders-controller.php:397, ../includes/rest-api/Version1/class-plans-controller.php:1091, ../includes/rest-api/Version1/class-users-controller.php:1034
+#: ../includes/rest-api/Version1/class-abstract-terms-controller.php:775, ../includes/rest-api/Version1/class-listing-reviews-controller.php:526, ../includes/rest-api/Version1/class-listings-controller.php:1873, ../includes/rest-api/Version1/class-orders-controller.php:397, ../includes/rest-api/Version1/class-plans-controller.php:1091, ../includes/rest-api/Version1/class-users-controller.php:1034
 msgid "Order sort attribute ascending or descending."
 msgstr ""
 
@@ -10034,7 +10046,7 @@ msgstr ""
 msgid "Field map."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:119, ../includes/rest-api/Version1/class-directories-controller.php:110, ../includes/rest-api/Version1/class-listings-controller.php:1680, ../includes/rest-api/Version2/class-listings-controller.php:1063
+#: ../includes/rest-api/Version1/class-categories-controller.php:119, ../includes/rest-api/Version1/class-directories-controller.php:110, ../includes/rest-api/Version1/class-listings-controller.php:1688, ../includes/rest-api/Version2/class-listings-controller.php:1063
 msgid "Category name."
 msgstr ""
 
@@ -10054,35 +10066,35 @@ msgstr ""
 msgid "Image data."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:153, ../includes/rest-api/Version1/class-listings-controller.php:1762, ../includes/rest-api/Version1/class-locations-controller.php:150, ../includes/rest-api/Version1/class-users-controller.php:846, ../includes/rest-api/Version1/class-users-controller.php:888, ../includes/rest-api/Version2/class-listings-controller.php:1245
+#: ../includes/rest-api/Version1/class-categories-controller.php:153, ../includes/rest-api/Version1/class-listings-controller.php:1770, ../includes/rest-api/Version1/class-locations-controller.php:150, ../includes/rest-api/Version1/class-users-controller.php:846, ../includes/rest-api/Version1/class-users-controller.php:888, ../includes/rest-api/Version2/class-listings-controller.php:1245
 msgid "Image ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:158, ../includes/rest-api/Version1/class-listings-controller.php:1767, ../includes/rest-api/Version1/class-locations-controller.php:155, ../includes/rest-api/Version1/class-users-controller.php:851, ../includes/rest-api/Version1/class-users-controller.php:893
+#: ../includes/rest-api/Version1/class-categories-controller.php:158, ../includes/rest-api/Version1/class-listings-controller.php:1775, ../includes/rest-api/Version1/class-locations-controller.php:155, ../includes/rest-api/Version1/class-users-controller.php:851, ../includes/rest-api/Version1/class-users-controller.php:893
 msgid "The date the image was created, in the site's timezone."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:164, ../includes/rest-api/Version1/class-listings-controller.php:1773, ../includes/rest-api/Version1/class-locations-controller.php:161, ../includes/rest-api/Version1/class-users-controller.php:857, ../includes/rest-api/Version1/class-users-controller.php:899
+#: ../includes/rest-api/Version1/class-categories-controller.php:164, ../includes/rest-api/Version1/class-listings-controller.php:1781, ../includes/rest-api/Version1/class-locations-controller.php:161, ../includes/rest-api/Version1/class-users-controller.php:857, ../includes/rest-api/Version1/class-users-controller.php:899
 msgid "The date the image was created, as GMT."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:170, ../includes/rest-api/Version1/class-listings-controller.php:1779, ../includes/rest-api/Version1/class-locations-controller.php:167, ../includes/rest-api/Version1/class-users-controller.php:863, ../includes/rest-api/Version1/class-users-controller.php:905
+#: ../includes/rest-api/Version1/class-categories-controller.php:170, ../includes/rest-api/Version1/class-listings-controller.php:1787, ../includes/rest-api/Version1/class-locations-controller.php:167, ../includes/rest-api/Version1/class-users-controller.php:863, ../includes/rest-api/Version1/class-users-controller.php:905
 msgid "The date the image was last modified, in the site's timezone."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:176, ../includes/rest-api/Version1/class-listings-controller.php:1785, ../includes/rest-api/Version1/class-locations-controller.php:173, ../includes/rest-api/Version1/class-users-controller.php:869, ../includes/rest-api/Version1/class-users-controller.php:911
+#: ../includes/rest-api/Version1/class-categories-controller.php:176, ../includes/rest-api/Version1/class-listings-controller.php:1793, ../includes/rest-api/Version1/class-locations-controller.php:173, ../includes/rest-api/Version1/class-users-controller.php:869, ../includes/rest-api/Version1/class-users-controller.php:911
 msgid "The date the image was last modified, as GMT."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:182, ../includes/rest-api/Version1/class-listings-controller.php:1791, ../includes/rest-api/Version1/class-locations-controller.php:179, ../includes/rest-api/Version1/class-users-controller.php:875, ../includes/rest-api/Version1/class-users-controller.php:917, ../includes/rest-api/Version2/class-listings-controller.php:1250
+#: ../includes/rest-api/Version1/class-categories-controller.php:182, ../includes/rest-api/Version1/class-listings-controller.php:1799, ../includes/rest-api/Version1/class-locations-controller.php:179, ../includes/rest-api/Version1/class-users-controller.php:875, ../includes/rest-api/Version1/class-users-controller.php:917, ../includes/rest-api/Version2/class-listings-controller.php:1250
 msgid "Image URL."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:188, ../includes/rest-api/Version1/class-listings-controller.php:1797, ../includes/rest-api/Version1/class-locations-controller.php:185, ../includes/rest-api/Version2/class-listings-controller.php:1256
+#: ../includes/rest-api/Version1/class-categories-controller.php:188, ../includes/rest-api/Version1/class-listings-controller.php:1805, ../includes/rest-api/Version1/class-locations-controller.php:185, ../includes/rest-api/Version2/class-listings-controller.php:1256
 msgid "Image name."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-categories-controller.php:193, ../includes/rest-api/Version1/class-listings-controller.php:1802, ../includes/rest-api/Version1/class-locations-controller.php:190, ../includes/rest-api/Version2/class-listings-controller.php:1261
+#: ../includes/rest-api/Version1/class-categories-controller.php:193, ../includes/rest-api/Version1/class-listings-controller.php:1810, ../includes/rest-api/Version1/class-locations-controller.php:190, ../includes/rest-api/Version2/class-listings-controller.php:1261
 msgid "Image alternative text."
 msgstr ""
 
@@ -10126,15 +10138,15 @@ msgstr ""
 msgid "Payment gateway is required."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-checkout-controller.php:139, ../includes/rest-api/Version1/class-checkout-controller.php:145, ../includes/rest-api/Version1/class-checkout-controller.php:148, ../includes/rest-api/Version1/class-checkout-controller.php:231, ../includes/rest-api/Version1/class-checkout-controller.php:237
+#: ../includes/rest-api/Version1/class-checkout-controller.php:139, ../includes/rest-api/Version1/class-checkout-controller.php:145, ../includes/rest-api/Version1/class-checkout-controller.php:148, ../includes/rest-api/Version1/class-checkout-controller.php:245, ../includes/rest-api/Version1/class-checkout-controller.php:251
 msgid "Invalid payment gateway."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-checkout-controller.php:217
+#: ../includes/rest-api/Version1/class-checkout-controller.php:231
 msgid "Order is not pending or failed."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-checkout-controller.php:224
+#: ../includes/rest-api/Version1/class-checkout-controller.php:238
 msgid "Payment not found."
 msgstr ""
 
@@ -10211,15 +10223,15 @@ msgstr ""
 msgid "Limit response to reviews published before a given ISO8601 compliant date."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:514, ../includes/rest-api/Version1/class-listings-controller.php:1852, ../includes/rest-api/Version1/class-users-controller.php:1018
+#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:514, ../includes/rest-api/Version1/class-listings-controller.php:1860, ../includes/rest-api/Version1/class-users-controller.php:1018
 msgid "Limit result set to specific IDs."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:522, ../includes/rest-api/Version1/class-listings-controller.php:1858, ../includes/rest-api/Version1/class-users-controller.php:1027
+#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:522, ../includes/rest-api/Version1/class-listings-controller.php:1866, ../includes/rest-api/Version1/class-users-controller.php:1027
 msgid "Offset the result set by a specific number of items."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:535, ../includes/rest-api/Version1/class-listings-controller.php:1873, ../includes/rest-api/Version1/class-orders-controller.php:404, ../includes/rest-api/Version1/class-plans-controller.php:1097, ../includes/rest-api/Version1/class-users-controller.php:1042
+#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:535, ../includes/rest-api/Version1/class-listings-controller.php:1881, ../includes/rest-api/Version1/class-orders-controller.php:404, ../includes/rest-api/Version1/class-plans-controller.php:1097, ../includes/rest-api/Version1/class-users-controller.php:1042
 msgid "Sort collection by object attribute."
 msgstr ""
 
@@ -10247,7 +10259,7 @@ msgstr ""
 msgid "Invalid review ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:623, ../includes/rest-api/Version1/class-listings-controller.php:964, ../includes/rest-api/Version1/class-users-favorites-controller.php:162, ../includes/rest-api/Version1/class-users-favorites-controller.php:216
+#: ../includes/rest-api/Version1/class-listing-reviews-controller.php:623, ../includes/rest-api/Version1/class-listings-controller.php:972, ../includes/rest-api/Version1/class-users-favorites-controller.php:162, ../includes/rest-api/Version1/class-users-favorites-controller.php:216
 msgid "Invalid listing ID."
 msgstr ""
 
@@ -10291,312 +10303,316 @@ msgstr ""
 msgid "The status of the listing."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:152
+#: ../includes/rest-api/Version1/class-listings-controller.php:146
+msgid "This listing requires administrator approval."
+msgstr ""
+
+#: ../includes/rest-api/Version1/class-listings-controller.php:160
 msgid "Sorry, you are not allowed to change this listing status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:257
+#: ../includes/rest-api/Version1/class-listings-controller.php:265
 msgid "The listing could not be created."
 msgstr ""
 
 #. translators: %s: REST taxonomy field name.
-#: ../includes/rest-api/Version1/class-listings-controller.php:443, ../includes/rest-api/Version1/class-listings-controller.php:460
+#: ../includes/rest-api/Version1/class-listings-controller.php:451, ../includes/rest-api/Version1/class-listings-controller.php:468
 msgid "Invalid term supplied for %s."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:532, ../includes/rest-api/Version1/class-listings-controller.php:549
+#: ../includes/rest-api/Version1/class-listings-controller.php:540, ../includes/rest-api/Version1/class-listings-controller.php:557
 msgid "Invalid image supplied."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:908, ../includes/rest-api/Version1/class-orders-controller.php:228, ../includes/rest-api/Version1/class-plans-controller.php:342, ../includes/rest-api/Version1/class-plans-controller.php:349, ../includes/rest-api/Version1/class-plans-controller.php:367
+#: ../includes/rest-api/Version1/class-listings-controller.php:916, ../includes/rest-api/Version1/class-orders-controller.php:228, ../includes/rest-api/Version1/class-plans-controller.php:342, ../includes/rest-api/Version1/class-plans-controller.php:349, ../includes/rest-api/Version1/class-plans-controller.php:367
 msgid "Invalid ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:947
+#: ../includes/rest-api/Version1/class-listings-controller.php:955
 msgid "The listing status was updated successfully"
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:984
+#: ../includes/rest-api/Version1/class-listings-controller.php:992
 msgid "Invalid listing status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1434
+#: ../includes/rest-api/Version1/class-listings-controller.php:1442
 msgid "Listing name."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1439, ../includes/rest-api/Version2/class-listings-controller.php:1311
+#: ../includes/rest-api/Version1/class-listings-controller.php:1447, ../includes/rest-api/Version2/class-listings-controller.php:1311
 msgid "Listing slug."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1444, ../includes/rest-api/Version2/class-listings-controller.php:1316
+#: ../includes/rest-api/Version1/class-listings-controller.php:1452, ../includes/rest-api/Version2/class-listings-controller.php:1316
 msgid "Listing URL."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1451, ../includes/rest-api/Version2/class-listings-controller.php:1323
+#: ../includes/rest-api/Version1/class-listings-controller.php:1459, ../includes/rest-api/Version2/class-listings-controller.php:1323
 msgid "The date the listing was created, in the site's timezone."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1457, ../includes/rest-api/Version2/class-listings-controller.php:1329
+#: ../includes/rest-api/Version1/class-listings-controller.php:1465, ../includes/rest-api/Version2/class-listings-controller.php:1329
 msgid "The date the listing was created, as GMT."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1463, ../includes/rest-api/Version2/class-listings-controller.php:1335
+#: ../includes/rest-api/Version1/class-listings-controller.php:1471, ../includes/rest-api/Version2/class-listings-controller.php:1335
 msgid "The date the listing was last modified, in the site's timezone."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1469, ../includes/rest-api/Version2/class-listings-controller.php:1341
+#: ../includes/rest-api/Version1/class-listings-controller.php:1477, ../includes/rest-api/Version2/class-listings-controller.php:1341
 msgid "The date the listing was last modified, as GMT."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1475, ../includes/rest-api/Version2/class-listings-controller.php:1041
+#: ../includes/rest-api/Version1/class-listings-controller.php:1483, ../includes/rest-api/Version2/class-listings-controller.php:1041
 msgid "Listing description."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1480, ../includes/rest-api/Version2/class-listings-controller.php:1046
+#: ../includes/rest-api/Version1/class-listings-controller.php:1488, ../includes/rest-api/Version2/class-listings-controller.php:1046
 msgid "Listing short description."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1485, ../includes/rest-api/Version2/class-listings-controller.php:1181
+#: ../includes/rest-api/Version1/class-listings-controller.php:1493, ../includes/rest-api/Version2/class-listings-controller.php:1181
 msgid "Zip code."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1490, ../includes/rest-api/Version2/class-listings-controller.php:1207
+#: ../includes/rest-api/Version1/class-listings-controller.php:1498, ../includes/rest-api/Version2/class-listings-controller.php:1207
 msgid "Phone number 1."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1495, ../includes/rest-api/Version2/class-listings-controller.php:1212
+#: ../includes/rest-api/Version1/class-listings-controller.php:1503, ../includes/rest-api/Version2/class-listings-controller.php:1212
 msgid "Phone number 2."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1500, ../includes/rest-api/Version2/class-listings-controller.php:1217
+#: ../includes/rest-api/Version1/class-listings-controller.php:1508, ../includes/rest-api/Version2/class-listings-controller.php:1217
 msgid "Fax number."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1505, ../includes/rest-api/Version2/class-listings-controller.php:1222
+#: ../includes/rest-api/Version1/class-listings-controller.php:1513, ../includes/rest-api/Version2/class-listings-controller.php:1222
 msgid "Email address."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1515, ../includes/rest-api/Version2/class-listings-controller.php:1228
+#: ../includes/rest-api/Version1/class-listings-controller.php:1523, ../includes/rest-api/Version2/class-listings-controller.php:1228
 msgid "Website url."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1520
+#: ../includes/rest-api/Version1/class-listings-controller.php:1528
 msgid "List of social media links."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1527, ../includes/rest-api/Version2/class-listings-controller.php:1145
+#: ../includes/rest-api/Version1/class-listings-controller.php:1535, ../includes/rest-api/Version2/class-listings-controller.php:1145
 msgid "Social media name"
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1532, ../includes/rest-api/Version2/class-listings-controller.php:1150
+#: ../includes/rest-api/Version1/class-listings-controller.php:1540, ../includes/rest-api/Version2/class-listings-controller.php:1150
 msgid "Social media url."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1540, ../includes/rest-api/Version2/class-listings-controller.php:1347
+#: ../includes/rest-api/Version1/class-listings-controller.php:1548, ../includes/rest-api/Version2/class-listings-controller.php:1347
 msgid "Visitors view count."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1546
+#: ../includes/rest-api/Version1/class-listings-controller.php:1554
 msgid "Map visibility status status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1552, ../includes/rest-api/Version2/class-listings-controller.php:1186
+#: ../includes/rest-api/Version1/class-listings-controller.php:1560, ../includes/rest-api/Version2/class-listings-controller.php:1186
 msgid "Listing address."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1557, ../includes/rest-api/Version2/class-listings-controller.php:1197
+#: ../includes/rest-api/Version1/class-listings-controller.php:1565, ../includes/rest-api/Version2/class-listings-controller.php:1197
 msgid "Address location latitude."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1562, ../includes/rest-api/Version2/class-listings-controller.php:1202
+#: ../includes/rest-api/Version1/class-listings-controller.php:1570, ../includes/rest-api/Version2/class-listings-controller.php:1202
 msgid "Address location longitude."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1567
+#: ../includes/rest-api/Version1/class-listings-controller.php:1575
 msgid "Pricing type."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1573
+#: ../includes/rest-api/Version1/class-listings-controller.php:1581
 msgid "Listing price."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1578
+#: ../includes/rest-api/Version1/class-listings-controller.php:1586
 msgid "Listing price range."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1584, ../includes/rest-api/Version2/class-listings-controller.php:1175
+#: ../includes/rest-api/Version1/class-listings-controller.php:1592, ../includes/rest-api/Version2/class-listings-controller.php:1175
 msgid "Listing owner contact form visibility status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1590, ../includes/rest-api/Version2/class-listings-controller.php:1233
+#: ../includes/rest-api/Version1/class-listings-controller.php:1598, ../includes/rest-api/Version2/class-listings-controller.php:1233
 msgid "Video url."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1595, ../includes/rest-api/Version2/class-listings-controller.php:1036
+#: ../includes/rest-api/Version1/class-listings-controller.php:1603, ../includes/rest-api/Version2/class-listings-controller.php:1036
 msgid "Tagline."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1600
+#: ../includes/rest-api/Version1/class-listings-controller.php:1608
 msgid "Multi directory type id."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1605, ../includes/rest-api/Version2/class-listings-controller.php:1359
+#: ../includes/rest-api/Version1/class-listings-controller.php:1613, ../includes/rest-api/Version2/class-listings-controller.php:1359
 msgid "Expiration date."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1610, ../includes/rest-api/Version2/class-listings-controller.php:1364
+#: ../includes/rest-api/Version1/class-listings-controller.php:1618, ../includes/rest-api/Version2/class-listings-controller.php:1364
 msgid "Never expired status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1616, ../includes/rest-api/Version2/class-listings-controller.php:1371
+#: ../includes/rest-api/Version1/class-listings-controller.php:1624, ../includes/rest-api/Version2/class-listings-controller.php:1371
 msgid "Featured listing."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1622, ../includes/rest-api/Version2/class-listings-controller.php:1377
+#: ../includes/rest-api/Version1/class-listings-controller.php:1630, ../includes/rest-api/Version2/class-listings-controller.php:1377
 msgid "New listing."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1629, ../includes/rest-api/Version2/class-listings-controller.php:1384
+#: ../includes/rest-api/Version1/class-listings-controller.php:1637, ../includes/rest-api/Version2/class-listings-controller.php:1384
 msgid "Popular listing."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1636, ../includes/rest-api/Version2/class-listings-controller.php:1391
+#: ../includes/rest-api/Version1/class-listings-controller.php:1644, ../includes/rest-api/Version2/class-listings-controller.php:1391
 msgid "Listing status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1641, ../includes/rest-api/Version2/class-listings-controller.php:1397
+#: ../includes/rest-api/Version1/class-listings-controller.php:1649, ../includes/rest-api/Version2/class-listings-controller.php:1397
 msgid "Allow reviews."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1647, ../includes/rest-api/Version2/class-listings-controller.php:1404
+#: ../includes/rest-api/Version1/class-listings-controller.php:1655, ../includes/rest-api/Version2/class-listings-controller.php:1404
 msgid "Reviews average rating."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1653, ../includes/rest-api/Version2/class-listings-controller.php:1410
+#: ../includes/rest-api/Version1/class-listings-controller.php:1661, ../includes/rest-api/Version2/class-listings-controller.php:1410
 msgid "Amount of reviews that the listing have."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1659, ../includes/rest-api/Version2/class-listings-controller.php:1416
+#: ../includes/rest-api/Version1/class-listings-controller.php:1667, ../includes/rest-api/Version2/class-listings-controller.php:1416
 msgid "List of related listings IDs."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1668, ../includes/rest-api/Version2/class-listings-controller.php:1051
+#: ../includes/rest-api/Version1/class-listings-controller.php:1676, ../includes/rest-api/Version2/class-listings-controller.php:1051
 msgid "List of categories."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1675, ../includes/rest-api/Version2/class-listings-controller.php:1058
+#: ../includes/rest-api/Version1/class-listings-controller.php:1683, ../includes/rest-api/Version2/class-listings-controller.php:1058
 msgid "Category ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1686, ../includes/rest-api/Version2/class-listings-controller.php:1069
+#: ../includes/rest-api/Version1/class-listings-controller.php:1694, ../includes/rest-api/Version2/class-listings-controller.php:1069
 msgid "Category slug."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1692, ../includes/rest-api/Version2/class-listings-controller.php:1075
+#: ../includes/rest-api/Version1/class-listings-controller.php:1700, ../includes/rest-api/Version2/class-listings-controller.php:1075
 msgid "Category icon."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1701, ../includes/rest-api/Version2/class-listings-controller.php:1084
+#: ../includes/rest-api/Version1/class-listings-controller.php:1709, ../includes/rest-api/Version2/class-listings-controller.php:1084
 msgid "List of tags."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1708, ../includes/rest-api/Version2/class-listings-controller.php:1091
+#: ../includes/rest-api/Version1/class-listings-controller.php:1716, ../includes/rest-api/Version2/class-listings-controller.php:1091
 msgid "Tag ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1713, ../includes/rest-api/Version1/class-tags-controller.php:89, ../includes/rest-api/Version2/class-listings-controller.php:1096
+#: ../includes/rest-api/Version1/class-listings-controller.php:1721, ../includes/rest-api/Version1/class-tags-controller.php:89, ../includes/rest-api/Version2/class-listings-controller.php:1096
 msgid "Tag name."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1719, ../includes/rest-api/Version2/class-listings-controller.php:1102
+#: ../includes/rest-api/Version1/class-listings-controller.php:1727, ../includes/rest-api/Version2/class-listings-controller.php:1102
 msgid "Tag slug."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1728, ../includes/rest-api/Version2/class-listings-controller.php:1111
+#: ../includes/rest-api/Version1/class-listings-controller.php:1736, ../includes/rest-api/Version2/class-listings-controller.php:1111
 msgid "List of locations."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1735, ../includes/rest-api/Version2/class-listings-controller.php:1118
+#: ../includes/rest-api/Version1/class-listings-controller.php:1743, ../includes/rest-api/Version2/class-listings-controller.php:1118
 msgid "Location ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1740, ../includes/rest-api/Version1/class-locations-controller.php:116, ../includes/rest-api/Version2/class-listings-controller.php:1123
+#: ../includes/rest-api/Version1/class-listings-controller.php:1748, ../includes/rest-api/Version1/class-locations-controller.php:116, ../includes/rest-api/Version2/class-listings-controller.php:1123
 msgid "Location name."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1746, ../includes/rest-api/Version2/class-listings-controller.php:1129
+#: ../includes/rest-api/Version1/class-listings-controller.php:1754, ../includes/rest-api/Version2/class-listings-controller.php:1129
 msgid "Location slug."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1755
+#: ../includes/rest-api/Version1/class-listings-controller.php:1763
 msgid "List of images."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1807, ../includes/rest-api/Version2/class-listings-controller.php:1266
+#: ../includes/rest-api/Version1/class-listings-controller.php:1815, ../includes/rest-api/Version2/class-listings-controller.php:1266
 msgid "Image position. 0 means that the image is featured."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1815, ../includes/rest-api/Version2/class-listings-controller.php:1425
+#: ../includes/rest-api/Version1/class-listings-controller.php:1823, ../includes/rest-api/Version2/class-listings-controller.php:1425
 msgid "Menu order, used to custom sort listings."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1820, ../includes/rest-api/Version2/class-listings-controller.php:1431
+#: ../includes/rest-api/Version1/class-listings-controller.php:1828, ../includes/rest-api/Version2/class-listings-controller.php:1431
 msgid "Listing author id."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1825, ../includes/rest-api/Version2/class-listings-controller.php:1437
+#: ../includes/rest-api/Version1/class-listings-controller.php:1833, ../includes/rest-api/Version2/class-listings-controller.php:1437
 msgid "Listing plan id."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1880
+#: ../includes/rest-api/Version1/class-listings-controller.php:1888
 msgid "Limit result set to listings with a specific slug."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1886
+#: ../includes/rest-api/Version1/class-listings-controller.php:1894
 msgid "Limit result set to listings assigned a specific status."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1893
+#: ../includes/rest-api/Version1/class-listings-controller.php:1901
 msgid "Limit result set to featured listings."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1898
+#: ../includes/rest-api/Version1/class-listings-controller.php:1906
 msgid "Limit result set to listings assigned a specific category ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1904
+#: ../includes/rest-api/Version1/class-listings-controller.php:1912
 msgid "Limit result set to listings assigned a specific tag ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1910
+#: ../includes/rest-api/Version1/class-listings-controller.php:1918
 msgid "Limit result set to listings assigned a specific location ID."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1916
+#: ../includes/rest-api/Version1/class-listings-controller.php:1924
 msgid "Limit result set to listings based on a minimum price."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1921
+#: ../includes/rest-api/Version1/class-listings-controller.php:1929
 msgid "Limit result set to listings based on maximum price."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1926
+#: ../includes/rest-api/Version1/class-listings-controller.php:1934
 msgid "Limit result set to listings based on price range."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1932
+#: ../includes/rest-api/Version1/class-listings-controller.php:1940
 msgid "Limit result set to specified rating."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1937
+#: ../includes/rest-api/Version1/class-listings-controller.php:1945
 msgid "Limit result set to listings based on radius search."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1956
+#: ../includes/rest-api/Version1/class-listings-controller.php:1964
 msgid "Limit result set to listings to sepecific directory type."
 msgstr ""
 
-#: ../includes/rest-api/Version1/class-listings-controller.php:1962
+#: ../includes/rest-api/Version1/class-listings-controller.php:1970
 msgid "Limit result set to listings specific to author ID."
 msgstr ""
 
@@ -11436,6 +11452,1958 @@ msgstr ""
 
 #: ../includes/rest-api/Version2/class-listings-controller.php:1501
 msgid "Agree to terms and conditions."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-adapter-setup.php:39
+msgid "The active MCP Adapter is incompatible. Update it in WordPress Plugins and check setup again."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-adapter-setup.php:48
+msgid "Ask an administrator with plugin installation permission to install the MCP Adapter."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-adapter-setup.php:46
+msgid "Ask an administrator with plugin activation permission to activate the MCP Adapter."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-adapter-setup.php:44
+msgid "WordPress 6.9 or newer with the Abilities API is required before setting up the MCP Adapter."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-adapter-setup.php:55
+msgid "Install & Activate MCP Adapter"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-adapter-setup.php:55
+msgid "Activate MCP Adapter"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:56
+msgid "MCP Adapter"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:58
+msgid "Installing MCP Adapter…"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:59
+msgid "Activating MCP Adapter…"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:60
+msgid "Checking setup…"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:61
+msgid "MCP Adapter is active. You can now enable Directorist MCP."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:62
+msgid "MCP Adapter is active. Directorist MCP is ready to configure."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-assets.php:63
+msgid "MCP Adapter setup could not be completed. Please retry."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:17
+msgid "Configuration access is required."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:27
+msgid "Connect to Directorist MCP"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:30
+msgid "Ask a site administrator to enable Directorist Settings → Other Features → MCP. Administrators can use Configure to open the MCP Connection panel."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:31
+msgid "Create a named application password for your own WordPress account from your profile. Never use or share an administrator credential."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:32
+msgid "Use trusted HTTPS and a compatible HTTP MCP client with an Authorization: Basic header encoding username:application-password, or a compatible local bridge."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:33
+msgid "Initialize the client, discover the tools, then call directorist-get-context to verify your identity and permissions. Preview consequential changes before executing them."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:34
+msgid "Revoke the named application password in your WordPress profile to disconnect that client. Disabling Directorist MCP stops Directorist tools but does not revoke credentials for other WordPress APIs."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-configuration-controller.php:36
+msgid "OAuth-only clients are not supported. If application passwords are unavailable, ask the administrator to review the site policy."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:61
+msgid "Resolve the WordPress Abilities API and MCP Adapter dependencies before using MCP writes."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:74
+msgid "Enable MCP and resolve its dependencies before configuring a client."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:82
+msgid "Add this HTTP MCP server in your client terminal. Treat the copied configuration as a secret."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:83
+msgid "Use a local WordPress MCP bridge with Node.js installed. Add this entry to your client MCP configuration, then restart the client."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:84
+msgid "Add this entry to your MCP server configuration."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:85
+msgid "Use this server URL and Authorization header with an HTTP-capable MCP client."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:86
+msgid "Other"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-connection-configuration.php:86
+msgid "Your client must support HTTP with a custom Authorization header or a compatible local bridge. OAuth-only connections are not supported."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-settings-integration.php:35
+msgid "MCP for AI Agents"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-settings-integration.php:36
+msgid "Connect an AI assistant to Directorist using your WordPress account and permissions."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-settings-integration.php:50
+msgid "Other Features"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-settings-integration.php:52
+msgid "MCP"
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-settings-integration.php:72
+msgid "A compatible WordPress Abilities API and MCP Adapter are required before enabling MCP."
+msgstr ""
+
+#: ../includes/modules/mcp/admin/class-settings-integration.php:92
+msgid "MCP tools cannot change MCP access policy."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-callback-invoker.php:27
+msgid "The extension rejected this operation. Check its supported fields and native workflow."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-callback-invoker.php:32
+msgid "The extension could not complete this operation. Rediscover supported tools or contact the site administrator."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:49
+msgid "Invalid or duplicate MCP owner."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:51
+msgid "The extension descriptor is incomplete."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:53
+msgid "Unsupported MCP extension API or plugin identity."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:54
+msgid "The extension requires a newer Directorist version."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:55
+msgid "Availability and narrow admission callbacks are required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:68
+msgid "Register the MCP owner first."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:82
+msgid "Invalid MCP action name."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:84
+msgid "The ability name exceeds the supported length."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:85
+msgid "An MCP name is already owned."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:87
+msgid "Explicit permissions and output projection are required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:89
+msgid "The tool descriptor is incomplete."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:92
+msgid "Tool input must be a closed object."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:93
+msgid "An explicit MCP domain is required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:94
+msgid "Diagnostic domains are read-only."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:112
+msgid "A reader is required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:103
+msgid "Mutation planning, declared stores and cache invalidation are required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:105
+msgid "External tools require durable provider idempotency/reconciliation and a single explicit action."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:106
+msgid "The operation reader name is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:108
+msgid "Core mutation control names are reserved."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:115
+msgid "Invalid group, description or contract version."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:117
+msgid "Invalid bulk registration."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:120
+msgid "Confirmed bounded batch: "
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:141
+msgid "Read the original external operation without dispatching or repeating its writer."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:169
+msgid "Unsupported adapter domain."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:170
+msgid "Invalid or duplicate adapter identity."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:171
+msgid "Sensitive MCP fields are excluded."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:173
+msgid "Field adapters require explicit permissions, reads and validation."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:175
+msgid "Field defaults and versions are required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:178
+msgid "Writable adapters need complete persistence contracts."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:181
+msgid "Effective previews require a writable settings adapter."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:186
+msgid "Providers require dispatch and reconciliation."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:188
+msgid "Provider duplicate protection is required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:205
+msgid "Invalid or duplicate restriction policy."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:222
+msgid "Unsupported read-adapter contract."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:223
+msgid "Invalid read-adapter key."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:225
+msgid "A read-adapter key is already owned."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:227
+msgid "Incomplete or unsafe read-adapter metadata."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:229
+msgid "Read adapters must be explicitly public and uncached without a writer."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:230
+msgid "Unsupported contribution kind."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:231
+msgid "Declare at most ten public guidance hosts."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:233
+msgid "Only registered public guidance hosts are permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:235
+msgid "Explicit contribution scopes are required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:236
+msgid "Declare supported read filters."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:238
+msgid "Read-adapter callbacks are required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:241
+msgid "Contribution output must be a closed typed object."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-descriptor-validator.php:244
+msgid "Read contributions exceed the bounded discovery inventory."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-domain-fields.php:88
+msgid "Extension fields cannot be combined with lifecycle or financial actions."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-domain-fields.php:98
+msgid "This extension field is not writable."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-domain-fields.php:104
+msgid "Independent extension stores require a separate registered tool."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-domain-fields.php:130
+msgid "Extension field access changed."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-callbacks.php:76
+msgid "Invalid extension mutation plan."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-lifecycle.php:142
+msgid "This extension is unavailable. Rediscover tools."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-lifecycle.php:144
+msgid "This batch is not permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-lifecycle.php:155
+msgid "A taxonomy is required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-lifecycle.php:167
+msgid "This MCP operation is not permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-lifecycle.php:171
+msgid "A required policy integration is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-extension-lifecycle.php:172
+msgid "An extension policy restricts this operation."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:31, ../includes/modules/mcp/extensions/class-external-operations.php:160, ../includes/modules/mcp/extensions/class-external-operations.php:172, ../includes/modules/mcp/extensions/class-external-operations.php:177, ../includes/modules/mcp/extensions/class-external-operations.php:183, ../includes/modules/mcp/extensions/class-external-operations.php:207, ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:31, ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:213
+msgid "Operation not found."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:43, ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:43
+msgid "The operation state could not be saved."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:72
+msgid "The operation key belongs to a different action."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:107
+msgid "Could not reserve the external operation."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:109
+msgid "This external action is already reserved."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:143
+msgid "Invalid external outcome."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:147
+msgid "Invalid external reference."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:209
+msgid "The operation already has a different native result."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:212
+msgid "A compatible native result verifier is required."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:218
+msgid "External settlement is not verified."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-external-operations.php:223
+msgid "The native result cannot be verified."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:32
+msgid "Identity and cross-site selectors are not supported by diagnostic tools."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:33
+msgid "Object selectors require a top-level dashboard object permission check."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:34
+msgid "Diagnostic scope cannot be overridden."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:52, ../includes/modules/mcp/extensions/class-read-contributions.php:53, ../includes/modules/mcp/runtime/class-access-control.php:121, ../includes/modules/mcp/safety/class-write-guard.php:277, ../includes/modules/mcp/tool-providers/listings/class-read-callbacks.php:54
+msgid "Listing not found."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:68
+msgid "Read contribution schemas exceed the metadata limit."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:69
+msgid "Read contributions permit at most three nested levels."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:71
+msgid "Unsafe or oversized diagnostic schema pattern."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:73
+msgid "Unsafe diagnostic schema value."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:76
+msgid "Private diagnostic properties are excluded."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:82
+msgid "Diagnostic strings must be bounded to 2048 characters."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:123
+msgid "This contribution is no longer permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:125
+msgid "This source does not support the selected filter."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:127
+msgid "The optional source is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-read-contributions.php:132
+msgid "Unsafe diagnostic output."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-registration-api.php:48
+msgid "MCP registration has closed."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-registration-api.php:52
+msgid "Invalid MCP registration. Check the published contract."
+msgstr ""
+
+#: ../includes/modules/mcp/extensions/class-tool-provider.php:22
+msgid "Discover permitted active MCP integrations. Private diagnostics require administration access."
+msgstr ""
+
+#: ../includes/modules/mcp/registration/class-schema-validator.php:26
+msgid "Invalid MCP JSON schema."
+msgstr ""
+
+#: ../includes/modules/mcp/registration/class-schema-validator.php:38
+msgid "Strings must declare a length bound or enum."
+msgstr ""
+
+#: ../includes/modules/mcp/registration/class-schema-validator.php:35
+msgid "Arrays must declare a maximum of 100 items."
+msgstr ""
+
+#: ../includes/modules/mcp/registration/class-schema-validator.php:28
+msgid "Objects must declare bounded properties."
+msgstr ""
+
+#: ../includes/modules/mcp/registration/class-schema-validator.php:30
+msgid "Secret properties are excluded from MCP schemas."
+msgstr ""
+
+#: ../includes/modules/mcp/registration/class-schema-validator.php:33
+msgid "Invalid required fields."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:41
+msgid "Directorist MCP is disabled."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:42
+msgid "A compatible WordPress Abilities API and MCP Adapter are required."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:43
+msgid "Authentication is required."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:50
+msgid "Your account does not have Directorist access."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:55
+msgid "You cannot manage Directorist configuration."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:61, ../includes/modules/mcp/tool-providers/dashboard/class-listing-data.php:31
+msgid "Listing access is required."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:91
+msgid "Unsupported tool."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:122
+msgid "Listing access is restricted."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:151
+msgid "You cannot perform this taxonomy operation."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:154
+msgid "Taxonomy access is restricted."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-access-control.php:165
+msgid "The attachment is unavailable or not permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-tool-runner.php:33
+msgid "Unsupported Directorist tool."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-tool-runner.php:34
+msgid "The request is too large."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-tool-runner.php:44
+msgid "The read source returned an invalid result."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-tool-runner.php:56
+msgid "Read the original operation to reconcile this outcome. Do not submit a replacement financial action."
+msgstr ""
+
+#: ../includes/modules/mcp/runtime/class-tool-runner.php:68
+msgid "Directorist could not complete this operation."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:37
+msgid "A batch requires 1–50 explicit items."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:46
+msgid "Each item needs a unique client_ref of at most 64 safe characters."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:49
+msgid "Nested batch actions are not supported."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:51
+msgid "Specify taxonomy once at batch level."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:84
+msgid "An earlier item has an uncertain outcome. Reconcile before continuing."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:85
+msgid "This item was not eligible in the preview. Correct it and preview again."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:91
+msgid "This item changed since preview."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-bulk-executor.php:98
+msgid "This item may have committed. Read it to reconcile."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-native-write-hooks.php:88
+msgid "The directory taxonomy changed. Refresh the page before assigning this term."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-operation-store.php:42
+msgid "Supply a concise reference to the verified native outcome."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-operation-store.php:54
+msgid "An unresolved operation matching that payload and correlation was not found."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-operation-store.php:58
+msgid "Could not save reconciliation. The reservation remains blocked."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-read-guard.php:20
+msgid "A read or preview cannot mutate product data."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-read-guard.php:35
+msgid "A read or preview attempted a database write."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-read-guard.php:40
+msgid "This read does not permit the requested external operation."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-transaction.php:49
+msgid "Could not begin a safe write transaction."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-transaction.php:55
+msgid "The database commit could not be confirmed."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-transaction.php:102
+msgid "Invalid registered transaction table."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-transaction.php:104
+msgid "MCP cannot inspect a required storage table. Check table availability and information_schema permissions."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-transaction.php:105
+msgid "MCP writes require InnoDB for every participating table. Ask the administrator to review storage configuration."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:93
+msgid "Nested MCP mutations are unsupported. Use one declared native transaction."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:101
+msgid "dry_run must be a boolean."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:123
+msgid "Provide an idempotency_key of 8–128 letters, numbers, dots, colons, hyphens or underscores."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:128
+msgid "This idempotency key was used for a different action."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:129
+msgid "The extension contract changed. Reconcile before retrying."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:134
+msgid "This operation cannot be dispatched again. Inspect the target and ask an administrator to reconcile the original request."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:142
+msgid "The operation is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:153
+msgid "Preview this action using dry_run:true before executing."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:156
+msgid "The confirmation is invalid or expired. Preview again."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:159
+msgid "The state changed since preview. Preview again."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:165
+msgid "Could not reserve this operation. No changes were made."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:176
+msgid "The operation finished but its retry record could not be saved. Read the target to reconcile."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:191
+msgid "The operation did not finish cleanly and may have committed. Read the target before retrying."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-guard.php:247
+msgid "The item is no longer accessible."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-lock.php:34
+msgid "The database write lock is unavailable. Check the connection and advisory-lock support."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-lock.php:36
+msgid "Another Directorist operation is in progress. Retry shortly."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-lock.php:51
+msgid "The database connection no longer owns the Directorist write lock. Reconcile any active operation before retrying."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-lock.php:72
+msgid "Directorist is busy"
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-readiness.php:42
+msgid "MCP writes are unavailable: the database cannot acquire advisory locks. Ask the host to enable connection-scoped GET_LOCK support."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-readiness.php:49
+msgid "MCP writes require multiple connection-scoped advisory locks."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-readiness.php:51
+msgid "The database replaces existing advisory locks. MCP writes are unsupported on this backend."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-readiness.php:55
+msgid "The database could not release a preflight advisory lock. Check connection routing."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-readiness.php:57
+msgid "MCP writes require advisory locks on the active database connection. Check the database proxy configuration."
+msgstr ""
+
+#: ../includes/modules/mcp/safety/class-write-readiness.php:61
+msgid "MCP writes are unavailable: the database could not release its preflight lock."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-pagination.php:22
+msgid "Use a positive page and a page size between 1 and 100."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-read-support.php:95
+msgid "Select a bounded set of distinct supported keys."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-read-support.php:96
+msgid "A requested section or field is unavailable or forbidden."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-read-support.php:114
+msgid "The requested data source is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-read-support.php:223
+msgid "The response exceeds its bound. Select fewer sections or a smaller page."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:61
+msgid "Expected %s to be an object."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:73
+msgid "Unknown or unsupported parameter."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:82
+msgid "A positive integer ID is required."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:92
+msgid "Expected at most 100 explicit IDs."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:103
+msgid "The record changed. Read it again and obtain a new preview."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:112
+msgid "Unsupported Directorist taxonomy."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:123
+msgid "Directory not found."
+msgstr ""
+
+#: ../includes/modules/mcp/support/class-validation.php:134
+msgid "A text value is required."
+msgstr ""
+
+#: ../includes/modules/mcp/transport/class-ability-registrar.php:24
+msgid "Permission-aware directory management."
+msgstr ""
+
+#: ../includes/modules/mcp/transport/class-ability-registrar.php:46
+msgid "An integration could not authorize this operation."
+msgstr ""
+
+#: ../includes/modules/mcp/transport/class-origin-policy.php:33
+msgid "This browser Origin is not trusted for Directorist MCP."
+msgstr ""
+
+#: ../includes/modules/mcp/transport/class-server.php:31
+msgid "Directorist MCP Server"
+msgstr ""
+
+#: ../includes/modules/mcp/transport/class-server.php:31
+msgid "Manage Directorist using your WordPress account permissions."
+msgstr ""
+
+#: ../includes/modules/mcp/transport/class-tool-errors.php:36
+msgid "The tool input or permission check failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/context/class-context-callbacks.php:34
+msgid "Discover the relevant schema and exact IDs before making changes. Preview consequential actions; execute with an idempotency key."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/context/class-reference-callbacks.php:31
+msgid "Specify taxonomy and directory_id for term choices."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/context/class-reference-callbacks.php:58
+msgid "Unsupported reference kind."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/context/class-tool-provider.php:30
+msgid "Start here. Current identity, permissions, tool groups and limits."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/context/class-tool-provider.php:31
+msgid "Eligible directory, term, media or page choices. Never unrestricted configuration."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-activity-data.php:79
+msgid "This activity type is not permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-activity-data.php:80
+msgid "Select listing activity for directory filtering."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-activity-data.php:116
+msgid "Review source exceeds its permission budget."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-financial-data.php:32
+msgid "Order access is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-financial-data.php:33
+msgid "Financial sources have no supported directory allocation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-financial-data.php:63
+msgid "Unsupported stored order status."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-financial-data.php:78
+msgid "Too many currencies in the requested range."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-financial-data.php:81
+msgid "Financial aggregate exceeds exact arithmetic bounds."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-financial-data.php:109
+msgid "Favorites exceed the supported scope budget."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-guidance.php:34
+msgid "Only quick actions support a directory filter."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-guidance.php:95
+msgid "Own quick-action navigation has no directory allocation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-listing-data.php:61
+msgid "This listing scope exceeds the native object-permission scan budget. Select a directory or use a narrower source."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:37
+msgid "Unsupported dashboard scope."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:41
+msgid "Own dashboard access is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:54
+msgid "Use one preset or both explicit dates."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:57
+msgid "Use a valid local YYYY-MM-DD date."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:62
+msgid "Use an ordered range of at most 90 local dates, ending no later than today."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:130
+msgid "This metric is unavailable or forbidden."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:139
+msgid "Select listing sections for directory filtering; these sources have no native directory allocation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:190
+msgid "Too many currencies for this range."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:191
+msgid "Select one recorded currency for financial series."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/dashboard/class-read-callbacks.php:212
+msgid "The monetary aggregate exceeds exact arithmetic bounds."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:29
+msgid "Select a discovered configuration key in this builder area."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:31
+msgid "Unsupported builder action."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:35
+msgid "This builder option is not writable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:39
+msgid "Select an existing page."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:65
+msgid "This form builder configuration must contain fields and groups."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:87
+msgid "This header widget must use its native widget name as its ID."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:116
+msgid "Select original_widget_key from the matching submission fields; the source is missing or ambiguous."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:120
+msgid "original_widget_key must reference a submission field of the matching widget type."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:126
+msgid "A header button must use its submission field ID."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:154
+msgid "Supply a stable section ID with letters, numbers, hyphens or underscores before previewing."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:155
+msgid "Section ID is already in use."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:158
+msgid "Select a supported section widget."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:173
+msgid "Section ID must be nonempty and unique."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:179
+msgid "Builder section not found."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:199
+msgid "Use section reorder to move sections."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:188
+msgid "This section widget is read-only."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:181
+msgid "Move/remove section items first; locked sections cannot be removed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:203
+msgid "This configuration contains fields and sections."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:211
+msgid "Select a section to reorder."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:225
+msgid "Builder field not found."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:228, ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:384
+msgid "This widget is read-only."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:234
+msgid "A mandatory preset cannot be removed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:215
+msgid "This widget is not supported for MCP editing."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:216
+msgid "Add this widget as a section, not as a field."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:217
+msgid "Supply a stable field ID with letters, numbers, hyphens or underscores before previewing."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:218
+msgid "Field ID is already in use."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:245
+msgid "Select a target section."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:247
+msgid "Invalid insertion position."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:295
+msgid "This widget integration is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:304
+msgid "Field storage keys and fixed widget options cannot be changed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:324
+msgid "Choice values must be unique."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:329
+msgid "Unsupported widget option type."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:351
+msgid "Unknown card template."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:352
+msgid "Use update to select a card template."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:357
+msgid "This configuration contains layout widgets."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:361
+msgid "Use a discovered widget slot."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:369
+msgid "Invalid widget position."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:381
+msgid "Layout widget not found in this slot."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:388
+msgid "This widget cannot be moved or removed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:392
+msgid "Unknown target slot."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:375
+msgid "Unsupported layout widget."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-operations.php:428
+msgid "Reorder must include every sibling ID exactly once."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-schema.php:96
+msgid "This widget is not allowed in the selected slot."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-schema.php:97
+msgid "This widget slot is full."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-schema.php:98
+msgid "Duplicate widget in this slot."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:27
+msgid "Field storage keys must be unique."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:30
+msgid "The listing title must remain required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:37
+msgid "Every submission field must belong to exactly one section."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:46
+msgid "Conditional rules must reference an existing field."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:47
+msgid "Unsupported conditional operator."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:53
+msgid "Conditional rules contain a cycle."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:82
+msgid "A search or layout widget still references a removed field."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-builder-validator.php:85
+msgid "Widget references an unknown submission field."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-directory-configuration.php:222
+msgid "The image attachment URL is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-directory-configuration.php:227
+msgid "Expiration must be 0–36500 days."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-directory-configuration.php:233
+msgid "Unsupported listing status policy."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-read-callbacks.php:41
+msgid "Unsupported builder area."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-read-callbacks.php:60
+msgid "Set an authorized image attachment ID through update-directory; 0 clears it. Reads return the native stored URL."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:30
+msgid "List directory management summaries. Administrator only."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:31
+msgid "Inspect a directory and its configuration/version."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:32
+msgid "Discover builder widgets, placements, options and constraints before editing."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:33
+msgid "Preview and create a directory with native defaults. Multi-directory mode required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:34
+msgid "Duplicate configuration only; no listings or term associations."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:35
+msgid "Preview and update supported directory identity/general policies."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:36
+msgid "Preview and select the single default directory."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:37
+msgid "Delete only an empty, non-default directory without dependencies. Preview required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-tool-provider.php:38
+msgid "Preview typed builder operations. Supply a unique stable ID for every field or section addition before previewing. Existing listing values are retained."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:37
+msgid "Enable multi-directory mode before creating another directory."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:41
+msgid "Use a unique directory slug."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:56
+msgid "Directory creation failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:65
+msgid "Only an empty, non-default directory without dependencies can be deleted."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:112
+msgid "Use update-directory for general settings."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:105
+msgid "Name and slug cannot be empty."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:108
+msgid "That directory slug is already in use."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:136
+msgid "The builder update failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:151
+msgid "Name cannot be empty."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/directories/class-write-callbacks.php:152
+msgid "That directory name is already in use."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-policy.php:56
+msgid "A listing or entitlement policy blocks this operation. Use the native workflow or a registered policy integration."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:105
+msgid "You cannot create listings."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:103
+msgid "The listing belongs to a different directory."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:119
+msgid "Use assignment reference lookups for taxonomy IDs. Paid entitlements and ownership are read-only."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:217
+msgid "The attachment file is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:222
+msgid "The attachment type is not allowed for this field."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:223
+msgid "The attachment exceeds this field size limit."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-listing-schema.php:225
+msgid "The attachment URL is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-read-callbacks.php:52
+msgid "Listing management access is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-read-callbacks.php:63
+msgid "This status is unavailable in this read scope."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-read-callbacks.php:85
+msgid "Invalid date filter."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-read-callbacks.php:95
+msgid "Public listing access is disabled."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-submission-adapter.php:42
+msgid "Some listing fields are invalid."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:32
+msgid "Find authorized listings with explicit filters. Large scopes with object policies can return short or empty pages and null totals. Continue while has_more is true."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:33
+msgid "Read authorized listing fields, actual status, allowed actions and version."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:34
+msgid "Discover directory-specific fields, required consents and submission constraints."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:35
+msgid "Create for the current user through native submission validation. Public publication requires preview."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:36
+msgid "Edit explicit supported fields with native edit policy. No owner/entitlement overrides."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:37
+msgid "Preview an eligible native publication/privacy transition."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:38
+msgid "Preview and trash a listing. Permanent deletion is never supported."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:39
+msgid "Preview and restore an eligible trashed listing under current policies."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-tool-provider.php:40
+msgid "Preview up to 50 explicit listing actions; each result is independent."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:45
+msgid "Restore this listing before editing it."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:43
+msgid "You cannot submit listings."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:53
+msgid "This field is read-only."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:57
+msgid "Do not combine replace with add/remove."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:103
+msgid "Invalid map coordinate."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:88
+msgid "A selected term belongs to a different directory."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:123
+msgid "Consent values must be explicit booleans."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:136
+msgid "This initial publication status is not allowed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:164
+msgid "The listing save could not be verified."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:201
+msgid "Only trashed listings can be restored."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:196
+msgid "Trash is disabled; permanent deletion is not supported."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:197
+msgid "This listing is already in Trash."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:194
+msgid "This status transition is not permitted."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:221
+msgid "The listing lifecycle update failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/listings/class-write-callbacks.php:222
+msgid "The native workflow changed the reviewed listing status. Preview again using the native publication requirements."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:32
+msgid "Supply an image filename without a path."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:35
+msgid "Use an allowed image extension matching the actual image format."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:41
+msgid "The image exceeds the permitted byte limit or is empty."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:43
+msgid "Supply a valid JPEG, PNG, GIF or WebP image allowed by WordPress."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:44
+msgid "The image dimensions exceed the supported limits."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:50
+msgid "Supply canonical base64 image data without a data URI prefix."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:52
+msgid "The image base64 data is invalid."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:59
+msgid "Import requires a public HTTPS URL without credentials, fragments or custom ports."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:61
+msgid "Private or local image sources are not allowed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:63
+msgid "The public image source could not be resolved."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:67
+msgid "Private or reserved image source addresses are not allowed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-image-validation.php:69
+msgid "The image source URL is not safe."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:60
+msgid "Image uploads are unavailable under the current WordPress policy."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:66
+msgid "Source attribution must use a public HTTPS page without credentials."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:88
+msgid "Remote content, size and image format are checked at execution; redirects are rejected."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:102
+msgid "Could not create a temporary image file."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:124
+msgid "The temporary image could not be written."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:119
+msgid "The remote image could not be downloaded."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:120
+msgid "The image source must return HTTP 200 directly; redirects are not allowed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:122
+msgid "The downloaded image could not be read."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:133
+msgid "The filename and image content do not match."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:135
+msgid "The image exceeds the available site upload quota."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:143
+msgid "WordPress could not store the uploaded image."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:157
+msgid "WordPress could not generate image metadata."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-media-callbacks.php:164
+msgid "The image could not be prepared for storage."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-tool-provider.php:31
+msgid "Inspect an authorized image attachment, including URL, dimensions, size, checksum and attribution."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-tool-provider.php:32
+msgid "Preview and upload a base64 JPEG, PNG, GIF or WebP image (up to 512 KiB). No data URI or local file paths. Requires upload_files."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-tool-provider.php:33
+msgid "Preview and import a public HTTPS JPEG, PNG, GIF or WebP image (up to 10 MiB). No private hosts, credentials or redirects. Requires upload_files."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/media/class-tool-provider.php:59
+msgid "You cannot upload media."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:64
+msgid "This key belongs to a different financial operation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:78
+msgid "This evidence was already recorded. Reconcile the original receipt."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:93
+msgid "The order needs native financial reconciliation before more refunds."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:101
+msgid "The refund ledger has inconsistent currencies."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:143
+msgid "Could not reserve the financial intent."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:144
+msgid "The financial key is already reserved."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:145
+msgid "Could not reserve the order balance."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:151
+msgid "This evidence has already been recorded. Reconcile the original operation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:196
+msgid "Invalid provider outcome."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:200
+msgid "Invalid provider reference."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:246
+msgid "Refund operation not found."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:248
+msgid "The operation is already linked to a different native refund."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:252
+msgid "A compatible provider is required to reconcile."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:258
+msgid "Provider settlement has not been verified."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:260
+msgid "The native settled refund does not match the operation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:263
+msgid "This refund is already linked to another operation."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-financial-operations.php:265
+msgid "Could not reserve the native proof."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:22
+msgid "Invalid currency."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:27
+msgid "Unsupported currency precision."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:39
+msgid "Exact MCP monetary arithmetic requires a 64-bit PHP runtime."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:40
+msgid "Use a nonnegative exact decimal string."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:42
+msgid "The amount exceeds currency precision."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:53
+msgid "Invalid monetary balance."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:68
+msgid "Invalid native monetary value."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-money.php:87
+msgid "This amount or precision is unsupported by the native ledger."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:50
+msgid "The native order storage is unavailable. No migration is performed by MCP."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:55
+msgid "Native customer access is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:70
+msgid "Order storage is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:71
+msgid "Specify exactly one order_id or legacy_id."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-policy.php:96
+msgid "Use the native administration tools to reconcile this unusually large ledger."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:28
+msgid "New purchases are unavailable while monetization is disabled."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:29
+msgid "Customer not found."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:32
+msgid "A supported order-item adapter is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:36
+msgid "Invalid native item quote."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:38
+msgid "The item quote attempted a restricted identity or settled-state change."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:41
+msgid "The item listing must belong to the purchaser and cannot be transferred."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:46
+msgid "Featured-listing purchases are unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:49
+msgid "The listing must belong to this customer and be eligible for purchase."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:50
+msgid "This listing already has an active featured entitlement."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:55
+msgid "Use the native free-listing workflow for a zero-priced item."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-order-quote.php:58
+msgid "The item adapter attempted an unsupported purchase change."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-read-callbacks.php:74
+msgid "Unknown native order status."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-read-callbacks.php:90
+msgid "Use an ISO date or local date/time."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-read-callbacks.php:153
+msgid "A refund record alone does not prove gateway settlement."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-tool-provider.php:46
+msgid "Directorist orders: "
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:41
+msgid "The order could not be created."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:54
+msgid "Only eligible unpaid orders can be edited."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:57
+msgid "Recalculate must be true."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:59
+msgid "Order listing transfer is not supported."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:76
+msgid "This native transition is not eligible."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:105
+msgid "The currency must match the native order."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:107
+msgid "The amount must be positive."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:122
+msgid "This order is not eligible for a refund."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:124
+msgid "The refundable payment is invalid."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:129
+msgid "Orders with multiple settled receipts require a native allocation adapter."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:130
+msgid "The refund exceeds the available balance."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:131
+msgid "A refund reason is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:140
+msgid "A manual refund requires evidence and cannot dispatch a provider."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:134
+msgid "A compatible registered refund provider is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:136
+msgid "This provider action is forbidden."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:145
+msgid "Refund recording failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:112
+msgid "Only an eligible native offline receipt can be recorded."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:113
+msgid "Record the exact native due amount."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:114
+msgid "Receipt evidence is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/orders/class-write-callbacks.php:118
+msgid "Payment recording failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-read-callbacks.php:35
+msgid "Sensitive settings are available only in WordPress administration."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-settings-schema.php:201
+msgid "Specify at most 100 settings keys."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-settings-schema.php:203
+msgid "Unknown or unsupported settings key."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-settings-validator.php:51
+msgid "Use a valid hex color."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-settings-validator.php:56
+msgid "Select an accessible WordPress page."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-tool-provider.php:26
+msgid "Discover supported non-secret settings, defaults and constraints."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-tool-provider.php:27
+msgid "Read selected supported settings. Requires configuration access."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-tool-provider.php:28
+msgid "Preview and update explicit supported settings as one change set."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-tool-provider.php:29
+msgid "Preview and reset explicit supported settings to registered defaults."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:29
+msgid "Specify between 1 and 100 explicit settings."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:34
+msgid "Unsupported or sensitive settings key."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:37
+msgid "This setting cannot be reset."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:44
+msgid "Use separate calls for independent settings stores."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:48, ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:122
+msgid "The store must provide one atomic change-set writer."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:56
+msgid "The store must provide one effective change-set preview."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:110
+msgid "The settings update failed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/settings/class-write-callbacks.php:113
+msgid "The settings save could not be verified."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/site-health/class-diagnostic-collector.php:77
+msgid "Too many registered diagnostic contributions for this section."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/site-health/class-read-callbacks.php:34
+msgid "This section is unsupported or forbidden."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/site-health/class-read-callbacks.php:66
+msgid "Report exceeds 1000 fields/items. Select fewer sections."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/site-health/class-read-callbacks.php:94
+msgid "A required diagnostic collector is unavailable."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/site-health/class-read-callbacks.php:130
+msgid "This inventory is too large for a support report. Read it in pages."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/site-health/class-section-catalog.php:27
+msgid "Directorist administration and native Site Health access are required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-term-validator.php:25
+msgid "Term not found."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:35
+msgid "Discover the three listing taxonomies and current management/assignment permissions."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:36
+msgid "Read taxonomy management data. Owners use assignment reference lookups instead."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:37
+msgid "Read a managed term with directory associations and current version."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:38
+msgid "Create a supported listing term. Assignment permission alone is insufficient."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:39
+msgid "Update supported term properties; hierarchy, slug and association changes require preview."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:40
+msgid "Preview and delete only an unused childless term. No cascading deletion or reassignment."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:41
+msgid "Preview up to 50 explicit term actions in one taxonomy with individual outcomes."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-tool-provider.php:86
+msgid "Taxonomy access is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:37
+msgid "This term still has listing, child or protected dependencies. Resolve them before deleting it."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:44
+msgid "The deletion could not be verified."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:65
+msgid "No term changes were supplied."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:72
+msgid "A term name is required."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:77
+msgid "That term slug is already in use or invalid."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:84
+msgid "Directory associations cannot be edited in single-directory mode."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:88
+msgid "Do not mix replace with add/remove."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:93
+msgid "A term must retain an eligible directory."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:102
+msgid "Listings still use this term in a directory being removed."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:107
+msgid "Parent must be a nonnegative integer."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:109
+msgid "This term name already exists in that scope."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:113
+msgid "This parent would create a hierarchy cycle."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:114
+msgid "The parent must support every child directory."
+msgstr ""
+
+#: ../includes/modules/mcp/tool-providers/taxonomies/class-write-callbacks.php:118
+msgid "This change would invalidate a child directory association."
 msgstr ""
 
 #: ../templates/all-authors.php:143

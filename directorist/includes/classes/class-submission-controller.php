@@ -889,6 +889,12 @@ class SubmissionController {
     }
 
     public static function upload_images( $listing_id, $posted_data ) {
+        // MCP validates existing attachment references. Its native adapter updates
+        // those references after submit; no temporary file or deletion work may
+        // occur inside the guarded listing transaction.
+        if ( 'mcp' === self::$from ) {
+            return;
+        }
         $image_upload_field = directorist_get_listing_form_field( $posted_data['directory_id'], 'image_upload' );
 
         if ( empty( $image_upload_field ) ) {
@@ -906,10 +912,14 @@ class SubmissionController {
             return;
         }
 
-        $old_images = $selected_images['old'];
+        $old_images = directorist_authorize_listing_images( (int) $listing_id, $selected_images['old'] );
         $new_images = $selected_images['new'];
 
         self::clean_unselected_images( $listing_id, $old_images );
+
+        delete_post_thumbnail( $listing_id );
+        delete_post_meta( $listing_id, '_listing_prv_img' );
+        delete_post_meta( $listing_id, '_listing_img' );
 
         if ( empty( $old_images ) && empty( $new_images ) ) {
             return;
@@ -1008,7 +1018,9 @@ class SubmissionController {
         }
 
         foreach ( $unselected_images as $unselected_image ) {
-            wp_delete_attachment( $unselected_image, true );
+            if ( directorist_user_can_delete_listing_image( (int) $unselected_image ) ) {
+                wp_delete_attachment( $unselected_image, true );
+            }
         }
     }
 }

@@ -479,8 +479,8 @@ class Helper {
 
     public static function is_popular( $listing_id ) {
         $listing_popular_by         = get_directorist_option( 'listing_popular_by' );
-        $average                    = directorist_get_listing_rating( $listing_id );
-        $average_review_for_popular = (int) get_directorist_option( 'average_review_for_popular', 4 );
+        $average                    = directorist_get_listing_rating( $listing_id, 2 );
+        $average_review_for_popular = (float) get_directorist_option( 'average_review_for_popular', 4 );
         $view_count                 = directorist_get_listing_views_count( $listing_id );
         $view_to_popular            = (int) get_directorist_option( 'views_for_popular' );
 

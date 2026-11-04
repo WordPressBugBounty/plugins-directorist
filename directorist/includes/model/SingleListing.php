@@ -1106,13 +1106,14 @@ class Directorist_Single_Listing {
     public function edit_link() {
         $id = $this->id;
         $redirect = '';
-        if ( isset( $_GET['redirect'] ) ) {
+        if ( isset( $_GET['redirect'] ) && is_string( $_GET['redirect'] ) ) {
             // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
             $redirect = wp_validate_redirect( wp_unslash( $_GET['redirect'] ), '' );
         }
         
-        $payment = isset( $_GET['payment'] ) ? sanitize_text_field( wp_unslash( $_GET['payment'] ) ) : '';
-        $edit_link = ! empty( $payment ) ? add_query_arg( 'redirect', $redirect, ATBDP_Permalink::get_edit_listing_page_link( $id ) ) : ATBDP_Permalink::get_edit_listing_page_link( $id );
+        $payment = isset( $_GET['payment'] ) && is_string( $_GET['payment'] ) ? sanitize_text_field( wp_unslash( $_GET['payment'] ) ) : '';
+        // Keep the validated destination as one query value, including its own query and fragment.
+        $edit_link = ! empty( $payment ) && '' !== $redirect ? add_query_arg( 'redirect', rawurlencode( $redirect ), ATBDP_Permalink::get_edit_listing_page_link( $id ) ) : ATBDP_Permalink::get_edit_listing_page_link( $id );
         
         return $edit_link;
     }

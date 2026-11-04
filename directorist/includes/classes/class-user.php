@@ -403,7 +403,17 @@ if ( ! class_exists( 'ATBDP_User' ) ) :
                 return $sendback;
             }
 
-            $user_ids = wp_parse_id_list( $user_ids );
+            $user_ids = array_filter(
+                wp_parse_id_list( $user_ids ), function ( $user_id ) {
+                    return current_user_can( 'edit_user', $user_id );
+                }
+            );
+            $user_ids = array_values( $user_ids );
+
+            if ( empty( $user_ids ) ) {
+                return $sendback;
+            }
+
 
             $email_verification_type = '';
 

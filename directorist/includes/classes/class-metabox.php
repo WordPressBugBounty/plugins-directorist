@@ -40,6 +40,16 @@ class ATBDP_Metabox {
         $term_id        = ! empty( $_POST['directory_type'] ) ? (int) directorist_clean( wp_unslash( $_POST['directory_type'] ) ) : '';
         $listing_id     = ! empty( $_POST['listing_id'] ) ? directorist_clean( wp_unslash( $_POST['listing_id'] ) ) : '';
 
+        $listing_id = absint( $listing_id );
+        $post_type  = get_post_type_object( ATBDP_POST_TYPE );
+        $allowed    = $listing_id
+            ? ATBDP_POST_TYPE === get_post_type( $listing_id ) && current_user_can( 'edit_post', $listing_id )
+            : $post_type && current_user_can( $post_type->cap->create_posts );
+
+        if ( ! $allowed ) {
+            wp_send_json_error( [ 'message' => __( 'You are not allowed to edit this listing.', 'directorist' ) ], 403 );
+        }
+
         // listing meta fields
         ob_start();
         $this->render_listing_meta_fields( $term_id, $listing_id );

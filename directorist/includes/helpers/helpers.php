@@ -135,6 +135,53 @@ function directorist_is_listing_featured( int $listing_id ): bool {
     return strval( get_post_meta( $listing_id, '_featured', true ) ) === '1';
 }
 
+/**
+ * Check listing access for a checkout customer, including asynchronous payments.
+ */
+function directorist_user_can_checkout_listing( int $listing_id, ?int $user_id = null ): bool {
+    if ( $listing_id < 1 ) {
+        return false;
+    }
+
+    $user_id = null === $user_id ? get_current_user_id() : $user_id;
+    $listing = get_post( $listing_id );
+
+    if ( ! $user_id || ! get_userdata( $user_id ) || ! $listing || ATBDP_POST_TYPE !== $listing->post_type ) {
+        return false;
+    }
+
+    // Frontend listing owners need not have access to the WordPress editor.
+    return (int) $listing->post_author === $user_id || user_can( $user_id, 'edit_post', $listing_id );
+}
+
+/**
+ * Retain existing listing images and authorize newly selected media.
+ * Saved metadata is not authority to permanently delete an attachment.
+ */
+function directorist_authorize_listing_images( int $listing_id, array $images ): array {
+    $saved      = array_map( 'intval', atbdp_get_listing_attachment_ids( $listing_id ) );
+    $authorized = array_filter(
+        wp_parse_id_list( $images ), function ( $id ) use ( $saved ) {
+            $attachment = get_post( $id );
+            if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
+                return false;
+            }
+            return in_array( $id, $saved, true )
+                || ( get_current_user_id() && (int) $attachment->post_author === get_current_user_id() )
+                || current_user_can( 'edit_post', $id );
+        }
+    );
+    return array_values( $authorized );
+}
+
+/** Only the attachment owner or a user allowed to delete it may remove its file. */
+function directorist_user_can_delete_listing_image( int $id ): bool {
+    $attachment = get_post( $id );
+    return $attachment && 'attachment' === $attachment->post_type
+        && ( ( get_current_user_id() && (int) $attachment->post_author === get_current_user_id() )
+            || current_user_can( 'delete_post', $id ) );
+}
+
 function directorist_set_listing_featured( int $listing_id, bool $is_featured = true ): bool {
     return update_post_meta( $listing_id, '_featured', $is_featured ? '1' : '0' );
 }

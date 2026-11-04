@@ -634,8 +634,8 @@ class Directorist_Listings {
                     $meta_queries['_rating'] = [
                         'key'     => directorist_get_rating_field_meta_key(),
                         'value'   => $this->average_review_for_popular,
-                        'type'    => 'NUMERIC',
-                        'compare' => '<=',
+                        'type'    => 'DECIMAL(3,2)',
+                        'compare' => '>=',
                     ];
                 } elseif ( 'view_count' === $this->popular_by ) {
                     $meta_queries['views'] = [
@@ -665,7 +665,8 @@ class Directorist_Listings {
                     $meta_queries['_rating'] = [
                         'key'     => directorist_get_rating_field_meta_key(),
                         'value'   => $this->average_review_for_popular,
-                        'compare' => '<=',
+                        'type'    => 'DECIMAL(3,2)',
+                        'compare' => '>=',
                     ];
                 }
             } else {
@@ -673,8 +674,8 @@ class Directorist_Listings {
                     $meta_queries['_rating'] = [
                         'key'     => directorist_get_rating_field_meta_key(),
                         'value'   => $this->average_review_for_popular,
-                        'type'    => 'NUMERIC',
-                        'compare' => '<=',
+                        'type'    => 'DECIMAL(3,2)',
+                        'compare' => '>=',
                     ];
                 } elseif ( 'view_count' === $this->popular_by ) {
                     $meta_queries['views'] = [
@@ -702,8 +703,8 @@ class Directorist_Listings {
                     $meta_queries['_rating'] = [
                         'key'     => directorist_get_rating_field_meta_key(),
                         'value'   => $this->average_review_for_popular,
-                        'type'    => 'NUMERIC',
-                        'compare' => '<=',
+                        'type'    => 'DECIMAL(3,2)',
+                        'compare' => '>=',
                     ];
                 }
             }

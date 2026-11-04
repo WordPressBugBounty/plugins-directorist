@@ -1952,8 +1952,8 @@ if ( ! function_exists( 'atbdp_is_page' ) ) {
 if ( ! function_exists( 'atbdp_popular_listings' ) ) {
     function atbdp_popular_listings( $listing_id ) {
         $listing_popular_by         = get_directorist_option( 'listing_popular_by' );
-        $average                    = directorist_get_listing_rating( $listing_id );
-        $average_review_for_popular = (int) get_directorist_option( 'average_review_for_popular', 4 );
+        $average                    = directorist_get_listing_rating( $listing_id, 2 );
+        $average_review_for_popular = (float) get_directorist_option( 'average_review_for_popular', 4 );
         $view_count                 = (int) get_post_meta( $listing_id, '_atbdp_post_views_count', true );
         $view_to_popular            = (int) get_directorist_option( 'views_for_popular' );
 

@@ -575,10 +575,14 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                 return;
             }
 
-            $old_images = $selected_images['old'];
+            $old_images = directorist_authorize_listing_images( (int) $listing_id, $selected_images['old'] );
             $new_images = $selected_images['new'];
 
             self::clean_unselected_images( $listing_id, $old_images );
+
+            delete_post_thumbnail( $listing_id );
+            delete_post_meta( $listing_id, '_listing_prv_img' );
+            delete_post_meta( $listing_id, '_listing_img' );
 
             if ( empty( $old_images ) && empty( $new_images ) ) {
                 return;
@@ -665,7 +669,9 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
             }
 
             foreach ( $unselected_images as $unselected_image ) {
-                wp_delete_attachment( $unselected_image, true );
+                if ( directorist_user_can_delete_listing_image( (int) $unselected_image ) ) {
+                    wp_delete_attachment( $unselected_image, true );
+                }
             }
         }
 

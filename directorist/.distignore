@@ -10,7 +10,15 @@
 /artisan
 /tsconfig.json
 
-/assets/src
+# MCP assets are browser-ready source and are loaded without a build.
++ /assets/src/
++ /assets/src/js/
++ /assets/src/js/admin/
++ /assets/src/js/admin/mcp/***
++ /assets/src/css/
++ /assets/src/css/admin/
++ /assets/src/css/admin/mcp/***
+/assets/src/***
 /bin
 
 # Git & config files
@@ -44,6 +52,7 @@
 /webpack.config.js
 /webpack.legacy.dev.js
 /webpack.legacy.prod.js
+/tests
 
 # Documentation & notes
 /docs

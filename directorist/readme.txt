@@ -5,7 +5,7 @@ Tags: business directory, listings, classifieds, directory plugin, directory
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 8.10.7
+Stable tag: 8.11
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -299,6 +299,22 @@ Directorist is developer-friendly with plenty of hooks and filters. You can exte
 Directorist comes with an AI-powered directory builder. Use the Create with AI option, provide directory name, location and AI will build the directory for you.
 
 == Changelog ==
+
+= 8.11 - Nov 4, 2026 =
+
+**New**
+- Added MCP (Model Context Protocol) support, allowing AI assistants to manage listings, directories, settings, orders, and more
+
+**Security**
+
+- Escaped listing author output in the admin listings table to prevent stored XSS.
+- Added ownership validation when processing listing attachments. Thanks to Jashid Sany through WPScan for responsibly reporting this issue.
+- Restricted listing edit-form data to authorized users. Thanks to Nicat Sultanov through WPScan for responsibly reporting this issue.
+- Restricted payment receipts to authorized users. Thanks to Ilqar Rahimli through WPScan for responsibly reporting this issue.
+- Added order authorization checks for payment retries. Thanks to Ilqar Rahimli through WPScan for responsibly reporting this issue.
+- Strengthened listing authorization for featured checkout. Thanks to GivMeInJ through WPScan for responsibly reporting this issue.
+- Prevented listing status updates from bypassing administrator approval. Thanks to Vuxvinh through WPScan for responsibly reporting this issue.
+- Added per-user permission checks to email verification bulk actions, including multisite. Thanks to Muni Nitish Kumar Yaddala through WPScan for responsibly reporting this issue.
 
 = 8.10.7 - Nov 1, 2026 =
 

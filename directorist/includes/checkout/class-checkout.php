@@ -78,6 +78,10 @@ class ATBDP_Checkout {
             return __( "Order not found", 'directorist' );
         }
 
+        if ( (int) $order_db->user_id !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+            return __( 'You are not allowed to view this order.', 'directorist' );
+        }
+
         $order = apply_filters( 'directorist_payment_receipt_order_dto', $order_repository->to_dto( $order_db ) );
 
         $payment_repository = directorist_payment_repository();

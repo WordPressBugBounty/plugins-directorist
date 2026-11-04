@@ -138,6 +138,14 @@ class Listings_Controller extends Posts_Controller {
             );
         }
 
+        // Owners may toggle listing visibility, but cannot bypass pending approval.
+        $post_type = get_post_type_object( $this->post_type );
+        if ( 'pending' === $listing->post_status
+            && ( ! $post_type || ! current_user_can( $post_type->cap->edit_others_posts ) )
+        ) {
+            return new WP_Error( 'directorist_rest_cannot_publish', __( 'This listing requires administrator approval.', 'directorist' ), [ 'status' => 403 ] );
+        }
+
         $status = $this->validate_status_for_update( $request->get_param( 'status' ) );
 
         if ( is_wp_error( $status ) ) {

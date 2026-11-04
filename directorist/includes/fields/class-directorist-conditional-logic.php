@@ -132,6 +132,14 @@ class Conditional_Logic {
             }
         }
 
+        // Composite fields can expose a scalar child using its actual input name.
+        // Keep this limited to one explicit bracket key, without traversing objects.
+        if ( preg_match( '/^([a-zA-Z0-9_-]+)\[([a-zA-Z0-9_-]+)\]$/D', $field_key, $path )
+            && isset( $posted_data[ $path[1] ] ) && is_array( $posted_data[ $path[1] ] )
+            && array_key_exists( $path[2], $posted_data[ $path[1] ] ) ) {
+            return $posted_data[ $path[1] ][ $path[2] ];
+        }
+
         if ( ! empty( $posted_data['custom_field'] ) && is_array( $posted_data['custom_field'] ) ) {
             foreach ( $keys as $key ) {
                 if ( isset( $posted_data['custom_field'][ $key ] ) ) {

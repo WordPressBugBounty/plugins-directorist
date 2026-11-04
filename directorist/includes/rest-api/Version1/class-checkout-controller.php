@@ -194,6 +194,10 @@ class Checkout_Controller extends Abstract_Controller {
                 ]
             );
         } catch ( Exception $e ) {
+            if ( 403 === $e->getCode() ) {
+                return new WP_Error( 'rest_error', $e->getMessage(), [ 'status' => $e->getCode() ] );
+            }
+
             return new WP_Error( 'rest_error', $e->getMessage() );
         }
     }
@@ -212,6 +216,16 @@ class Checkout_Controller extends Abstract_Controller {
         }
 
         $order = $order_repository->to_dto( $order );
+
+        if ( $order->get_user_id() !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+            return new WP_Error( 'rest_forbidden', __( 'You do not have permission to pay for this order.', 'directorist' ), [ 'status' => 403 ] );
+        }
+
+        if ( \Directorist\FeaturedListingCheckout::CHECKOUT_TYPE === $order->get_ref_type()
+            && ( ! directorist_user_can_checkout_listing( $order->get_listing_id() ) || ! directorist_user_can_checkout_listing( $order->get_listing_id(), $order->get_user_id() ) )
+        ) {
+            return new WP_Error( 'rest_forbidden', __( 'You do not have permission to pay for this listing.', 'directorist' ), [ 'status' => 403 ] );
+        }
 
         if ( ! in_array( $order->get_status(), [ OrderStatus::PENDING, OrderStatus::FAILED ], true ) ) {
             return new WP_Error( 'rest_invalid_value', __( 'Order is not pending or failed.', 'directorist' ) );

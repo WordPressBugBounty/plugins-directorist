@@ -55,7 +55,11 @@ class PaymentCheckoutService {
         }
 
         if ( (int) $order->user_id !== get_current_user_id() ) {
-            throw new Exception( __( 'You do not have permission to pay for this order.', 'directorist' ) );
+            throw new Exception( __( 'You do not have permission to pay for this order.', 'directorist' ), 403 );
+        }
+
+        if ( FeaturedListingCheckout::CHECKOUT_TYPE === $order->ref_type && ! directorist_user_can_checkout_listing( (int) $order->listing_id ) ) {
+            throw new Exception( __( 'You do not have permission to pay for this listing.', 'directorist' ), 403 );
         }
 
         if ( Status::PENDING !== $order->status ) {

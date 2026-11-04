@@ -87,7 +87,7 @@ class Popular_Listings extends \WP_Widget {
 
         $has_featured               = directorist_is_featured_listing_enabled() || is_fee_manager_active();
         $listing_popular_by         = get_directorist_option( 'listing_popular_by' );
-        $average_review_for_popular = (int) get_directorist_option( 'average_review_for_popular', 4 );
+        $average_review_for_popular = (float) get_directorist_option( 'average_review_for_popular', 4 );
         $view_to_popular            = (int) get_directorist_option( 'views_for_popular' );
 
         $meta_queries = [];
@@ -97,8 +97,8 @@ class Popular_Listings extends \WP_Widget {
                 $meta_queries['_rating'] = [
                     'key'     => directorist_get_rating_field_meta_key(),
                     'value'   => $average_review_for_popular,
-                    'type'    => 'NUMERIC',
-                    'compare' => '<=',
+                    'type'    => 'DECIMAL(3,2)',
+                    'compare' => '>=',
                 ];
             } elseif ( 'view_count' === $listing_popular_by ) {
                 $meta_queries['views'] = [
@@ -123,8 +123,8 @@ class Popular_Listings extends \WP_Widget {
                 $meta_queries['_rating'] = [
                     'key'     => directorist_get_rating_field_meta_key(),
                     'value'   => $average_review_for_popular,
-                    'type'    => 'NUMERIC',
-                    'compare' => '<=',
+                    'type'    => 'DECIMAL(3,2)',
+                    'compare' => '>=',
                 ];
 
                 $args['orderby'] = [
@@ -137,8 +137,8 @@ class Popular_Listings extends \WP_Widget {
                 $meta_queries['_rating'] = [
                     'key'     => directorist_get_rating_field_meta_key(),
                     'value'   => $average_review_for_popular,
-                    'type'    => 'NUMERIC',
-                    'compare' => '<=',
+                    'type'    => 'DECIMAL(3,2)',
+                    'compare' => '>=',
                 ];
             } elseif ( 'view_count' === $listing_popular_by ) {
                 $meta_queries['views'] = [
@@ -162,8 +162,8 @@ class Popular_Listings extends \WP_Widget {
                 $meta_queries['_rating'] = [
                     'key'     => directorist_get_rating_field_meta_key(),
                     'value'   => $average_review_for_popular,
-                    'type'    => 'NUMERIC',
-                    'compare' => '<=',
+                    'type'    => 'DECIMAL(3,2)',
+                    'compare' => '>=',
                 ];
 
                 $args['orderby'] = [

@@ -94,10 +94,20 @@ class FeaturedListingCheckout {
             throw new Exception( __( 'Listing ID is required.', 'directorist' ) );
         }
 
-        $listing = get_post( $request->get_param( 'listing_id' ) );
+        $listing_id = $request->get_param( 'listing_id' );
+
+        if ( ! is_numeric( $listing_id ) || (float) $listing_id !== (float) (int) $listing_id || (int) $listing_id < 1 ) {
+            throw new Exception( __( 'Invalid listing id.', 'directorist' ) );
+        }
+
+        $listing = get_post( (int) $listing_id );
 
         if ( ! $listing || $listing->post_type !== ATBDP_POST_TYPE ) {
             throw new Exception( __( 'Invalid listing id.', 'directorist' ) );
+        }
+
+        if ( ! directorist_user_can_checkout_listing( $listing->ID ) ) {
+            throw new Exception( __( 'You do not have permission to pay for this listing.', 'directorist' ), 403 );
         }
     }
 
@@ -142,6 +152,12 @@ class FeaturedListingCheckout {
             return;
         }
 
+        // Gateway callbacks may run without a logged-in user. Validate the
+        // persisted customer/listing relationship, including historical orders.
+        if ( ! directorist_user_can_checkout_listing( $dto->get_listing_id(), $dto->get_user_id() ) ) {
+            return;
+        }
+
         if ( Status::PAID === $dto->get_status() ) {
             $order_expiration = $this->should_refresh_order_expiration( $dto, $old_order )
                 ? $this->refresh_order_expiration( $dto )
@@ -149,7 +165,7 @@ class FeaturedListingCheckout {
 
             directorist_set_listing_featured( $dto->get_listing_id(), true );
 
-            // Publish the listing if it's pending
+            // Preserve the existing publication flow after an authorized payment.
             $listing = get_post( $dto->get_listing_id() );
 
             if ( $listing && $order_expiration ) {

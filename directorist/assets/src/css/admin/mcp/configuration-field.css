@@ -1,0 +1,146 @@
+.directorist-mcp-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 0;
+}
+.directorist-mcp-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.directorist-mcp-title h3 {
+  font-size: 16px;
+  margin: 0 !important;
+}
+.directorist-mcp-card p {
+  margin: 10px 0 0;
+  color: #606775;
+  max-width: 640px;
+}
+.directorist-mcp-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.directorist-mcp-badge {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 9px;
+  background: #f0f1f3;
+  font-size: 12px;
+  color: #535b67;
+}
+.directorist-mcp-button {
+  border: 1px solid #d8dce3 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  padding: 8px 14px !important;
+  color: #303846 !important;
+  cursor: pointer;
+  line-height: 1.4;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.directorist-mcp-button.is-primary {
+  background: #3e62f5 !important;
+  border-color: #3e62f5 !important;
+  color: #fff !important;
+}
+.directorist-mcp-button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.directorist-mcp-button:focus-visible,
+.directorist-mcp-link:focus-visible,
+.directorist-mcp-tabs button:focus-visible {
+  outline: 2px solid #3e62f5;
+  outline-offset: 3px;
+}
+.directorist-mcp-icon-button:focus-visible {
+  outline: 2px solid #3e62f5;
+  outline-offset: -2px;
+}
+.directorist-mcp-switch {
+  position: relative;
+  display: inline-flex;
+  width: 40px;
+  height: 24px;
+  margin: 0 !important;
+}
+.directorist-mcp-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+.directorist-mcp-switch span {
+  display: block;
+  width: 40px;
+  border-radius: 20px;
+  background: #c6cbd3;
+  transition: background 0.15s;
+}
+.directorist-mcp-switch span:after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px #0002;
+  transition: transform 0.15s;
+}
+.directorist-mcp-switch input:checked + span {
+  background: #3e62f5;
+}
+.directorist-mcp-switch input:checked + span:after {
+  transform: translateX(16px);
+}
+.directorist-mcp-switch input:focus-visible + span {
+  outline: 2px solid #3e62f5;
+  outline-offset: 3px;
+}
+.directorist-mcp-switch input:disabled {
+  cursor: wait;
+}
+.directorist-mcp-switch input:disabled + span {
+  opacity: 0.5;
+}
+.directorist-mcp-adapter-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.directorist-mcp-adapter-action:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.directorist-mcp-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: directorist-mcp-spin 0.7s linear infinite;
+}
+@keyframes directorist-mcp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .directorist-mcp-spinner {
+    animation: none;
+  }
+}

@@ -842,8 +842,8 @@ if ( ! class_exists( 'ATBDP_Custom_Post' ) ) :
                         '<a href="%1$s" title="%2$s">%3$s</a>',
                         esc_url( add_query_arg( $args, 'edit.php' ) ),
                         /* translators: 1: Author name */
-                        sprintf( esc_attr_x( 'Filter by %1$s', 'Author filter link', 'directorist' ), get_the_author() ),
-                        get_the_author()
+                        esc_attr( sprintf( _x( 'Filter by %1$s', 'Author filter link', 'directorist' ), get_the_author() ) ),
+                        esc_html( get_the_author() )
                     );
                     break;
 
