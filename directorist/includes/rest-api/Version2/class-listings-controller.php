@@ -261,7 +261,7 @@ class Listings_Controller extends Legacy_Listings_Controller {
     }
 
     protected function hydrate_global_post( $request ) {
-        if ( ! isset( $request['directory'] ) && ! empty( $request['id'] ) ) {
+        if ( ! empty( $request['id'] ) ) {
             $request->set_param( 'directory', directorist_get_listing_directory( (int) $request['id'] ) );
         }
 

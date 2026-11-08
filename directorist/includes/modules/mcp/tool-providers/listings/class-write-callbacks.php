@@ -26,7 +26,7 @@ class Write_Callbacks {
     public static function prepare( string $tool, array $args ): array {
         $create    = 'create-listing' === $tool;
         $post      = $create ? null : Access_Control::listing( $args['listing_id'], in_array( $tool, [ 'trash-listing', 'restore-listing' ], true ) ? 'delete' : 'edit' );
-        $directory = $create ? Validation::directory( $args['directory_id'] )->term_id : Listing_Schema::directory( $post->ID );
+        $directory = $create ? Validation::directory( $args['directory_id'] )->term_id : directorist_get_listing_directory( $post->ID );
         $version   = $post ? Listing_Schema::version( $post ) : Listing_Schema::schema( [ 'directory_id' => $directory ] )['schema_version'];
         if ( $post && empty( $args['dry_run'] ) ) {
             Validation::version( $args['expected_version'] ?? null, $version );
@@ -129,6 +129,10 @@ class Write_Callbacks {
         Listing_Policy::policy( $post, $directory, $create ? 'create' : 'edit', $data );
         Submission_Adapter::validate_only( $data, $directory );
         $status = $create ? ( $args['status'] ?? directorist_get_listing_create_status( $directory ) ) : directorist_get_listing_edit_status( $directory, $id );
+        if ( $create && isset( $args['status'] ) ) {
+            Validation::check( in_array( $args['status'], [ 'draft', 'pending', 'publish' ], true ), __( 'This initial publication status is not allowed.', 'directorist' ), 'forbidden' );
+        }
+        $status = directorist_resolve_listing_status( (string) $status, $directory, $id );
         if ( $create ) {
             if ( ! isset( $args['status'] ) && ! in_array( $status, Listing_Policy::initial_statuses( $directory ), true ) ) {
                 $status = 'pending';
@@ -136,7 +140,7 @@ class Write_Callbacks {
             Validation::check( in_array( $status, Listing_Policy::initial_statuses( $directory ), true ), __( 'This initial publication status is not allowed.', 'directorist' ), 'forbidden' );
         }
         return [
-            'state'   => [ $version, $directory, $status ],
+            'state'   => [ $version, Listing_Policy::publication_state( $directory, $post, $status ) ],
             'confirm' => $create ? 'publish' === $status : $status !== $post->post_status,
             'preview' => [ 'listing_id' => $id ?: null, 'directory_id' => $directory, 'fields' => $changes, 'effective_status' => $status, 'version' => $version ],
             'execute' => static function () use ( $data, $create, $status, $id, $values, $definitions, $changes ) {
@@ -190,7 +194,11 @@ class Write_Callbacks {
     public static function lifecycle( string $tool, array $args, \WP_Post $post, string $version ): array {
         $id = (int) $post->ID;
         if ( 'change-listing-status' === $tool ) {
-            $status = $args['status'];
+            Validation::check( in_array( $args['status'], [ 'publish', 'private', 'pending' ], true ), __( 'This status transition is not permitted.', 'directorist' ), 'forbidden' );
+            // Preserve entitlement checks on the requested publication, even if it
+            // resolves to pending. Extension policies cannot grant core approval.
+            Listing_Policy::policy( $post, directorist_get_listing_directory( $id ), $args['status'] );
+            $status = directorist_resolve_listing_status( $args['status'], 0, $id, true );
             Validation::check( in_array( $status, Listing_Policy::transitions( $post ), true ), __( 'This status transition is not permitted.', 'directorist' ), 'forbidden' );
         } elseif ( 'trash-listing' === $tool ) {
             Validation::check( defined( 'EMPTY_TRASH_DAYS' ) && EMPTY_TRASH_DAYS > 0, __( 'Trash is disabled; permanent deletion is not supported.', 'directorist' ), 'unsupported_operation' );
@@ -202,10 +210,10 @@ class Write_Callbacks {
             $status = 'draft';
         }
         if ( 'trash' !== $status ) {
-            Listing_Policy::policy( $post, Listing_Schema::directory( $id ), $status );
+            Listing_Policy::policy( $post, directorist_get_listing_directory( $id ), $status );
         }
         return [
-            'state'   => $version,
+            'state'   => [ $version, Listing_Policy::publication_state( 0, $post, $status ) ],
             'confirm' => true,
             'preview' => [ 'listing_id' => $id, 'before' => $post->post_status, 'after' => $status, 'version' => $version ],
             'execute' => static function () use ( $tool, $id, $status ) {

@@ -138,18 +138,18 @@ class Listings_Controller extends Posts_Controller {
             );
         }
 
-        // Owners may toggle listing visibility, but cannot bypass pending approval.
-        $post_type = get_post_type_object( $this->post_type );
-        if ( 'pending' === $listing->post_status
-            && ( ! $post_type || ! current_user_can( $post_type->cap->edit_others_posts ) )
-        ) {
-            return new WP_Error( 'directorist_rest_cannot_publish', __( 'This listing requires administrator approval.', 'directorist' ), [ 'status' => 403 ] );
-        }
-
         $status = $this->validate_status_for_update( $request->get_param( 'status' ) );
 
         if ( is_wp_error( $status ) ) {
             return $status;
+        }
+
+        // Preserve the existing restriction on hiding a listing awaiting approval.
+        $post_type = get_post_type_object( $this->post_type );
+        if ( 'private' === $status && 'pending' === $listing->post_status
+            && ( ! $post_type || ! current_user_can( $post_type->cap->edit_others_posts ) )
+        ) {
+            return new WP_Error( 'directorist_rest_cannot_publish', __( 'This listing requires administrator approval.', 'directorist' ), [ 'status' => 403 ] );
         }
 
         $post_type_object = get_post_type_object( $this->post_type );
@@ -931,6 +931,11 @@ class Listings_Controller extends Posts_Controller {
     }
 
     public function update_status( WP_REST_Request $request ) {
+        $permission = $this->update_status_permissions_check( $request );
+        if ( is_wp_error( $permission ) ) {
+            return $permission;
+        }
+
         $id     = (int) $request->get_param( 'id' );
         $status = $this->validate_status_for_update( $request->get_param( 'status' ) );
 
@@ -944,6 +949,8 @@ class Listings_Controller extends Posts_Controller {
             return $listing;
         }
 
+        $status = directorist_resolve_listing_status( $status, 0, $id, true );
+
         do_action( 'directorist_before_update_listing_status', $id, $status );
 
         $repository = new ListingRepository();
@@ -952,7 +959,8 @@ class Listings_Controller extends Posts_Controller {
 
         return rest_ensure_response(
             [
-                'message' => esc_html__( 'The listing status was updated successfully', 'directorist' )
+                'message' => esc_html__( 'The listing status was updated successfully', 'directorist' ),
+                'status'  => get_post_status( $id ),
             ]
         );
     }

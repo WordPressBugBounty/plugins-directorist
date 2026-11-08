@@ -632,6 +632,14 @@ class SubmissionController {
             return $listing_id;
         }
 
+        $api_submission = in_array( $from, [ 'api', 'mcp' ], true );
+        if ( $api_submission && $listing_id ) {
+            $posted_data['directory_type'] = directorist_get_listing_directory( $listing_id );
+            if ( ! directorist_is_directory( $posted_data['directory_type'] ) ) {
+                return new WP_Error( 'directorist_invalid_directory', __( 'Invalid directory id.', 'directorist' ), [ 'status' => 400 ] );
+            }
+        }
+
         $directory_id = static::maybe_get_directory_id( $posted_data );
         if ( is_wp_error( $directory_id ) ) {
             return $directory_id;
@@ -748,6 +756,9 @@ class SubmissionController {
         }
 
         $listing_create_status = directorist_get_listing_create_status( $directory_id );
+        if ( $api_submission ) {
+            $listing_create_status = directorist_resolve_listing_status( (string) $listing_create_status, $directory_id );
+        }
         $default_expiration    = directorist_get_default_expiration( $directory_id );
         $preview_enable        = directorist_is_preview_enabled( $directory_id );
 
@@ -773,6 +784,9 @@ class SubmissionController {
 
             $listing_data['ID']          = $listing_id;
             $listing_data['post_status'] = directorist_get_listing_edit_status( $directory_id, $listing_id );
+            if ( $api_submission ) {
+                $listing_data['post_status'] = directorist_resolve_listing_status( (string) $listing_data['post_status'], $directory_id, $listing_id );
+            }
 
             $listing_id = wp_update_post( $listing_data );
 

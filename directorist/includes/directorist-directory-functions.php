@@ -161,6 +161,58 @@ function directorist_get_listing_edit_status( $directory_id, $listing_id = 0 ) {
     return apply_filters( 'directorist_listing_edit_status', $status, $directory_id );
 }
 
+/**
+ * Whether the current user may approve this specific listing.
+ *
+ * @param int $listing_id Listing ID.
+ * @return bool
+ */
+function directorist_user_can_moderate_listing( int $listing_id ): bool {
+    $listing = get_post( $listing_id );
+    $type    = get_post_type_object( ATBDP_POST_TYPE );
+
+    return $listing && ATBDP_POST_TYPE === $listing->post_type && $type
+        && current_user_can( 'edit_post', $listing_id )
+        && current_user_can( $type->cap->publish_posts )
+        && current_user_can( $type->cap->edit_others_posts );
+}
+
+/**
+ * Resolve an API publication request against the saved directory policy.
+ * Non-public statuses remain subject to the calling interface's validation.
+ *
+ * @param string $status Requested status.
+ * @param int    $directory_id Directory for a new listing only.
+ * @param int    $listing_id Existing listing ID, or zero when creating.
+ * @param bool   $approval Whether this is an explicit moderation action.
+ * @return string Effective status.
+ */
+function directorist_resolve_listing_status( string $status, int $directory_id, int $listing_id = 0, bool $approval = false ): string {
+    if ( 'publish' !== $status ) {
+        return in_array( $status, [ 'draft', 'pending', 'private' ], true ) ? $status : 'pending';
+    }
+
+    $listing = $listing_id ? get_post( $listing_id ) : null;
+    if ( $listing_id && ( ! $listing || ATBDP_POST_TYPE !== $listing->post_type || ! current_user_can( 'edit_post', $listing_id ) ) ) {
+        return 'pending';
+    }
+    $directory_id = $listing_id ? directorist_get_listing_directory( $listing_id ) : $directory_id;
+    $type         = get_post_type_object( ATBDP_POST_TYPE );
+    $setting      = directorist_get_directory_meta( $directory_id, $listing_id ? 'edit_listing_status' : 'new_listing_status' );
+    if ( ! directorist_is_directory( $directory_id ) || ! in_array( $setting, [ 'publish', 'pending' ], true ) || ! $type || ! current_user_can( $type->cap->publish_posts ) ) {
+        return 'pending';
+    }
+    if ( $listing_id && $approval && directorist_user_can_moderate_listing( $listing_id ) ) {
+        return 'publish';
+    }
+    if ( 'publish' !== $setting || ( $listing && 'publish' !== $listing->post_status ) ) {
+        return 'pending';
+    }
+
+    $effective = $listing_id ? directorist_get_listing_edit_status( $directory_id, $listing_id ) : directorist_get_listing_create_status( $directory_id );
+    return 'publish' === $effective ? 'publish' : 'pending';
+}
+
 function directorist_get_default_expiration( $directory_id ) {
     return (int) directorist_get_directory_meta( $directory_id, 'default_expiration' );
 }

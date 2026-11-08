@@ -22,11 +22,29 @@ class Listing_Policy {
      */
     public static function initial_statuses( int $directory ): array {
         $statuses = [ 'draft', 'pending' ];
-        $type     = get_post_type_object( ATBDP_POST_TYPE );
-        if ( 'publish' === directorist_get_listing_create_status( $directory ) && current_user_can( $type->cap->publish_posts ) ) {
+        if ( 'publish' === directorist_resolve_listing_status( 'publish', $directory ) ) {
             $statuses[] = 'publish';
         }
         return $statuses;
+    }
+
+    /**
+     * Bind previews to the persisted publication policy and current authority.
+     *
+     * @param int           $directory New listing directory.
+     * @param \WP_Post|null $post Existing listing.
+     * @param string        $status Effective status.
+     * @return array
+     */
+    public static function publication_state( int $directory, ?\WP_Post $post, string $status ): array {
+        $directory = $post ? directorist_get_listing_directory( $post->ID ) : $directory;
+        return [
+            'directory_id' => $directory,
+            'new_status'   => directorist_get_directory_meta( $directory, 'new_listing_status' ),
+            'edit_status'  => directorist_get_directory_meta( $directory, 'edit_listing_status' ),
+            'can_moderate' => $post && directorist_user_can_moderate_listing( $post->ID ),
+            'status'       => $status,
+        ];
     }
 
     /**
@@ -63,18 +81,22 @@ class Listing_Policy {
      */
     public static function transitions( \WP_Post $post ): array {
         $type = get_post_type_object( ATBDP_POST_TYPE );
-        if ( ! current_user_can( 'edit_post', $post->ID ) || ! current_user_can( $type->cap->publish_posts ) || ! in_array( $post->post_status, [ 'publish', 'private', 'pending', 'draft' ], true ) ) {
+        if ( ! $type || ! current_user_can( 'edit_post', $post->ID ) || ! current_user_can( $type->cap->publish_posts ) || ! in_array( $post->post_status, [ 'publish', 'private', 'pending', 'draft', 'rejected', 'expired' ], true ) ) {
             return [];
         }
         $result = [];
         foreach ( [ 'publish', 'private' ] as $status ) {
+            // Adding publication sources must not expand private-status eligibility.
+            if ( 'private' === $status && in_array( $post->post_status, [ 'rejected', 'expired' ], true ) ) {
+                continue;
+            }
             try {
-                self::policy( $post, Listing_Schema::directory( $post->ID ), $status );
-                $result[] = $status;
+                self::policy( $post, directorist_get_listing_directory( $post->ID ), $status );
+                $result[] = directorist_resolve_listing_status( $status, 0, $post->ID, true );
             } catch ( Failure $error ) {
                 /* Not advertised. */
             }
         }
-        return $result;
+        return array_values( array_unique( $result ) );
     }
 }
