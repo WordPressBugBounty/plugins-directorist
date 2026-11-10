@@ -11,16 +11,21 @@
 
 	.directorist-account-block-logged-mode__navigation {
 		position: absolute;
+		display: none;
 		opacity: 0;
 		visibility: hidden;
 		background-color: var(--directorist-color-white);
 		left: 0;
 		top: 62px;
-		min-width: 190px;
+		min-width: min(190px, var(--directorist-account-menu-max-width, calc(100vw - 16px)));
+		max-width: var(--directorist-account-menu-max-width, calc(100vw - 16px));
+		box-sizing: border-box;
+		/* rtl:ignore */
+		transform: translateX(var(--directorist-account-menu-offset, 0px));
 		border-radius: 5px;
 		z-index: -1;
 		box-shadow: 0 5px 20px rgba(136, 140, 158, 0.2);
-		transition: 0.3s;
+		transition: opacity 0.3s, visibility 0.3s;
 
 		&.directorist-account-block-logged-mode__navigation--align-end {
 			left: auto;
@@ -28,6 +33,7 @@
 		}
 
 		&.show {
+			display: block;
 			opacity: 1;
 			visibility: visible;
 			z-index: 1031;
@@ -48,7 +54,8 @@
 					text-decoration: none;
 					padding: 5px 20px;
 					color: var(--directorist-color-body);
-					white-space: nowrap;
+					white-space: normal;
+					overflow-wrap: anywhere;
 					transition: 0.3s;
 
 					&:hover {

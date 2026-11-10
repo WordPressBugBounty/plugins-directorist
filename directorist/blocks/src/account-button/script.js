@@ -107,6 +107,62 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			}
 			document.body.appendChild( shade );
 
+			let positionFrame = null;
+			const alignmentClass =
+				'directorist-account-block-logged-mode__navigation--align-end';
+
+			function positionNavigation() {
+				if ( ! navigation.classList.contains( 'show' ) ) {
+					return;
+				}
+
+				const viewport = window.visualViewport;
+				const width = viewport?.width || document.documentElement.clientWidth;
+				const left = ( viewport?.offsetLeft || 0 ) + 8;
+				const right = left + width - 16;
+				navigation.style.setProperty(
+					'--directorist-account-menu-max-width',
+					`${ Math.max( 0, width - 16 ) }px`
+				);
+				navigation.style.setProperty( '--directorist-account-menu-offset', '0px' );
+				navigation.classList.remove( alignmentClass );
+
+				let rectangle = navigation.getBoundingClientRect();
+				if ( rectangle.left < left || rectangle.right > right ) {
+					// Try the other trigger edge first, in both LTR and RTL.
+					navigation.classList.add( alignmentClass );
+					rectangle = navigation.getBoundingClientRect();
+				}
+
+				const targetLeft = Math.max(
+					left,
+					Math.min( rectangle.left, right - rectangle.width )
+				);
+				navigation.style.setProperty(
+					'--directorist-account-menu-offset',
+					`${ targetLeft - rectangle.left }px`
+				);
+			}
+
+			function schedulePosition() {
+				if ( positionFrame !== null ) {
+					return;
+				}
+				positionFrame = window.requestAnimationFrame( () => {
+					positionFrame = null;
+					positionNavigation();
+				} );
+			}
+
+			window.addEventListener( 'resize', schedulePosition );
+			window.visualViewport?.addEventListener( 'resize', schedulePosition );
+			window.visualViewport?.addEventListener( 'scroll', schedulePosition );
+			if ( window.ResizeObserver ) {
+				const observer = new window.ResizeObserver( schedulePosition );
+				observer.observe( block );
+				observer.observe( navigation );
+			}
+
 			function closeNavigation() {
 				navigation.classList.remove( 'show' );
 				navigation.setAttribute( 'aria-hidden', 'true' );
@@ -122,17 +178,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				trigger.setAttribute( 'aria-expanded', String( willOpen ) );
 
 				if ( willOpen ) {
-					navigation.classList.remove(
-						'directorist-account-block-logged-mode__navigation--align-end'
-					);
-					if (
-						navigation.getBoundingClientRect().right >
-						document.documentElement.clientWidth
-					) {
-						navigation.classList.add(
-							'directorist-account-block-logged-mode__navigation--align-end'
-						);
-					}
+					positionNavigation();
 				}
 			} );
 			shade.addEventListener( 'click', closeNavigation );
