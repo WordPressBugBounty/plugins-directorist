@@ -105,13 +105,9 @@ class Module {
     /**
      * Forward server to its implementation.
      *
-     * @param \WP\MCP\Core\McpAdapter $adapter Initialized WordPress MCP adapter.
+     * @param mixed $adapter Adapter supplied by a shared WordPress hook.
      */
     public static function server( $adapter ) {
-        // Keep the legacy no-op for unsupported adapters at the compatibility boundary.
-        if ( ! $adapter instanceof \WP\MCP\Core\McpAdapter ) {
-            return;
-        }
         return Server::server( $adapter );
     }
 

@@ -279,7 +279,7 @@ class OrderRepository extends Repository {
         
         if ( $tax_amount > 0 ) {
             $order->tax_amount = $tax_amount;
-            $order->tax_label  = OrderTaxType::PERCENT === $order->tax_type ? sprintf( esc_html__( 'Tax ( %s%% )', 'directorist' ), $order->coupon_discount ) : esc_html__( 'Tax', 'directorist' );
+            $order->tax_label  = OrderTaxType::PERCENT === $order->tax_type ? sprintf( esc_html__( 'Tax ( %s%% )', 'directorist' ), $order->tax_rate ) : esc_html__( 'Tax', 'directorist' );
         }
         
         $order->total_amount = directorist_order_total_amount( $order );

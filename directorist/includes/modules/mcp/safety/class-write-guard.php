@@ -101,14 +101,20 @@ class Write_Guard {
             Validation::check( is_bool( $dry ), __( 'dry_run must be a boolean.', 'directorist' ) );
             $payload = $args;
             unset( $payload['dry_run'], $payload['confirm_token'], $payload['idempotency_key'] );
-            $digest               = Canonical_Data::hash( [ get_current_blog_id(), get_current_user_id(), $tool, $payload ] );
+            $keyed                = Request_Digest::uses_key( $tool );
+            $digest               = Request_Digest::hash( 'replay', [ get_current_blog_id(), get_current_user_id(), $tool, $payload ], $keyed );
             $confirmation_payload = $payload;
-            unset( $confirmation_payload['expected_version'], $confirmation_payload['schema_version'] );
-            foreach ( $confirmation_payload['items'] ?? [] as $index => $item ) {
-                unset( $item['expected_version'], $item['schema_version'] );
-                $confirmation_payload['items'][ $index ] = $item;
+            unset( $confirmation_payload['expected_version'] );
+            // Credential-bearing tools are single extension mutations; these
+            // fields can be native inputs rather than core version controls.
+            if ( ! $keyed ) {
+                unset( $confirmation_payload['schema_version'] );
+                foreach ( $confirmation_payload['items'] ?? [] as $index => $item ) {
+                    unset( $item['expected_version'], $item['schema_version'] );
+                    $confirmation_payload['items'][ $index ] = $item;
+                }
             }
-            $confirmation_digest = Canonical_Data::hash( [ get_current_blog_id(), get_current_user_id(), $tool, $confirmation_payload ] );
+            $confirmation_digest = Request_Digest::hash( 'preview', [ get_current_blog_id(), get_current_user_id(), $tool, $confirmation_payload ], $keyed );
             $durable             = Financial_Operations::retry( $tool, $args );
             if ( null !== $durable ) {
                 return $durable;
@@ -141,7 +147,7 @@ class Write_Guard {
             $stored = [];
             Validation::check( isset( $plan['state'], $plan['preview'], $plan['execute'] ), __( 'The operation is unavailable.', 'directorist' ), 'unsupported_operation' );
             Write_Readiness::require_supported( $plan['tables'] ?? [], true );
-            $state = Canonical_Data::hash( [ $plan['state'], get_option( 'directorist_mcp_epoch', '' ), Tool_Registry::instance()->fingerprint() ] );
+            $state = Request_Digest::hash( 'preview-state', [ $plan['state'], get_option( 'directorist_mcp_epoch', '' ), Tool_Registry::instance()->fingerprint() ], $keyed );
             if ( $dry ) {
                 $token = bin2hex( random_bytes( 24 ) );
                 set_transient( 'directorist_mcp_preview_' . hash( 'sha256', $token ), [ 'digest' => $confirmation_digest, 'state' => $state, 'plan_state' => ! empty( $plan['bulk'] ) ? $plan['state'] : null, 'epoch' => get_option( 'directorist_mcp_epoch', '' ), 'user_id' => get_current_user_id(), 'tool' => $tool, 'registry' => Tool_Registry::instance()->fingerprint() ], 300 );
@@ -162,6 +168,9 @@ class Write_Guard {
             }
             Transaction::check_tables( $plan['tables'] ?? [] );
             $record = [ 'actor_id' => get_current_user_id(), 'tool' => $tool, 'created' => time(), 'registry' => Tool_Registry::instance()->fingerprint(), 'digest' => $digest, 'state' => 'running', 'expires' => time() + DAY_IN_SECONDS, 'request_id' => Request_Context::request_id() ];
+            if ( $keyed ) {
+                $record['keyed_digest'] = true;
+            }
             Validation::check( add_option( $key, $record, '', false ), __( 'Could not reserve this operation. No changes were made.', 'directorist' ), 'operation_in_progress' );
             self::$active_key = $key;
             self::$mutating   = true;

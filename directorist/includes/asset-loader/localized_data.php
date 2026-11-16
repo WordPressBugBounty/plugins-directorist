@@ -46,9 +46,12 @@ class Localized_Data {
     }
 
     private static function search_listing_data() {
+        global $wp_rewrite;
+
         $data = [
             'ajaxnonce' => wp_create_nonce( 'bdas_ajax_nonce' ),
             'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'pagination_base' => $wp_rewrite->pagination_base ?? 'page',
         ];
         return $data;
     }

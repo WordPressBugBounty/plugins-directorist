@@ -549,15 +549,6 @@ This email is sent automatically for information purpose only. Please do not res
          * @return bool Whether the message was sent successfully or not.
          */
         public function notify_owner_order_created( $order_id, $listing_id, $offline = false, $order = null ) {
-
-            $gateway = ! empty( $order->payments[0]->method )
-                ? $order->payments[0]->method
-                : get_post_meta( $order_id, '_payment_gateway', true );
-
-            if ( 'bank_transfer' !== $gateway ) {
-                return false;
-            }
-
             if ( get_directorist_option( 'disable_email_notification' ) ) {
                 return false;
             }
@@ -676,7 +667,7 @@ This email is sent automatically for information purpose only. Please do not res
         }
 
         /**
-         * Send the bank transfer order notification for a Pricing Plans checkout.
+         * Send order-created notifications after Pricing Plans payment initiation.
          *
          * The new checkout stores orders in a table, so its order creation does not
          * fire the legacy atbdp_order_created action.
@@ -690,16 +681,13 @@ This email is sent automatically for information purpose only. Please do not res
                 return;
             }
 
-            if ( 'bank_transfer' !== $request->get_param( 'payment_gateway' ) ) {
-                return;
-            }
-
             $order = directorist_order_repository()->single( $dto->get_id() );
             if ( ! $order ) {
                 return;
             }
 
-            $this->notify_owner_order_created( $dto->get_id(), $dto->get_listing_id(), true, $order );
+            $offline = 'bank_transfer' === $request->get_param( 'payment_gateway' );
+            $this->notify_owner_order_created( $dto->get_id(), $dto->get_listing_id(), $offline, $order );
             $this->notify_admin_order_created( $dto->get_id(), $dto->get_listing_id(), $order );
         }
 
@@ -1213,15 +1201,6 @@ This email is sent automatically for information purpose only. Please do not res
          * @return bool Whether the email was sent successfully or not.
          */
         public function notify_admin_order_created( $order_id, $listing_id, $order = null ) {
-
-            $gateway = ! empty( $order->payments[0]->method )
-                ? $order->payments[0]->method
-                : get_post_meta( $order_id, '_payment_gateway', true );
-
-            if ( 'bank_transfer' !== $gateway ) {
-                return false;
-            }
-
             /*@todo; think if it is better to assign disabled_email_notification to the class prop*/
             if ( get_directorist_option( 'disable_email_notification' ) ) {
                 return false; // vail if email notification is off

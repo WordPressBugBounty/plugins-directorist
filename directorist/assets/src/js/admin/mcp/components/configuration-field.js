@@ -23,9 +23,17 @@
             saving: __("Saving…", "directorist"),
             prerequisites: __("WordPress 6.9+ and an active compatible WordPress MCP Adapter are required.", "directorist"),
             retry: __("Retry", "directorist"),
+            writesUnavailable: __("Saving changes is unavailable", "directorist"),
+            someWritesUnavailable: __("Some changes are unavailable", "directorist"),
+            readsAvailable: __("You can still use the available tools to read information.", "directorist"),
+            writeReasonFallback: __("A required database check did not pass. Ask your hosting provider to review the database configuration.", "directorist"),
+            learn: __("Explore everything you can do with Directorist MCP", "directorist"),
+            checkAgain: __("Check again", "directorist"),
+            checking: __("Checking…", "directorist"),
           },
           enabled: this.value === true || this.value === "1",
           status: null,
+          writeReadiness: null,
           loading: false,
           saving: false,
           installing: false,
@@ -38,6 +46,21 @@
       computed: {
         ready() {
           return Boolean(this.status && this.status.ready);
+        },
+        writeWarning() {
+          if (!this.enabled || !this.ready || !this.writeReadiness) return null;
+          const blocked = this.writeReadiness.filter((entry) => entry.ready === false);
+          if (!blocked.length) return null;
+          return {
+            title: blocked.length === this.writeReadiness.length
+              ? this.text.writesUnavailable
+              : this.text.someWritesUnavailable,
+            reasons: [...new Set(blocked.map((entry) =>
+              typeof entry.message === "string" && entry.message.trim()
+                ? entry.message.trim()
+                : this.text.writeReasonFallback,
+            ))],
+          };
         },
         adapterSetup() {
           return this.status?.adapter_setup;
@@ -63,7 +86,7 @@
         );
         this.refresh();
         this._refocus = () => {
-          if (this.opened && !this.installing) this.refresh();
+          if ((this.enabled || this.opened) && !this.installing && !this.saving && !this.loading) this.refresh();
         };
         this._navigation = () => this.close(false);
         window.addEventListener("focus", this._refocus);
@@ -101,6 +124,14 @@
             const status = await this.request(config.statusUrl);
             if (!this._alive) return;
             this.status = status;
+            // Incomplete readiness data cannot clear a confirmed storage failure.
+            const readiness = status.write_readiness;
+            if (readiness && typeof readiness === "object" && !Array.isArray(readiness)) {
+              const entries = Object.values(readiness);
+              if (entries.length && entries.every((entry) =>
+                entry && typeof entry === "object" && !Array.isArray(entry) && typeof entry.ready === "boolean",
+              )) this.writeReadiness = entries;
+            }
             this.persist(status.enabled);
             if (!status.enabled && this.opened) this.close();
             return status;
@@ -217,6 +248,18 @@
                 <div class="directorist-mcp-actions"><button v-if="enabled" ref="configure" type="button" class="directorist-mcp-button" :disabled="saving || loading || installing" :aria-expanded="opened ? 'true' : 'false'" :aria-controls="headingId + '-setup'" @click="opened ? close() : open()">{{ opened ? text.hide : text.configure }}</button>
                     <label class="directorist-mcp-switch"><input type="checkbox" role="switch" :aria-label="text.enable" :checked="enabled" :disabled="saving || loading || installing || (!ready && !enabled)" @change="changeEnabled"><span aria-hidden="true"></span></label>
                     <span v-if="saving" role="status">{{ text.saving }}</span>
+                </div>
+            </div>
+            <div v-if="writeWarning" class="directorist-mcp-write-warning" role="status" aria-live="polite" :aria-busy="loading ? 'true' : 'false'">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 2.8 19a1.4 1.4 0 0 0 1.2 2h16a1.4 1.4 0 0 0 1.2-2L12 3Z"></path><path d="M12 9v5"></path><circle cx="12" cy="17.5" r=".8"></circle></svg>
+                <div class="directorist-mcp-write-warning-body">
+                    <h4>{{ writeWarning.title }}</h4>
+                    <p>{{ text.readsAvailable }}</p>
+                    <p v-for="reason in writeWarning.reasons" :key="reason">{{ reason }}</p>
+                    <div class="directorist-mcp-write-warning-actions">
+                        <a class="directorist-mcp-link" href="https://directorist.com/blog/directorist-mcp-connect-ai-agents-to-wordpress-directory/" target="_blank" rel="noopener noreferrer">{{ text.learn }}</a>
+                        <button type="button" class="directorist-mcp-link" :disabled="loading || saving || installing" @click="refresh">{{ loading ? text.checking : text.checkAgain }}</button>
+                    </div>
                 </div>
             </div>
             <div v-if="!ready && status" class="directorist-mcp-setup" :aria-busy="installing ? 'true' : 'false'">

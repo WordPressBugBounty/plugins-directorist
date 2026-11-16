@@ -87,7 +87,7 @@ class Descriptor_Validator {
                     Validation::check( is_callable( $definition[ $callback ] ?? null ), __( 'Explicit permissions and output projection are required.', 'directorist' ) );
                 }
                 Validation::check( isset( $definition['write'] ) && is_bool( $definition['write'] ) && ! empty( $definition['description'] ) && ! empty( $definition['contract_version'] ), __( 'The tool descriptor is incomplete.', 'directorist' ) );
-                Schema_Validator::schema( $definition['schema'] ?? [] );
+                Schema_Validator::schema( $definition['schema'] ?? [], 0, ! empty( $definition['write'] ) && empty( $definition['external_effects'] ) && empty( $definition['bulk'] ) );
                 Schema_Validator::schema( $definition['output_schema'] ?? [] );
                 Validation::check( 'object' === $definition['output_schema']['type'] && 'object' === $definition['schema']['type'] && false === ( $definition['schema']['additionalProperties'] ?? null ), __( 'Tool input must be a closed object.', 'directorist' ) );
                 Validation::check( in_array( $definition['domain'] ?? '', [ 'extension', 'settings', 'directories', 'listings', 'taxonomies', 'orders', 'dashboard', 'site_health_info' ], true ), __( 'An explicit MCP domain is required.', 'directorist' ) );

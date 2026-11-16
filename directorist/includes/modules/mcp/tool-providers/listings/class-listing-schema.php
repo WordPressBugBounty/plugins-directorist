@@ -42,8 +42,13 @@ class Listing_Schema {
             }
             $widget    = $props['widget_name'] ?? '';
             $supported = Fields::exists( Fields::translate_key_to_field( $widget ) ) && 0 === strpos( get_class( $field ), 'Directorist\\Fields\\' );
-            $key       = $aliases[ $widget ] ?? $field->get_key();
-            $schema    = [ 'type' => 'string' ];
+            // Native image field subclasses accept attachment IDs while retaining
+            // their own validation rules.
+            if ( 'image_upload' === $widget && $field instanceof \Directorist\Fields\Image_Upload_Field ) {
+                $supported = true;
+            }
+            $key    = $aliases[ $widget ] ?? $field->get_key();
+            $schema = [ 'type' => 'string' ];
             if ( in_array( $widget, [ 'category', 'location', 'tag', 'image_upload' ], true ) ) {
                 $schema = [ 'type' => 'array', 'items' => [ 'type' => 'integer', 'minimum' => 1 ], 'maxItems' => 100 ];
             } elseif ( in_array( $field->type, [ 'checkbox', 'social_info' ], true ) ) {

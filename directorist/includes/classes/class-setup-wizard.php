@@ -49,8 +49,27 @@ class Directorist_Setup_Wizard {
                 ] 
             );
         }
+
+        // A wizard-created AI directory is already native data. Do not replace
+        // it with a preset or import unrelated demonstration listings.
+        if ( \Directorist\AI_Builder::finish_setup_directory() ) {
+            if ( isset( $_POST['share_non_sensitive_data'] ) ) {
+                ATBDP()->insights->optin();
+            } else {
+                ATBDP()->insights->optout();
+            }
+            wp_send_json( [ 'completed' => true, 'percentage' => 100, 'log' => __( 'Directory ready. Finishing setup…', 'directorist' ), 'url' => admin_url( 'index.php?page=directorist-setup&step=step-four' ) ] );
+        }
         
+        if ( \Directorist\AI_Builder::setup_progress() ) {
+            wp_send_json( [ 'error' => __( 'Your directory setup needs to be resumed. Your saved work is retained.', 'directorist' ), 'url' => admin_url( 'admin.php?page=directorist-setup&step=ai-directory' ) ] );
+        }
+
         $counter = isset( $_POST['counter'] ) ? sanitize_text_field( wp_unslash( $_POST['counter'] ) ) : '';
+        $selected_demo_names = get_transient( 'directory_type' );
+        if ( ! is_array( $selected_demo_names ) || empty( $selected_demo_names ) ) {
+            wp_send_json( [ 'error' => __( 'Choose a directory preset or resume directory setup to continue.', 'directorist' ), 'url' => admin_url( 'admin.php?page=directorist-setup' ) ] );
+        }
 
 
         $listing_demos = wp_remote_get( 'https://app.directorist.com/wp-json/directorist/v1/get-directory-types?nocache' );
@@ -62,7 +81,6 @@ class Directorist_Setup_Wizard {
         $listing_demos = json_decode( $listing_demos, true );
 
         $multi_directory_manager = new Directorist\Multi_Directory\Multi_Directory_Manager();
-        $selected_demo_names     = get_transient( 'directory_type' );
         $current_demo_name       = ! empty( $selected_demo_names[ $counter ] ) ? $selected_demo_names[ $counter ] : '';
 
         $is_completed = ( count( $selected_demo_names ) <= $counter ) ? true : false;
@@ -416,9 +434,16 @@ class Directorist_Setup_Wizard {
             return;
         }
 
+        \Directorist\AI_Builder::maybe_cancel_setup_context();
+
         $this->set_steps();
 
         $this->step = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : current( array_keys( $this->steps ) );
+
+        if ( 'ai-directory' === $this->step ) {
+            \Directorist\AI_Builder::render_setup_wizard();
+            exit;
+        }
 
         $this->enqueue_scripts();
 
@@ -467,7 +492,15 @@ class Directorist_Setup_Wizard {
 
         wp_localize_script( 'jquery', 'directorist', Localized_Data::public_data() );
 
-        wp_localize_script( 'directorist-admin-setup-wizard-script', 'import_export_data', [ 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'directorist_nonce' => wp_create_nonce( directorist_get_nonce_key() ) ] );
+        wp_localize_script(
+            'directorist-admin-setup-wizard-script',
+            'import_export_data',
+            [
+                'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+                'directorist_nonce' => wp_create_nonce( directorist_get_nonce_key() ),
+                'setup_error'       => __( 'Setup could not finish. Please try again.', 'directorist' ),
+            ]
+        );
     }
 
     /**
@@ -711,22 +744,32 @@ class Directorist_Setup_Wizard {
 
     public function directorist_step_three() {
 
+        $ai_directory_ready = \Directorist\AI_Builder::setup_directory_id();
+
         ?>
         <div class="directorist-setup-wizard__content">
             <div class="directorist-setup-wizard__content__header text-center">
-                <h1 class="directorist-setup-wizard__content__header__title"><?php esc_html_e( 'Demo Content and Data Sharing Preference', 'directorist' ); ?></h1>
+                <h1 class="directorist-setup-wizard__content__header__title"><?php echo esc_html( $ai_directory_ready ? __( 'Your directory is ready', 'directorist' ) : __( 'Demo Content and Data Sharing Preference', 'directorist' ) ); ?></h1>
             </div>
             <div class="directorist-setup-wizard__content__items directorist-setup-wizard__content__import">
                 <div class="directorist-setup-wizard__content__import__wrapper">
-                    <h3 class="directorist-setup-wizard__content__import__title">Import Demo Data and Choose Data Sharing Preferences</h3>
+                    <h3 class="directorist-setup-wizard__content__import__title"><?php echo esc_html( $ai_directory_ready ? __( 'Finish setup and choose your data sharing preference', 'directorist' ) : __( 'Import Demo Data and Choose Data Sharing Preferences', 'directorist' ) ); ?></h3>
+                    <?php if ( ! $ai_directory_ready ) : ?>
                     <div class="directorist-setup-wizard__content__import__single">
                         <input type="checkbox" name="import_listings" id="import-listing" value="yes" checked />
                         <label for="import-listing">Import Demo Content</label>
                     </div>
+                    <?php endif; ?>
                     <div class="directorist-setup-wizard__content__import__single">
                         <input type="checkbox" name="share_non_sensitive_data" id="share-data" value="yes" checked />
                         <label for="share-data">Share Non-Sensitive Data <a href="https://appsero.com/privacy-policy/" target="_blank">[Learn what we collect]</a></label>
                     </div>
+                </div>
+                <div id="directorist-setup-import-error" class="notice notice-error" role="alert" tabindex="-1" hidden>
+                    <p class="directorist-setup-import-error__message"></p>
+                    <p class="directorist-setup-import-error__recovery" hidden>
+                        <a><?php esc_html_e( 'Continue setup', 'directorist' ); ?></a>
+                    </p>
                 </div>
                 <a href="#" class="directorist-setup-wizard__content__import__btn directorist-setup-wizard__btn directorist-setup-wizard__btn--full directorist-submit-importing">
                     Submit & Launch My Directory
@@ -773,6 +816,7 @@ class Directorist_Setup_Wizard {
     }
 
     public function directorist_step_four() {
+        \Directorist\AI_Builder::end_setup_context();
         update_option( 'directorist_setup_wizard_completed', true );
 
         /**
@@ -898,6 +942,7 @@ class Directorist_Setup_Wizard {
                     Minimum 1 selection is required
                 </span>
             </div>
+            <p><a class="directorist-setup-wizard__btn directorist-setup-wizard__btn--return" href="<?php echo esc_url( admin_url( 'admin.php?page=directorist-setup&step=ai-directory' ) ); ?>"><?php esc_html_e( 'Create your directory with AI', 'directorist' ); ?></a></p>
             <a href="<?php echo esc_attr( admin_url() ); ?>" class="directorist-setup-wizard__content__notice">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14.932" height="16" viewBox="570 654 14.932 16"><path d="M580.32 669.25a.75.75 0 0 1-.75.75h-7.07a2.503 2.503 0 0 1-2.5-2.5v-11a2.503 2.503 0 0 1 2.5-2.5h7.07a.75.75 0 0 1 0 1.5h-7.07c-.552 0-1 .448-1 1v11c0 .552.448 1 1 1h7.07a.75.75 0 0 1 .75.75Zm4.393-7.78-3.564-3.564a.75.75 0 1 0-1.061 1.06l2.284 2.284h-5.905a.75.75 0 0 0 0 1.5h5.905l-2.284 2.284a.75.75 0 1 0 1.06 1.06l3.565-3.564a.75.75 0 0 0 0-1.06Z" fill="#484848" fill-rule="evenodd" data-name="Path 1620"/></svg> Not Right Now. Exit to Dashboard
             </a>
@@ -907,6 +952,7 @@ class Directorist_Setup_Wizard {
 
     public function directorist_step_intro_save() {
         check_admin_referer( 'directorist-setup' );
+        \Directorist\AI_Builder::end_setup_context();
 
         $_post_data      = wp_unslash( $_POST );
         $expiration_time = 24 * HOUR_IN_SECONDS;

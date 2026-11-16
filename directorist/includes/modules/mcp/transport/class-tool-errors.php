@@ -52,7 +52,7 @@ class Tool_Errors {
 
     /** Supported adapter result hook, scoped to this server and its tools. */
     public static function result( $result, $args, $name, $tool, $server ) {
-        if ( 'directorist' === $server->get_server_id() && 0 === strpos( $name, 'directorist-' ) ) {
+        if ( is_object( $server ) && is_callable( [ $server, 'get_server_id' ] ) && 'directorist' === $server->get_server_id() && 0 === strpos( $name, 'directorist-' ) ) {
             return self::capture( $result );
         }
         return $result;

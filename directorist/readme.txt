@@ -5,7 +5,7 @@ Tags: business directory, listings, classifieds, directory plugin, directory
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 8.11.2
+Stable tag: 8.11.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -299,6 +299,29 @@ Directorist is developer-friendly with plenty of hooks and filters. You can exte
 Directorist comes with an AI-powered directory builder. Use the Create with AI option, provide directory name, location and AI will build the directory for you.
 
 == Changelog ==
+
+= 8.11.3 - Nov 15, 2026 =
+
+**Improved**
+
+- Added Directorist Events and dCarList to the Themes & Extensions catalog.
+- Added MCP settings warnings when database checks prevent write operations.
+- Improved MCP support for write-only credential inputs and custom image fields.
+- Optimized MCP initialization to reduce unnecessary processing.
+- Improved keyboard navigation and accessibility in notification settings.
+- Updated WordPress.org screenshots to reflect the current admin interface.
+
+**Fixed**
+
+- Listing visibility and AI directory setup issues.
+- Custom Button fields disappearing from the listing card Action picker.
+- AJAX pagination losing page, taxonomy, language, sorting, and view context.
+- Order-created email delivery issues and duplicate payment notification settings.
+- Compatibility issues with prefixed MCP adapters causing WordPress editor errors.
+- Invalid Web Push templates being saved.
+- Listing deletion notifications losing owner and listing details.
+- Missing submission validation context affecting extension field and image limits.
+- Order tax percentage and bank transfer payment amount
 
 = 8.11.2 - Nov 10, 2026 =
 

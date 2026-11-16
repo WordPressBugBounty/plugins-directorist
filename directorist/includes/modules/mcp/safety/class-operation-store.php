@@ -43,7 +43,6 @@ class Operation_Store {
         $key     = '_directorist_mcp_op_' . Canonical_Data::hash( [ get_current_blog_id(), $actor_id, $tool, $idempotency_key ] );
         $payload = $args;
         unset( $payload['dry_run'], $payload['confirm_token'], $payload['idempotency_key'] );
-        $digest    = Canonical_Data::hash( [ get_current_blog_id(), $actor_id, $tool, $payload ] );
         $owns_lock = ! Write_Lock::is_locked();
         Write_Lock::lock();
         try {
@@ -51,6 +50,7 @@ class Operation_Store {
             Access_Control::admin();
             Access_Control::permission( $tool, $args );
             $record = get_option( $key );
+            $digest = Request_Digest::hash( 'replay', [ get_current_blog_id(), $actor_id, $tool, $payload ], ! empty( $record['keyed_digest'] ) );
             Validation::check( is_array( $record ) && 'running' === ( $record['state'] ?? '' ) && hash_equals( $record['digest'], $digest ) && hash_equals( $record['request_id'], $request_id ), __( 'An unresolved operation matching that payload and correlation was not found.', 'directorist' ), 'not_found' );
             $record['state']          = 'resolved';
             $record['reconciliation'] = [ 'user_id' => get_current_user_id(), 'request_id' => Request_Context::request_id(), 'resolved_at' => time(), 'evidence' => sanitize_text_field( $evidence ) ];

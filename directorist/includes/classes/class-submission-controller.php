@@ -617,6 +617,31 @@ class SubmissionController {
     }
 
     /**
+     * Resolve validation fields for an authorized listing submission.
+     *
+     * @param int   $directory_id Directory ID.
+     * @param int   $listing_id   Listing ID, or zero for a new listing.
+     * @param array $posted_data  Normalized submission data.
+     * @return array|WP_Error
+     */
+    protected static function get_submission_form_fields( int $directory_id, int $listing_id, array $posted_data ) {
+        try {
+            return directorist_get_listing_form_fields(
+                $directory_id,
+                [
+                    'type'              => 'listing_submission_validation',
+                    'directory_type_id' => $directory_id,
+                    'listing_id'        => $listing_id,
+                    'listing_owner_id'  => $listing_id ? (int) get_post_field( 'post_author', $listing_id ) : get_current_user_id(),
+                    'posted_data'       => $posted_data,
+                ]
+            );
+        } catch ( \InvalidArgumentException $exception ) {
+            return new WP_Error( 'directorist_invalid_submission_fields', $exception->getMessage(), [ 'status' => 400 ] );
+        }
+    }
+
+    /**
      * Process form submission.
      *
      * @param  array $posted_data
@@ -664,7 +689,10 @@ class SubmissionController {
         /**
          * Process form fields.
          */
-        $form_fields = directorist_get_listing_form_fields( $directory_id );
+        $form_fields = static::get_submission_form_fields( $directory_id, $listing_id, $posted_data );
+        if ( is_wp_error( $form_fields ) ) {
+            return $form_fields;
+        }
 
         foreach ( $form_fields as $form_field ) {
             $field = Fields::create( $form_field );
@@ -843,7 +871,7 @@ class SubmissionController {
         do_action( 'atbdp_after_created_listing', $listing_id );
 
         // handling media files
-        self::upload_images( $listing_id, $posted_data );
+        self::upload_images( $listing_id, $posted_data, $form_fields );
 
         $response = array(
             'id' => $listing_id
@@ -902,14 +930,16 @@ class SubmissionController {
         return apply_filters( 'atbdp_listing_form_submission_info', $response );
     }
 
-    public static function upload_images( $listing_id, $posted_data ) {
+    public static function upload_images( $listing_id, $posted_data, $form_fields = null ) {
         // MCP validates existing attachment references. Its native adapter updates
         // those references after submit; no temporary file or deletion work may
         // occur inside the guarded listing transaction.
         if ( 'mcp' === self::$from ) {
             return;
         }
-        $image_upload_field = directorist_get_listing_form_field( $posted_data['directory_id'], 'image_upload' );
+        $image_upload_field = is_array( $form_fields )
+            ? ( $form_fields['image_upload'] ?? [] )
+            : directorist_get_listing_form_field( $posted_data['directory_id'], 'image_upload' );
 
         if ( empty( $image_upload_field ) ) {
             return;

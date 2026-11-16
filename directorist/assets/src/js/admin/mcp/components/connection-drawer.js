@@ -229,7 +229,7 @@
             <p v-if="error" role="alert" class="directorist-mcp-error">{{ error }} <button type="button" @click="refresh">{{ text.retry }}</button></p>
             <div v-if="!ready" class="directorist-mcp-note"><h3>{{ text.required }}</h3><p>{{ text.setup }}</p><button type="button" class="directorist-mcp-button" @click="refresh">{{ text.refresh }}</button></div>
             <template v-else-if="status">
-              <p>{{ text.benefit }} <strong>{{ toolsLabel }}</strong>. {{ text.permissions }} <a href="https://directorist.com/blog/" target="_blank" rel="noopener noreferrer">{{ text.learn }}</a>.</p>
+              <p>{{ text.benefit }} <strong>{{ toolsLabel }}</strong>. {{ text.permissions }} <a href="https://directorist.com/blog/directorist-mcp-connect-ai-agents-to-wordpress-directory/" target="_blank" rel="noopener noreferrer">{{ text.learn }}</a>.</p>
               <div v-if="!status.application_passwords_available" class="directorist-mcp-note"><p>{{ text.unavailable }}</p></div>
               <client-configuration :clients="clients" :client="client" :heading-id="headingId" :templates-loading="templatesLoading" :templates-error="templatesError" :credentials-ready="!!username.trim() && !!password.trim()" :snippet="snippet()" :copy-message="copiedTarget === 'configuration' ? message : ''" :copy-state="copiedTarget === 'configuration' ? copyState : ''" @load-templates="loadTemplates" @select-client="client = $event" @copy-snippet="copy(snippet(), 'configuration')">
                 <div class="directorist-mcp-credentials-section">

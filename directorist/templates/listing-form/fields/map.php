@@ -14,8 +14,8 @@ $manual_lat         = get_post_meta( $p_id, '_manual_lat', true );
 $manual_lng         = get_post_meta( $p_id, '_manual_lng', true );
 $default_latitude   = get_directorist_option( 'default_latitude', '40.7127753' );
 $default_longitude  = get_directorist_option( 'default_longitude', '-74.0059728' );
-$latitude           = ! empty( $manual_lat ) ? $manual_lat : $default_latitude;
-$longitude          = ! empty( $manual_lng ) ? $manual_lng : $default_longitude;
+$latitude           = is_scalar( $manual_lat ) && '' !== trim( (string) $manual_lat ) ? $manual_lat : $default_latitude;
+$longitude          = is_scalar( $manual_lng ) && '' !== trim( (string) $manual_lng ) ? $manual_lng : $default_longitude;
 $hide_map           = ! empty( get_post_meta( $p_id, '_hide_map', true ) ) ? true : false;
 
 $map_data = $listing_form->get_map_data();

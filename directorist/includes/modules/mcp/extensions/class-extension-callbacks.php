@@ -11,8 +11,8 @@ use Directorist\MCP\Registration\Registry_State;
 use Directorist\MCP\Registration\Tool_Registry;
 use Directorist\MCP\Tool_Providers\Dashboard\Read_Callbacks;
 use Directorist\MCP\Safety\Bulk_Executor;
+use Directorist\MCP\Safety\Request_Digest;
 use Directorist\MCP\Safety\Transaction;
-use Directorist\MCP\Support\Canonical_Data;
 use Directorist\MCP\Support\Read_Support;
 use Directorist\MCP\Support\Result;
 use Directorist\MCP\Support\Validation;
@@ -75,10 +75,11 @@ class Extension_Callbacks {
         $plan = Validation::unwrap( Callback_Invoker::extension_callback( $definition['prepare'], $args ) );
         Validation::check( is_array( $plan ) && isset( $plan['state'], $plan['preview'], $plan['execute'] ) && is_callable( $plan['execute'] ) && empty( $plan['bulk'] ), __( 'Invalid extension mutation plan.', 'directorist' ), 'unsupported_operation' );
         Validation::unwrap( rest_validate_value_from_schema( $plan['preview'] ?: (object) [], $definition['preview_schema'] ) );
+        $version = Request_Digest::hash( 'extension-version', $plan['state'], Request_Digest::uses_key( $name ) );
         if ( empty( $args['dry_run'] ) ) {
-            Validation::version( $args['expected_version'] ?? null, Canonical_Data::hash( $plan['state'] ) );
+            Validation::version( $args['expected_version'] ?? null, $version );
         }
-        $plan['preview']['version'] = Canonical_Data::hash( $plan['state'] );
+        $plan['preview']['version'] = $version;
         $execute                    = $plan['execute'];
         $plan['confirm']            = true;
         Transaction::check_tables( $definition['tables'] );

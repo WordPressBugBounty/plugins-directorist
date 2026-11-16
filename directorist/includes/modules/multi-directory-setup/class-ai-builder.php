@@ -18,6 +18,133 @@ if ( ! is_admin() ) {
 class AI_Builder {
 
     const API_URL = 'https://app.directorist.com/wp-json/waxai/v1/';
+    const SETUP_CONTEXT = 'directorist-setup-ai-directory';
+
+    /** The legacy builder belongs to an explicitly opened native setup wizard. */
+    public static function setup_context_key() {
+        return 'directorist_setup_ai_' . get_current_user_id() . '_' . substr( hash( 'sha256', wp_get_session_token() ), 0, 16 );
+    }
+
+    public static function setup_context() {
+        $context = get_transient( static::setup_context_key() );
+        if ( ! is_array( $context ) || empty( $context['opened'] ) || ( empty( $context['completed_at_open'] ) && get_option( 'directorist_setup_wizard_completed' ) ) ) {
+            return false;
+        }
+        return $context;
+    }
+
+    public static function end_setup_context() {
+        delete_transient( static::setup_context_key() );
+        delete_user_meta( get_current_user_id(), static::setup_context_key() . '_progress' );
+    }
+
+    /** Durable completion data is not authorization for another AI request. */
+    public static function setup_progress() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+        $progress = get_user_meta( get_current_user_id(), static::setup_context_key() . '_progress', true );
+        return is_array( $progress ) && ! empty( $progress['opened'] ) ? $progress : static::setup_context();
+    }
+
+    /** Only a genuinely fresh single-directory installation changes its default. */
+    public static function finish_setup_directory() {
+        $id       = static::setup_directory_id();
+        $progress = static::setup_progress();
+        if ( $id && ! empty( $progress['initial_setup'] ) && (int) directorist_get_default_directory() === (int) $progress['initial_default'] ) {
+            update_term_meta( (int) $progress['initial_default'], '_default', false );
+            update_term_meta( $id, '_default', true );
+            update_directorist_option( 'atbdp_default_derectory', $id );
+        }
+        return $id;
+    }
+
+    /** An explicit return to preset setup abandons this optional AI branch. */
+    public static function maybe_cancel_setup_context() {
+        $cancel = isset( $_GET['ai_directory'] ) && is_string( $_GET['ai_directory'] ) ? sanitize_key( wp_unslash( $_GET['ai_directory'] ) ) : '';
+        $nonce = isset( $_GET['_ai_setup_nonce'] ) && is_string( $_GET['_ai_setup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_ai_setup_nonce'] ) ) : '';
+        if ( current_user_can( 'manage_options' ) && 'cancel' === $cancel && wp_verify_nonce( $nonce, static::SETUP_CONTEXT . '-cancel' ) ) {
+            static::end_setup_context();
+        }
+    }
+
+    /** Return only a real directory created by this administrator's wizard. */
+    public static function setup_directory_id() {
+        $context = static::setup_progress();
+        $id = is_array( $context ) ? absint( $context['directory_id'] ?? 0 ) : 0;
+        $term = $id ? get_term( $id, ATBDP_TYPE ) : false;
+        return $term && ! is_wp_error( $term ) ? $id : 0;
+    }
+
+    /** AJAX does not have an admin screen: verify the wizard nonce and provenance. */
+    protected static function assert_setup_request() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( __( 'You are not authorized.', 'directorist' ), 401 );
+        }
+        $context = isset( $_POST['wizard_context'] ) && is_string( $_POST['wizard_context'] ) ? sanitize_key( wp_unslash( $_POST['wizard_context'] ) ) : '';
+        $nonce = isset( $_POST['_wpnonce'] ) && is_string( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+        $referer = isset( $_SERVER['HTTP_REFERER'] ) && is_string( $_SERVER['HTTP_REFERER'] ) ? wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) ) : false;
+        $admin = wp_parse_url( admin_url() );
+        $query = [];
+        if ( is_array( $referer ) && isset( $referer['query'] ) ) {
+            parse_str( $referer['query'], $query );
+        }
+        $origin_matches = is_array( $referer ) && ( $referer['scheme'] ?? '' ) === ( $admin['scheme'] ?? '' ) && ( $referer['host'] ?? '' ) === ( $admin['host'] ?? '' ) && ( $referer['port'] ?? null ) === ( $admin['port'] ?? null );
+        $wizard_path = is_array( $referer ) && in_array( $referer['path'] ?? '', [ ( $admin['path'] ?? '/' ) . 'admin.php', ( $admin['path'] ?? '/' ) . 'index.php' ], true );
+        $method = isset( $_SERVER['REQUEST_METHOD'] ) && is_string( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+        if ( 'POST' !== $method || static::SETUP_CONTEXT !== $context || ! wp_verify_nonce( $nonce, static::SETUP_CONTEXT ) || ! static::setup_context() || ! $origin_matches || ! $wizard_path || 'directorist-setup' !== ( $query['page'] ?? null ) || 'ai-directory' !== ( $query['step'] ?? null ) ) {
+            wp_send_json_error( [ 'code' => 'setup_context_required', 'message' => __( 'Open the setup wizard to create a directory with this assistant.', 'directorist' ) ], 403 );
+        }
+    }
+
+    /** Reuse the existing legacy UI only on the real wizard's optional AI branch. */
+    public static function render_setup_wizard() {
+        $page = isset( $_GET['page'] ) && is_string( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+        $step = isset( $_GET['step'] ) && is_string( $_GET['step'] ) ? sanitize_key( wp_unslash( $_GET['step'] ) ) : '';
+        if ( ! current_user_can( 'manage_options' ) || 'directorist-setup' !== $page || 'ai-directory' !== $step ) {
+            return;
+        }
+        // Reloads and native Back preserve the directory already created here.
+        // A new context is minted only after cancellation/completion or expiry.
+        $context = static::setup_context();
+        if ( ! $context ) {
+            $context   = static::setup_progress();
+            $completed = (bool) get_option( 'directorist_setup_wizard_completed' );
+            if ( ! $context || ( $completed && empty( $context['completed_at_open'] ) ) ) {
+                $existing    = get_posts( [ 'post_type' => ATBDP_POST_TYPE, 'post_status' => [ 'publish', 'private', 'draft', 'pending', 'future', 'trash', 'expired' ], 'posts_per_page' => 1, 'fields' => 'ids' ] );
+                $directories = directorist_get_directories();
+                $context     = [ 'opened' => time(), 'completed_at_open' => $completed, 'initial_default' => (int) directorist_get_default_directory(), 'initial_setup' => ! $completed && ! directorist_is_multi_directory_enabled() && empty( $existing ) && is_array( $directories ) && 1 === count( $directories ) ];
+            }
+        }
+        set_transient( static::setup_context_key(), $context, 2 * HOUR_IN_SECONDS );
+        update_user_meta( get_current_user_id(), static::setup_context_key() . '_progress', $context );
+        $return_url = add_query_arg( [ 'page' => 'directorist-setup', 'ai_directory' => 'cancel', '_ai_setup_nonce' => wp_create_nonce( static::SETUP_CONTEXT . '-cancel' ) ], admin_url( 'admin.php' ) );
+        wp_register_style( 'directorist-font-awesome', DIRECTORIST_ICON_URL . 'font-awesome/css/all.css', [], ATBDP_VERSION );
+        wp_register_style( 'directorist-line-awesome', DIRECTORIST_ICON_URL . 'line-awesome/css/line-awesome.css', [], ATBDP_VERSION );
+        wp_register_style( 'directorist-admin-style', DIRECTORIST_BUILD_ASSETS . 'css/admin/main.css', [ 'directorist-font-awesome', 'directorist-line-awesome' ], ATBDP_VERSION );
+        wp_enqueue_style( 'directorist-admin-style' );
+        wp_register_script( 'directorist-admin-builder-archive', DIRECTORIST_BUILD_ASSETS . 'js/admin/builder-archive.js', [ 'jquery' ], ATBDP_VERSION, true );
+        wp_localize_script( 'directorist-admin-builder-archive', 'directorist_admin', [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ] );
+        wp_localize_script( 'directorist-admin-builder-archive', 'directorist_setup_ai', [ 'context' => static::SETUP_CONTEXT, 'nonce' => wp_create_nonce( static::SETUP_CONTEXT ), 'messages' => [ 'request_failed' => __( 'We could not complete this step. Your details are still here. Try again.', 'directorist' ), 'reopen_setup' => __( 'Reopen setup', 'directorist' ) ] ] );
+        wp_enqueue_script( 'directorist-admin-builder-archive' );
+        ?>
+        <!DOCTYPE html>
+        <html <?php language_attributes(); ?>>
+        <head><meta charset="<?php bloginfo( 'charset' ); ?>"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?php esc_html_e( 'Directorist Setup', 'directorist' ); ?></title><?php wp_print_styles(); ?></head>
+        <body class="wp-core-ui directorist-setup-ai-directory"><div id="wpbody">
+        <?php if ( static::setup_directory_id() ) : ?>
+            <div class="directorist-setup-wizard__content">
+                <h1><?php esc_html_e( 'Your directory is ready', 'directorist' ); ?></h1>
+                <p><?php esc_html_e( 'Continue setup to finish configuring your website.', 'directorist' ); ?></p>
+                <p><a class="directorist-setup-wizard__btn" href="<?php echo esc_url( admin_url( 'admin.php?page=directorist-setup&step=step-one' ) ); ?>"><?php esc_html_e( 'Continue setup', 'directorist' ); ?></a></p>
+                <p><a href="<?php echo esc_url( $return_url ); ?>"><?php esc_html_e( 'Return to directory presets', 'directorist' ); ?></a></p>
+            </div>
+        <?php else : ?>
+            <?php atbdp_load_admin_template( 'post-types-manager/ai/step-one', [ 'setup_wizard' => true, 'return_url' => $return_url ] ); ?>
+        <?php endif; ?>
+        </div><?php wp_print_scripts( 'directorist-admin-builder-archive' ); ?></body></html>
+        <?php
+    }
 
     /**
      * Preset fields map
@@ -50,13 +177,11 @@ class AI_Builder {
     }
 
     public static function form_handler() {
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'You are not authorized.', 401 );
-        }
+        static::assert_setup_request();
 
         ob_start();
 
-        atbdp_load_admin_template( 'post-types-manager/ai/step-one', [] );
+        atbdp_load_admin_template( 'post-types-manager/ai/step-one', [ 'setup_wizard' => true, 'return_url' => add_query_arg( [ 'page' => 'directorist-setup', 'ai_directory' => 'cancel', '_ai_setup_nonce' => wp_create_nonce( static::SETUP_CONTEXT . '-cancel' ) ], admin_url( 'admin.php' ) ) ] );
 
         $form = ob_get_clean();
 
@@ -75,9 +200,7 @@ class AI_Builder {
 
     // handle step one
     public static function create_directory() {
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'You are not authorized.', 401 );
-        }
+        static::assert_setup_request();
         // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $prompt     = ! empty( $_POST['prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) ) : '';
         $keywords   = ! empty( $_POST['keywords'] ) ? static::prepare_keywords( $_POST['keywords'] ) : '';
@@ -117,13 +240,24 @@ class AI_Builder {
         }
 
         if ( 3 === $step ) {
+            // A retry of this wizard operation resumes its already-created term.
+            if ( static::setup_directory_id() ) {
+                wp_send_json_success( [ 'url' => esc_url_raw( admin_url( 'admin.php?page=directorist-setup&step=step-one' ) ) ] );
+            }
             $data = static::build_directory( $name, $fields );
 
             $id = ! empty( $data['id'] ) ? $data['id'] : '';
+            if ( empty( $data['success'] ) || ! $id || ! get_term( (int) $id, ATBDP_TYPE ) || is_wp_error( get_term( (int) $id, ATBDP_TYPE ) ) ) {
+                wp_send_json_error( [ 'code' => 'directory_creation_failed', 'message' => __( 'The directory could not be created. Please try again.', 'directorist' ) ], 400 );
+            }
+            $context = static::setup_context();
+            $context['directory_id'] = (int) $id;
+            set_transient( static::setup_context_key(), $context, 2 * HOUR_IN_SECONDS );
+            update_user_meta( get_current_user_id(), static::setup_context_key() . '_progress', $context );
 
             wp_send_json_success(
                 [
-                    'url' => esc_url_raw( admin_url( 'edit.php?post_type=at_biz_dir&page=atbdp-directory-types&listing_type_id=' . $id . '&action=edit' ) ),
+                    'url' => esc_url_raw( admin_url( 'admin.php?page=directorist-setup&step=step-one' ) ),
                 ] 
             );
         }
@@ -321,6 +455,7 @@ class AI_Builder {
         }
 
         return [
+            'success'        => ! empty( $directory['status']['success'] ),
             'structure'      => $directory_config,
             'new_fields'     => $form_fields['fields'],
             'updated_config' => $directory_config,

@@ -465,6 +465,9 @@ class Directorist_Single_Listing {
      * @return string Single Listing content html.
      */
     public function single_page_content() {
+        if ( ! Listing_Visibility::can_read_single( $this->id ) ) {
+            return Listing_Visibility::denied_single_content( $this->id );
+        }
         $page_id = (int) get_directorist_type_option( $this->type, 'single_listing_page' );
 
         // Bail if custom single listing page is disabled
@@ -1246,6 +1249,9 @@ class Directorist_Single_Listing {
         if ( ! is_singular( ATBDP_POST_TYPE ) ) {
             return;
         }
+        if ( ! Listing_Visibility::can_read_single( $this->id ) ) {
+            return Listing_Visibility::denied_single_content( $this->id );
+        }
 
         $args = [
             'listing' => $this,
@@ -1324,6 +1330,9 @@ class Directorist_Single_Listing {
 
     // TODO: When it's compatible with `the_content()` template tag then we won't have to use do_shortcode and wpautop functions.
     public function get_contents() {
+        if ( ! Listing_Visibility::can_read_single( $this->id ) ) {
+            return Listing_Visibility::denied_single_content( $this->id );
+        }
         $content = $this->post->post_content;
         $content = wpautop( $content );
         $content = $this->filter_single_listing_content( $content );
@@ -1438,6 +1447,9 @@ class Directorist_Single_Listing {
     }
 
     public function map_data() {
+        if ( ! Listing_Visibility::can_read_single( $this->id ) ) {
+            return wp_json_encode( [] );
+        }
         $id      = $this->id;
 
         $manual_lat = get_post_meta( $id, '_manual_lat', true );
@@ -1578,7 +1590,6 @@ class Directorist_Single_Listing {
         $cat_icon = directorist_icon( $cat_icon, false );
 
         $args = [
-            'listing'               => $this,
             'default_latitude'      => get_directorist_option( 'default_latitude', '40.7127753' ),
             'default_longitude'     => get_directorist_option( 'default_longitude', '-74.0059728' ),
             'manual_lat'            => $manual_lat,

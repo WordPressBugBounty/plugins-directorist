@@ -117,7 +117,20 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                             <?php if ( ! empty( $order->get_tax_rate() ) ): ?>
                             <tr>
                                 <td class="directorist-payment-table__title">
-                                    <?php echo $order->get_tax_type() === OrderTaxType::PERCENT ? sprintf( esc_html__( 'Tax ( %d%% )', 'directorist' ), $order->get_tax_rate() ) : esc_html__( 'Tax', 'directorist' ); ?>
+                                    <?php
+                                    if ( OrderTaxType::PERCENT === $order->get_tax_type() ) {
+                                        $tax_rate = $order->get_tax_rate();
+                                        $decimals = floor( $tax_rate ) === $tax_rate ? 0 : 2;
+
+                                        printf(
+                                            /* translators: %s: tax rate percentage. */
+                                            esc_html__( 'Tax ( %s%% )', 'directorist' ),
+                                            esc_html( number_format_i18n( $tax_rate, $decimals ) )
+                                        );
+                                    } else {
+                                        esc_html_e( 'Tax', 'directorist' );
+                                    }
+                                    ?>
                                 </td>
                                 <td>
                                     <?php echo wp_kses_post( directorist_price( $tax_amount ) ) ?>

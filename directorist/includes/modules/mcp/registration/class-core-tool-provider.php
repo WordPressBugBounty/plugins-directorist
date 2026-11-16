@@ -45,9 +45,19 @@ class Core_Tool_Provider {
 
     /** Compose unchanged core schemas; runtime callbacks are stored separately. */
     public static function core_definitions(): array {
+        return self::inventory()['definitions'];
+    }
+
+    /** Compose descriptors and their authorization bindings from one provider pass. */
+    public static function inventory(): array {
         $definitions = [];
+        $providers   = [];
         foreach ( self::providers() as $provider ) {
-            $definitions = array_merge( $definitions, $provider::definitions() );
+            $slice       = $provider::definitions();
+            $definitions = array_merge( $definitions, $slice );
+            foreach ( array_keys( $slice ) as $tool ) {
+                $providers[ $tool ] = $provider;
+            }
         }
 
         foreach ( $definitions as $name => &$definition ) {
@@ -55,7 +65,7 @@ class Core_Tool_Provider {
                 $definition['schema']['properties']['extension_fields'] = [ 'type' => 'object', 'additionalProperties' => true ];
             }
         }
-        return $definitions;
+        return [ 'definitions' => $definitions, 'providers' => $providers ];
     }
 
     /** Compose executable strategies independently of public descriptors. */

@@ -404,6 +404,10 @@ class ATBDP_Metabox {
         $all_types      = directory_types();
         $default        = default_directory_type();
         $current_type   = directorist_get_listing_directory( $post->ID );
+        $current_term   = $current_type ? get_term( $current_type, ATBDP_TYPE ) : false;
+        $default_term   = $default ? get_term( $default, ATBDP_TYPE ) : false;
+        $current_type   = $current_term && ! is_wp_error( $current_term ) ? $current_type : 0;
+        $default        = $default_term && ! is_wp_error( $default_term ) ? $default : 0;
         $requested_type = isset( $_GET['directory_type'] ) ? absint( wp_unslash( $_GET['directory_type'] ) ) : 0;
 
         if ( ! $current_type && $requested_type && term_exists( $requested_type, ATBDP_TYPE ) ) {
@@ -428,7 +432,7 @@ class ATBDP_Metabox {
             ?>
         </select>
         <?php } else {?>
-            <input type="hidden" name="directory_type" value="<?php echo esc_attr( $default ); ?>">
+            <input type="hidden" name="directory_type" value="<?php echo esc_attr( $value ); ?>">
         <?php } ?>
 
         <div id="directiost-listing-fields_wrapper" data-id="<?php echo esc_attr( $post->ID )?>">
@@ -563,13 +567,22 @@ class ATBDP_Metabox {
         }
 
         $directory_id           = ! empty( $_POST['directory_type'] ) ? directorist_clean( wp_unslash( $_POST['directory_type'] ) ) : directorist_get_default_directory();
+        if ( ! is_scalar( $directory_id ) || ! $directory_id ) {
+            return;
+        }
         $listing_categories     = ! empty( $_POST['tax_input'][ ATBDP_CATEGORY ] ) ? directorist_clean( wp_unslash( $_POST['tax_input'][ ATBDP_CATEGORY ] ) ) : [];
         $listing_locations      = ! empty( $_POST['tax_input'][ ATBDP_LOCATION ] ) ? directorist_clean( wp_unslash( $_POST['tax_input'][ ATBDP_LOCATION ] ) ) : [];
         $meta_data              = [];
 
         if ( $directory_id ) {
             $directory_term = get_term_by( is_numeric( $directory_id ) ? 'id' : 'slug', $directory_id, ATBDP_TYPE );
-            $directory_id   = $directory_term->term_id;
+            if ( ! $directory_term || is_wp_error( $directory_term ) ) {
+                $directory_term = get_term( (int) directorist_get_default_directory(), ATBDP_TYPE );
+            }
+            if ( ! $directory_term || is_wp_error( $directory_term ) ) {
+                return;
+            }
+            $directory_id = $directory_term->term_id;
         }
 
         $directory_id       = (int) $directory_id;

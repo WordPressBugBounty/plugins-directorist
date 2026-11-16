@@ -17,11 +17,26 @@ use WP_Error;
 use Directorist\AddListingForm\SubmissionController;
 use Directorist\Helper;
 use Directorist\Repositories\ListingRepository;
+use Directorist\Listing_Visibility;
 
 /**
  * Listings controller class.
  */
 class Listings_Controller extends Posts_Controller {
+    /**
+     * Keep missing and protected listing metadata indistinguishable.
+     *
+     * @param WP_REST_Request $request Native request.
+     * @return bool|WP_Error
+     */
+    public function get_item_permissions_check( $request ) {
+        $post = get_post( (int) $request['id'] );
+        if ( ! Listing_Visibility::can_read_rest( $post, $request ) ) {
+            return Listing_Visibility::unavailable();
+        }
+        return parent::get_item_permissions_check( $request );
+    }
+
     /**
      * Route base.
      *
@@ -173,6 +188,10 @@ class Listings_Controller extends Posts_Controller {
      */
     public function get_items( $request ) {
         $query_args = $this->prepare_objects_query( $request );
+        $query_args = $this->prepare_visibility_query( $query_args, $request );
+        if ( is_wp_error( $query_args ) ) {
+            return $query_args;
+        }
 
         do_action( 'directorist_rest_before_query', 'get_listing_items', $request, $query_args );
 
@@ -180,11 +199,17 @@ class Listings_Controller extends Posts_Controller {
 
         $objects = array();
         foreach ( $query_results['objects'] as $object ) {
+            if ( ! Listing_Visibility::can_read_rest( $object, $request ) ) {
+                continue;
+            }
             if ( ! $this->check_post_permissions( $this->post_type, 'read', $object->ID ) ) {
                 continue;
             }
 
             $data = $this->prepare_item_for_response( $object, $request );
+            if ( is_wp_error( $data ) ) {
+                continue;
+            }
             $objects[] = $this->prepare_response_for_collection( $data );
         }
 
@@ -216,6 +241,26 @@ class Listings_Controller extends Posts_Controller {
         $response = apply_filters( 'directorist_rest_response', $response, 'get_listing_items', $request, $query_args );
 
         return $response;
+    }
+
+    /** Preserve native administrative filters without widening public collections. */
+    protected function prepare_visibility_query( $args, $request ) {
+        if ( 'publish' === $request['status'] && 'edit' !== $request['context'] ) {
+            return Listing_Visibility::query_args( $args, false );
+        }
+        $type = get_post_type_object( $this->post_type );
+        if ( ! is_user_logged_in() || ! $type || ! current_user_can( $type->cap->edit_posts ) || empty( $args['post_status'] ) ) {
+            return new WP_Error( 'directorist_rest_cannot_view', __( 'You are not allowed to read listings with this filter.', 'directorist' ), [ 'status' => rest_authorization_required_code() ] );
+        }
+        // Scope before SQL pagination and totals. An owner cannot enumerate
+        // other authors' unpublished listings by changing the status parameter.
+        if ( ! current_user_can( $type->cap->edit_others_posts ) || ( in_array( $args['post_status'], [ 'private', 'any' ], true ) && ! current_user_can( $type->cap->read_private_posts ) ) ) {
+            if ( ! empty( $args['author'] ) && array_diff( wp_parse_id_list( $args['author'] ), [ get_current_user_id() ] ) ) {
+                return new WP_Error( 'directorist_rest_cannot_view', __( 'You are not allowed to read these listings.', 'directorist' ), [ 'status' => 403 ] );
+            }
+            $args['author'] = get_current_user_id();
+        }
+        return $args;
     }
 
     protected function get_listings( $query_args ) {
@@ -907,6 +952,9 @@ class Listings_Controller extends Posts_Controller {
      */
     public function get_item( $request ) {
         $id = (int) $request['id'];
+        if ( ! Listing_Visibility::can_read_rest( $id, $request ) ) {
+            return Listing_Visibility::unavailable();
+        }
 
         do_action( 'directorist_rest_before_query', 'get_listing_item', $request, $id );
 
@@ -1014,6 +1062,9 @@ class Listings_Controller extends Posts_Controller {
      * @return WP_REST_Response
      */
     public function prepare_item_for_response( $object, $request ) {
+        if ( in_array( $request->get_method(), [ 'GET', 'HEAD' ], true ) && ! Listing_Visibility::can_read_rest( $object, $request ) ) {
+            return Listing_Visibility::unavailable();
+        }
         $context       = ! empty( $request['context'] ) ? $request['context'] : 'view';
         $this->request = $request;
         $data          = $this->get_listing_data( $object, $request, $context );

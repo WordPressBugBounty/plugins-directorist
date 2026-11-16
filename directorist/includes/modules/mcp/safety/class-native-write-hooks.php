@@ -40,6 +40,10 @@ class Native_Write_Hooks {
      * @param string $sql Sql.
      */
     public static function order_query( string $sql ): string {
+        // Reads must not resolve options here: fetching an uncached option itself issues a query.
+        if ( ! in_array( strtoupper( substr( ltrim( $sql ), 0, 1 ) ), [ 'I', 'R', 'U', 'D' ], true ) || ! self::coordinating() ) {
+            return $sql;
+        }
         if ( preg_match( '/^\s*(?:INSERT(?:\s+IGNORE)?\s+INTO|REPLACE\s+INTO|UPDATE|DELETE\s+FROM)\s+`?([A-Za-z0-9_]+)`?/i', $sql, $match ) && in_array( $match[1], Order_Policy::tables(), true ) ) {
             Write_Lock::native_lock();
         }
@@ -55,6 +59,9 @@ class Native_Write_Hooks {
      * @return mixed Original REST short-circuit value.
      */
     public static function rest_write( $result, \WP_REST_Request $request, string $route ) {
+        if ( ! self::coordinating() ) {
+            return $result;
+        }
         if ( null === $result && ! in_array( $request->get_method(), [ 'GET', 'HEAD', 'OPTIONS' ], true ) && preg_match( '#^/directorist/v[12]/(?:orders?|admin/payments|checkout)(?:/|$)#', $route ) ) {
             Write_Lock::native_lock();
         }
@@ -67,6 +74,9 @@ class Native_Write_Hooks {
      * @param array $data Data.
      */
     public static function listing_write( array $data ): array {
+        if ( ! self::coordinating() ) {
+            return $data;
+        }
         if ( ATBDP_POST_TYPE === ( $data['post_type'] ?? '' ) ) {
             Write_Lock::native_lock();
         }
@@ -81,6 +91,9 @@ class Native_Write_Hooks {
      * @param string $taxonomy Taxonomy.
      */
     public static function term_relationship( int $object_id, int $term_taxonomy_id, string $taxonomy ): void {
+        if ( ! self::coordinating() ) {
+            return;
+        }
         if ( in_array( $taxonomy, self::taxonomies(), true ) ) {
             Write_Lock::native_lock();
             global $wpdb;
@@ -98,6 +111,9 @@ class Native_Write_Hooks {
      * @return mixed Original metadata short-circuit value.
      */
     public static function listing_metadata( $check, int $id ) {
+        if ( ! self::coordinating() ) {
+            return $check;
+        }
         if ( ATBDP_POST_TYPE === get_post_type( $id ) ) {
             Write_Lock::native_lock();
         }
@@ -113,6 +129,9 @@ class Native_Write_Hooks {
      * @return mixed Original metadata short-circuit value.
      */
     public static function term_metadata( $check, int $id, string $key ) {
+        if ( ! self::coordinating() ) {
+            return $check;
+        }
         $term = get_term( $id );
         if ( $term && ! is_wp_error( $term ) && ( ATBDP_DIRECTORY_TYPE === $term->taxonomy || 0 === strpos( $key, '_directory_type' ) ) ) {
             Write_Lock::native_lock();
@@ -127,6 +146,9 @@ class Native_Write_Hooks {
      * @param string $taxonomy Taxonomy.
      */
     public static function term_write( int $id, string $taxonomy ): void {
+        if ( ! self::coordinating() ) {
+            return;
+        }
         if ( in_array( $taxonomy, self::taxonomies(), true ) ) {
             Write_Lock::native_lock();
         }
@@ -142,6 +164,11 @@ class Native_Write_Hooks {
     public static function term_insert( $term, string $taxonomy ) {
         self::term_write( 0, $taxonomy );
         return $term;
+    }
+
+    /** Keep existing lock ownership checks active even if MCP is disabled during a write. */
+    private static function coordinating(): bool {
+        return Write_Lock::is_locked() || ( Request_Context::enabled() && Request_Context::dependencies() );
     }
 
     /** Return native taxonomies participating in MCP dependency checks. */

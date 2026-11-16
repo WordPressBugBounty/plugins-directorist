@@ -235,7 +235,16 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                 /**
                  * Process form fields.
                  */
-                $form_fields = directorist_get_listing_form_fields( $directory_id );
+                $form_fields = directorist_get_listing_form_fields(
+                    $directory_id,
+                    [
+                        'type'              => 'listing_submission_validation',
+                        'directory_type_id' => $directory_id,
+                        'listing_id'        => $listing_id,
+                        'listing_owner_id'  => $listing_id ? (int) get_post_field( 'post_author', $listing_id ) : get_current_user_id(),
+                        'posted_data'       => $posted_data,
+                    ]
+                );
 
                 foreach ( $form_fields as $form_field ) {
                     $field = Fields::create( $form_field );
@@ -467,7 +476,7 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                 ];
 
                 // handling media files
-                self::upload_images( $listing_id, $posted_data );
+                self::upload_images( $listing_id, $posted_data, $form_fields );
 
                 $permalink = get_permalink( $listing_id );
 
@@ -557,8 +566,10 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
             // return ( $field->is_admin_only() && ! current_user_can( get_post_type_object( ATBDP_POST_TYPE )->cap->edit_others_posts ) );
         }
 
-        public static function upload_images( $listing_id, $posted_data ) {
-            $image_upload_field = directorist_get_listing_form_field( $posted_data['directory_id'], 'image_upload' );
+        public static function upload_images( $listing_id, $posted_data, $form_fields = null ) {
+            $image_upload_field = is_array( $form_fields )
+                ? ( $form_fields['image_upload'] ?? [] )
+                : directorist_get_listing_form_field( $posted_data['directory_id'], 'image_upload' );
 
             if ( empty( $image_upload_field ) ) {
                 return;
@@ -1006,10 +1017,7 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
             }
 
             $listing_status = get_post_status( $listing_id );
-            $can_renew      = 'expired' === $listing_status || (
-                'publish' === $listing_status &&
-                'renewal' === get_post_meta( $listing_id, '_listing_status', true )
-            );
+            $can_renew      = 'expired' === $listing_status || ( 'publish' === $listing_status && 'renewal' === get_post_meta( $listing_id, '_listing_status', true ) );
 
             if ( ! directorist_can_user_renew_listings() || ! $can_renew ) {
                 wp_die( esc_html__( 'This listing is not eligible for renewal.', 'directorist' ), '', array( 'response' => 400 ) );

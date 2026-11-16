@@ -26,7 +26,7 @@ class Init {
         Admin\Settings_Integration::register_hooks();
 
         // Tool descriptions need translations; build after textdomain setup (10), before the MCP adapter (20).
-        add_action( 'init', [ Registration\Tool_Registry::class, 'instance' ], 15 );
+        add_action( 'init', [ self::class, 'registry' ], 15 );
 
         foreach ( [ 'activated_plugin', 'deactivated_plugin', 'upgrader_process_complete' ] as $hook ) {
             add_action( $hook, [ Extensions\Extension_Lifecycle::class, 'lifecycle' ] );
@@ -42,6 +42,13 @@ class Init {
         add_filter( 'mcp_adapter_tools_list', [ Transport\Server::class, 'filter_tools' ], 10, 2 );
         add_filter( 'mcp_adapter_tool_call_result', [ Transport\Tool_Errors::class, 'result' ], 10, 5 );
         add_action( 'directorist_mcp_cleanup', [ Safety\Operation_Store::class, 'cleanup' ] );
+    }
+
+    /** Keep disabled and unsupported installations free of automatic catalog work. */
+    public static function registry(): void {
+        if ( Runtime\Request_Context::enabled() && Runtime\Request_Context::dependencies() ) {
+            Registration\Tool_Registry::instance();
+        }
     }
 }
 

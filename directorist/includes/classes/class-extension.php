@@ -393,6 +393,9 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 
                     'directorist-paystack'                 => 'paystack-payment-gateway',
                     'paystack-payment-gateway'             => 'directorist-paystack',
+
+                    'directorist-events'                   => 'directorist-event',
+                    'directorist-event'                    => 'directorist-events',
                 ]
             );
         }
@@ -561,6 +564,16 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 
         public static function get_default_extensions() {
             return [
+                'directorist-events' => [
+                    'name'        => 'Directorist Events',
+                    'base'        => 'directorist-event/directorist-events.php',
+                    'description' => __( 'Directorist Events turns any listing into an event with real dates, times and a clear status. A repeating event needs only one listing, and with Directorist Booking each date gets its own tickets. Organizers add their own events, and visitors can search by date.', 'directorist' ),
+                    'link'        => 'https://directorist.com/product/directorist-events/',
+                    'thumbnail'   => ATBDP_URL . 'assets/images/extensions/Directorist-Events.jpg',
+                    'active'      => true,
+                    'item_id'     => 372945,
+                    'badges'      => [ self::get_product_badge( 'new', __( 'New', 'directorist' ) ) ],
+                ],
                 'directorist-paystack' => [
                     'name'        => 'Paystack Payment Gateway',
                     'base'        => 'directorist-paystack/directorist-paystack.php',
@@ -1049,6 +1062,15 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
                     'thumbnail'   => ATBDP_URL . 'assets/images/themes/dcar.png',
                     'active'      => true,
                     'badges'      => [ self::get_product_badge( 'popular', __( 'Popular', 'directorist' ) ) ],
+                ],
+                'dcarlist' => [
+                    'name'        => 'dCarList',
+                    'description' => __( 'dCarList is a WordPress block theme for automotive directories and vehicle listings.', 'directorist' ),
+                    'link'        => 'https://directorist.com/product/dcarlist/',
+                    'demo_link'   => 'https://demo.directorist.com/theme/dcarlist/',
+                    'thumbnail'   => ATBDP_URL . 'assets/images/themes/dcarlist.png',
+                    'active'      => true,
+                    'badges'      => [ self::get_product_badge( 'new', __( 'New', 'directorist' ) ) ],
                 ],
                 'dlist' => [
                     'name'        => 'DList',

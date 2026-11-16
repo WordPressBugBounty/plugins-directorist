@@ -56,13 +56,10 @@ class Tool_Registry {
             self::$instance->integrations         = new Integration_Callbacks( self::$instance->state, self::$instance );
             self::$instance->callbacks            = new Extension_Callbacks( self::$instance->state, self::$instance );
 
-            self::$instance->state->tools   = Core_Tool_Provider::core_definitions();
+            $inventory                      = Core_Tool_Provider::inventory();
+            self::$instance->state->tools   = $inventory['definitions'];
             self::$instance->core_callbacks = Core_Tool_Provider::callbacks();
-            foreach ( Core_Tool_Provider::providers() as $provider ) {
-                foreach ( array_keys( $provider::definitions() ) as $tool ) {
-                    self::$instance->core_providers[ $tool ] = $provider;
-                }
-            }
+            self::$instance->core_providers = $inventory['providers'];
 
             global $wp_filter;
             $hook    = $wp_filter['directorist_mcp_register'] ?? null;

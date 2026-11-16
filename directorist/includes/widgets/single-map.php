@@ -56,6 +56,14 @@ class Single_Map extends \WP_Widget {
         if ( ! is_singular( ATBDP_POST_TYPE ) )
             return;
 
+        if ( ! \Directorist\Listing_Visibility::can_read_single( get_queried_object_id() ) ) {
+            return;
+        }
+        $listing = \Directorist\Directorist_Single_Listing::instance( (int) get_queried_object_id() );
+        if ( (int) $listing->id !== (int) get_queried_object_id() ) {
+            return;
+        }
+
         echo wp_kses_post( $args['before_widget'] );
 
         $title = ! empty( $instance['title'] ) ? esc_html( $instance['title'] ) : esc_html__( 'Popular Listings', 'directorist' );
@@ -75,7 +83,6 @@ class Single_Map extends \WP_Widget {
         $info_content .= "<address>{$address}</address>";
         $info_content .= "<a href='http://www.google.com/maps/place/{$manual_lat},{$manual_lng}' target='_blank'> " . __( 'View On Google Maps', 'directorist' ) . "</a></div>";
 
-        $listing = \Directorist\Directorist_Single_Listing::instance();
         $map_data = json_decode( $listing->map_data() );
         $map_data->map_zoom_level = $map_zoom_level;
         //$map_data->info_content = $info_content;

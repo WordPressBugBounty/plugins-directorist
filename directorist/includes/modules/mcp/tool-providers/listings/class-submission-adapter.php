@@ -27,8 +27,10 @@ class Submission_Adapter extends \Directorist\AddListingForm\SubmissionControlle
         self::$selected_categories = null;
         Validation::unwrap( parent::validate_terms_and_conditions( $directory, $data ) );
         parent::cache_selected_categories( $directory, $data );
-        $errors = [];
-        foreach ( directorist_get_listing_form_fields( $directory ) as $props ) {
+        $listing_id  = (int) ( $data['listing_id'] ?? 0 );
+        $form_fields = Validation::unwrap( parent::get_submission_form_fields( $directory, $listing_id, $data ) );
+        $errors      = [];
+        foreach ( $form_fields as $props ) {
             $field = Fields::create( $props );
             if ( $field->is_admin_only() ) {
                 continue;

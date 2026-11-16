@@ -99,8 +99,9 @@ if ( ! class_exists( 'ATBDP_Listing_DB' ) ) :
         public function delete_listing_by_id( $id ) {
 
             $deleted = wp_delete_post( absint( $id ), true ); // i
-            if ( false !== $deleted ) {
-                do_action( 'directorist_listing_deleted', $id );
+            if ( $deleted instanceof WP_Post ) {
+                // Retain owner/title context for integrations after the row is removed.
+                do_action( 'directorist_listing_deleted', $id, $deleted );
                 return true;
             }
             return false;

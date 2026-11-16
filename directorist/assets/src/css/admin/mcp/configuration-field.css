@@ -125,6 +125,56 @@
   cursor: wait;
   opacity: 0.65;
 }
+.directorist-mcp-field .directorist-mcp-write-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #eed49b;
+  border-radius: 6px;
+  background: #fff9eb;
+  color: #303846;
+  overflow-wrap: anywhere;
+}
+.directorist-mcp-write-warning > svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  fill: none;
+  stroke: #a66908;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.directorist-mcp-write-warning-body {
+  min-width: 0;
+}
+.directorist-mcp-field .directorist-mcp-write-warning h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: inherit;
+}
+.directorist-mcp-field .directorist-mcp-write-warning p {
+  margin: 7px 0 0;
+  color: inherit;
+}
+.directorist-mcp-write-warning-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 14px;
+}
+.directorist-mcp-write-warning-actions .directorist-mcp-link {
+  text-align: start;
+  white-space: normal;
+}
+.directorist-mcp-write-warning-actions button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
 .directorist-mcp-spinner {
   display: inline-block;
   width: 14px;

@@ -40,6 +40,8 @@
 
 # Testing & coding standards
 /tests
+/qa
+/tools
 /phpunit.xml
 /phpunit.xml.dist
 /phpcs.xml
