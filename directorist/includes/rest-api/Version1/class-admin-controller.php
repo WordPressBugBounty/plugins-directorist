@@ -17,6 +17,7 @@ use WP_REST_Response;
 use WP_REST_Server;
 use WP_HTTP_Response;
 use Directorist\Helper;
+use Directorist\Integrations\HelpGent\Builder_Field;
 
 /**
  * Admin controller class.
@@ -33,6 +34,20 @@ class Admin_Controller extends Abstract_Controller {
      * Register the routes for admin.
      */
     public function register_routes() {
+        if ( function_exists( 'helpgent' ) ) {
+            register_rest_route(
+                $this->namespace,
+                '/' . $this->rest_base . '/helpgent-forms',
+                [
+                    'methods'             => WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'get_helpgent_forms' ],
+                    'permission_callback' => static function () {
+                        return current_user_can( 'manage_options' );
+                    },
+                ]
+            );
+        }
+
         register_rest_route(
             $this->namespace,
             '/' . $this->rest_base . '/install-plugin',
@@ -59,6 +74,12 @@ class Admin_Controller extends Abstract_Controller {
                 ],
             ]
         );
+    }
+
+    public function get_helpgent_forms(): WP_REST_Response {
+        require_once ATBDP_INC_DIR . 'modules/helpgent/class-builder-field.php';
+
+        return rest_ensure_response( Builder_Field::form_options() );
     }
 
     /**

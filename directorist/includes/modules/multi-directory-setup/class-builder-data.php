@@ -2,6 +2,8 @@
 
 namespace Directorist\Multi_Directory;
 use ATBDP_Permalink;
+use Directorist\Integrations\HelpGent\Builder_Field;
+use Directorist\Integrations\HelpGent\Enquiry_Settings;
 
 use function PHPSTORM_META\type;
 
@@ -19,6 +21,8 @@ class Builder_Data {
     }
 
     protected static function prepare_data() {
+        require_once dirname( __DIR__ ) . '/helpgent/class-builder-field.php';
+
         $form_field_widgets = [
             'preset' => [
                 'title'         => __( 'Preset Fields', 'directorist' ),
@@ -636,6 +640,7 @@ class Builder_Data {
                                 ],
                             ],
                         ],
+                        'helpgent-form'          => Builder_Field::definition(),
                         'related_listings'       => [
                             'type'    => 'section',
                             'label'   => __( 'Related Listings', 'directorist' ),
@@ -3234,6 +3239,10 @@ class Builder_Data {
             ] 
         );
 
+        self::$fields[ Enquiry_Settings::KEY ] = [
+            'type'  => 'helpgent-enquiry-settings',
+            'value' => [],
+        ];
         self::$fields = apply_filters( 'directorist/builder/fields', self::$fields );
 
         self::$layouts = apply_filters( 'directorist/builder/layouts', self::$layouts );

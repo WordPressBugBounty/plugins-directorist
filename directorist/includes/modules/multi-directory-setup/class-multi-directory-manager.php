@@ -2,6 +2,8 @@
 
 namespace Directorist\Multi_Directory;
 
+use Directorist\Integrations\HelpGent\Enquiry_Settings;
+
 class Multi_Directory_Manager {
     use Multi_Directory_Helper;
 
@@ -725,7 +727,9 @@ class Multi_Directory_Manager {
             $value = ( 'true' === $value || true === $value || '1' === $value || 1 === $value ) ? true : 0;
         }
 
-        $value = directorist_maybe_json( $value, false, 'directorist_clean_post' );
+        if ( Enquiry_Settings::KEY !== $field_key ) {
+            $value = directorist_maybe_json( $value, false, 'directorist_clean_post' );
+        }
 
         update_term_meta( $term_id, $field_key, $value );
     }
@@ -889,6 +893,10 @@ class Multi_Directory_Manager {
                 $_meta_value = ( ! $test_migration ) ? $meta_value[0] : $meta_value;
                 $value = maybe_unserialize( maybe_unserialize( $_meta_value ) );
 
+                if ( Enquiry_Settings::KEY === $meta_key ) {
+                    $value = Enquiry_Settings::validate( $value );
+                    $value = is_wp_error( $value ) ? Enquiry_Settings::defaults() : $value;
+                }
                 self::$fields[ $meta_key ]['value'] = $value;
             }
         }

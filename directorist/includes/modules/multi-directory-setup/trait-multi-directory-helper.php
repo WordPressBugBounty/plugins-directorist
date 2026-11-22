@@ -3,6 +3,9 @@
 namespace Directorist\Multi_Directory;
 
 use Directorist\Helper;
+use Directorist\Integrations\HelpGent\Enquiry_Settings;
+
+require_once dirname( __DIR__ ) . '/helpgent/class-enquiry-settings.php';
 
 trait Multi_Directory_Helper {
     public static function add_directory( array $args = [] ) {
@@ -30,6 +33,12 @@ trait Multi_Directory_Helper {
         $create_directory = [ 'term_id' => 0 ];
 
         if ( ! $has_term_id ) {
+            $fields = $args['is_json'] ? json_decode( $args['fields_value'], true ) : $args['fields_value'];
+            $settings_error = self::validate_enquiry_settings( $fields );
+            if ( $settings_error ) {
+                return $settings_error;
+            }
+
             $create_directory = self::create_directory(
                 [
                     'directory_name' => $args['directory_name']
@@ -224,6 +233,11 @@ trait Multi_Directory_Helper {
         }
 
         $fields = apply_filters( 'cptm_fields_before_update', $fields );
+        $settings_error = self::validate_enquiry_settings( $fields );
+        if ( $settings_error ) {
+            $settings_error['term_id'] = $term_id;
+            return $settings_error;
+        }
 
         $directory_name = ( ! empty( $fields['name'] ) ) ? $fields['name'] : '';
         $directory_name = ( ! empty( $args['directory_name'] ) ) ? $args['directory_name'] : $directory_name;
@@ -277,6 +291,34 @@ trait Multi_Directory_Helper {
         do_action( 'directorist_after_update_directory_type', (int) $term_id );
 
         return $response;
+    }
+
+    private static function validate_enquiry_settings( &$fields ): ?array {
+        if ( ! is_array( $fields ) || ! array_key_exists( Enquiry_Settings::KEY, $fields ) ) {
+            return null;
+        }
+
+        $settings = Helper::maybe_json( $fields[ Enquiry_Settings::KEY ] );
+        if ( [] === $settings ) {
+            unset( $fields[ Enquiry_Settings::KEY ] );
+            return null;
+        }
+
+        $settings = Enquiry_Settings::validate( $settings );
+        if ( ! is_wp_error( $settings ) ) {
+            $fields[ Enquiry_Settings::KEY ] = $settings;
+            return null;
+        }
+
+        return [
+            'status' => [
+                'success'     => false,
+                'error_count' => 1,
+                'status_log'  => [
+                    Enquiry_Settings::KEY => [ 'type' => 'error', 'message' => $settings->get_error_message() ],
+                ],
+            ],
+        ];
     }
 
     // sync_search_form_fields_with_submission

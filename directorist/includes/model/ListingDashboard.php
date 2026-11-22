@@ -464,7 +464,7 @@ class Directorist_Listing_Dashboard {
             $formgent      = new \ATBDP_Formgent();
             $kpis          = $formgent->get_kpis();
             $unread_count  = isset( $kpis['unread'] ) ? absint( $kpis['unread'] ) : 0;
-            $enquiry_title = __( 'Enquiries', 'directorist' );
+            $enquiry_title = __( 'FormGent Enquiries', 'directorist' );
 
             if ( $unread_count > 0 ) {
                 $enquiry_title .= ' <span class="directorist-enquiry-badge">' . $unread_count . ' ' . __( 'new', 'directorist' ) . '</span>';

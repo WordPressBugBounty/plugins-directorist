@@ -599,6 +599,16 @@ if ( ! class_exists( 'ATBDP_SEO' ) ) :
                     $term = get_term_by( 'slug', $slug, ATBDP_LOCATION );
                     if ( $term && ! is_wp_error( $term ) ) {
                         $url = ATBDP_Permalink::atbdp_get_location_page( $term );
+
+                        $paged = (int) get_query_var( 'paged' );
+
+                        if ( $paged > 1 && 'wpseo_canonical' === current_filter() ) {
+                            if ( get_option( 'permalink_structure' ) && ! wp_parse_url( $url, PHP_URL_QUERY ) ) {
+                                $url = user_trailingslashit( trailingslashit( $url ) . 'page/' . $paged, 'paged' );
+                            } else {
+                                $url = add_query_arg( 'paged', $paged, $url );
+                            }
+                        }
                     }
                 }
             }

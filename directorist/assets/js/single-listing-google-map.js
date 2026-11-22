@@ -205,9 +205,10 @@ function initSingleMap() {
       }
       initMap();
       //Convert address tags to google map links -
-      $('address').each(function () {
-        var link = "<a href='http://maps.google.com/maps?q=" + encodeURIComponent($(this).text()) + "' target='_blank'>" + $(this).text() + '</a>';
-        $(this).html(link);
+      $(mapElm).find('address').each(function () {
+        var text = $(this).text();
+        var link = $('<a>').attr({ href: 'https://maps.google.com/maps?q=' + encodeURIComponent(text), target: '_blank', rel: 'noopener noreferrer' }).text(text);
+        $(this).empty().append(link);
       });
     });
   }

@@ -612,15 +612,13 @@ class Directorist_Listings {
                     'compare' => '=',
                 ];
             } else {
-                $meta_queries['_featured'] = [
-                    'key'     => '_featured',
-                    'type'    => 'NUMERIC',
-                    'compare' => 'EXISTS',
-                ];
+                // Priority is an optional ordering value, not a listing eligibility rule.
+                $args['directorist_featured_priority'] = true;
             }
         }
 
         if ( 'yes' == $this->featured_only ) {
+            unset( $args['directorist_featured_priority'] );
             $meta_queries['_featured'] = [
                 'key'     => '_featured',
                 'value'   => 1,

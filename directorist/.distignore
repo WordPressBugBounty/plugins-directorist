@@ -40,6 +40,9 @@
 
 # Testing & coding standards
 /tests
+/dev-tools
+/jest.helpgent.config.cjs
+/tools/mcp-qa
 /qa
 /tools
 /phpunit.xml
@@ -54,6 +57,8 @@
 /webpack.config.js
 /webpack.legacy.dev.js
 /webpack.legacy.prod.js
+/webpack.helpgent.config.js
+/webpack.helpgent.entries.js
 /tests
 
 # Documentation & notes

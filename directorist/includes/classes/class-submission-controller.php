@@ -74,10 +74,11 @@ class SubmissionController {
         if ( $field->is_required() && self::is_field_submission_empty( $field, $posted_data ) ) {
             $field->add_error( __( 'This field is required.', 'directorist' ) );
         } elseif ( ! self::is_field_submission_empty( $field, $posted_data ) ) {
-            $field->validate( $posted_data );
-
             if ( self::$from === 'api' && $field->type === 'file' ) {
+                // API uploads use temporary filenames, not the web uploader's URL records.
                 self::validate_file_field( $field, $posted_data );
+            } else {
+                $field->validate( $posted_data );
             }
         }
 

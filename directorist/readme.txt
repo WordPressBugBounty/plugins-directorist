@@ -5,7 +5,7 @@ Tags: business directory, listings, classifieds, directory plugin, directory
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 8.11.3
+Stable tag: 8.12
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -299,6 +299,23 @@ Directorist is developer-friendly with plenty of hooks and filters. You can exte
 Directorist comes with an AI-powered directory builder. Use the Create with AI option, provide directory name, location and AI will build the directory for you.
 
 == Changelog ==
+
+= 8.12 - Nov 22, 2026 =
+
+**New**
+
+- Added native HelpGent integration for listing enquiry forms, owner inbox management, live chat, and follow-up messages.
+
+**Security**
+
+- Prevented XSS vulnerabilities in listing maps and file previews.
+
+**Fixed**
+
+- Select dropdowns causing horizontal scrolling on mobile devices.
+- Incorrect Yoast canonical URLs on paginated location archives.
+- Payment receipts displaying coupon discounts higher than the order subtotal.
+- Listings without featured metadata being excluded when featured listing priority is enabled.
 
 = 8.11.3 - Nov 15, 2026 =
 

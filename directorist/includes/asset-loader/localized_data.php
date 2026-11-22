@@ -310,6 +310,7 @@ class Localized_Data {
             'capabilities'         => [
                 'manage_options'  => current_user_can( 'manage_options' ),
                 'install_plugins' => current_user_can( 'install_plugins' ),
+                'activate_plugins' => current_user_can( 'activate_plugins' ),
             ],
             'formgent'             => [
                 'is_installed' => Helper::is_plugin_installed( 'formgent' ),

@@ -25,7 +25,21 @@ class DB {
     public static function get_listings_data( $args ) {
         $args['fields'] = 'ids';
         $args           = \Directorist\Listing_Visibility::query_args( $args );
-        $query          = new WP_Query( $args );
+        $query          = new class( $args ) extends WP_Query {
+            /** Compile only optional featured priority; native ordering owns every other key. */
+            protected function parse_orderby( $orderby ) {
+                if ( '_featured' !== $orderby || ! $this->get( 'directorist_featured_priority' ) ) {
+                    return parent::parse_orderby( $orderby );
+                }
+
+                global $wpdb;
+                // One scalar also handles missing/conflicting rows without multiplying listings.
+                return $wpdb->prepare(
+                    "(SELECT COALESCE(MAX(CAST(directorist_featured_priority.meta_value AS SIGNED)), 0) FROM {$wpdb->postmeta} AS directorist_featured_priority WHERE directorist_featured_priority.post_id = {$wpdb->posts}.ID AND directorist_featured_priority.meta_key = %s)",
+                    '_featured'
+                );
+            }
+        };
         $paginated      = ! $query->get( 'no_found_rows' );
 
         $results = (object) [
