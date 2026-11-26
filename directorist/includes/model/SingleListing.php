@@ -87,6 +87,7 @@ class Directorist_Single_Listing {
         );
         $submission_form_fields = directorist_submission_form_fields_raw( $this->type );
         $listing_field_values   = $this->get_conditional_field_values( $submission_form_fields );
+        $choice_fields          = directorist_get_choice_fields( $submission_form_fields['fields'] ?? [] );
 
         if ( ! empty( $single_fields['fields'] ) ) {
             foreach ( $single_fields['fields'] as $key => $value ) {
@@ -119,7 +120,7 @@ class Directorist_Single_Listing {
                 $form_data = $submission_form_fields['fields'][ $form_key ];
 
                 // A saved value can outlive the category where its field is visible.
-                if ( ! Conditional_Logic::should_show_field( $form_data, $listing_field_values ) ) {
+                if ( ! Conditional_Logic::should_show_field( $form_data, $listing_field_values, $choice_fields, 'stored' ) ) {
                     unset( $single_fields['fields'][ $key ] );
                     continue;
                 }
@@ -236,6 +237,13 @@ class Directorist_Single_Listing {
             }
 
             $value = $this->get_field_value( $field );
+
+            // A button only renders when both its text and URL are present.
+            if ( 'button' === $field['widget_name'] ) {
+                $value = is_array( $value )
+                    && ! empty( $value['button_text'] )
+                    && ! empty( $value['button_url_label'] );
+            }
 
             if ( $value ) {
                 $has_contents = true;
@@ -385,14 +393,18 @@ class Directorist_Single_Listing {
     public function get_custom_field_value( $type, $data ) {
         $result = '';
         $value = is_array( $data['value'] ) ? join( ",", $data['value'] ) : $data['value'];
+        $selected_values = directorist_get_selected_choice_values( $data['options'] ?? [], $data['value'] );
+        if ( 'checkbox' === $type && ! is_array( $data['value'] ) && empty( $selected_values ) ) {
+            $selected_values = directorist_get_selected_choice_values( $data['options'] ?? [], explode( ',', $value ) );
+        }
 
         switch ( $type ) {
             case 'radio':
             case 'select':
                 if ( ! empty( $data['options'] ) ) {
                     foreach ( $data['options'] as $option ) {
-                        $key = $option['option_value'];
-                        if ( $key === $value ) {
+                        $key = directorist_get_choice_value( $option['option_value'] );
+                        if ( in_array( $key, $selected_values, true ) ) {
                             $result = $option['option_label'];
                             break;
                         }
@@ -403,8 +415,8 @@ class Directorist_Single_Listing {
             case 'checkbox':
                 $option_value = [];
                 foreach ( $data['options'] as $option ) {
-                    $key = $option['option_value'];
-                    if ( in_array( $key, explode( ',', $value ) ) ) {
+                    $key = directorist_get_choice_value( $option['option_value'] );
+                    if ( in_array( $key, $selected_values, true ) ) {
                         $space = str_repeat( ' ', 1 );
                         $option_value[] = $space . $option['option_label'];
                     }
@@ -860,7 +872,7 @@ class Directorist_Single_Listing {
         $id = $this->id;
         $plan_average_price = is_fee_manager_active() ? is_plan_allowed_average_price_range( $this->fm_plan ) : true;
 
-        if ( ! empty( $this->price_range ) && ( 'range' === $this->atbd_listing_pricing ) && $plan_average_price ) {
+        if ( '' !== (string) $this->price_range && ( 'range' === $this->atbd_listing_pricing ) && $plan_average_price ) {
             return true;
         } else {
             return false;
@@ -868,31 +880,12 @@ class Directorist_Single_Listing {
     }
 
     public function price_range_html() {
-        $id = $this->id;
-        $currency = directorist_get_currency();
-        $c_symbol = atbdp_currency_symbol( $currency );
-        $active   = '<span class="directorist-price-active">' . $c_symbol . '</span>';
-        $inactive = '<span>' . $c_symbol . '</span>';
-        $output = '';
-
-        switch ( $this->price_range ) {
-            case 'skimming':
-                $output = $active . $active . $active . $active;
-            break;
-            case 'moderate':
-                $output = $active . $active . $active . $inactive;
-            break;
-            case 'economy':
-                $output = $active . $active . $inactive . $inactive;
-            break;
-            case 'bellow_economy':
-                $output = $active . $inactive . $inactive . $inactive;
-            break;
-        }
-
-        $result = sprintf( '<div class="directorist-listing-price-range directorist-tooltip" data-label="%s">%s</div>', ucfirst( $this->price_range ), $output );
-
-        return $result;
+        $range = Price_Ranges::presentation( $this->price_range, $this->id );
+        return sprintf(
+            '<div class="directorist-listing-price-range directorist-tooltip" data-label="%s">%s</div>',
+            esc_attr( $range['price_range_text'] ),
+            Price_Ranges::display_content( $range['active_items'], $range['currency'], $range['price_range_text'] )
+        );
     }
 
     public function contact_owner_form_disabled() {

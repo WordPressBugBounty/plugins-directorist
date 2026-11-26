@@ -8,6 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+use Directorist\Price_Ranges;
+
 class ATBDP_Metabox {
     const REJECTION_HISTORY_META_KEY = '_listing_rejection_history';
 
@@ -467,6 +469,9 @@ class ATBDP_Metabox {
                     }
 
                     $section['fields'][ $field ] = $submission_form_fields['fields'][ $field ];
+                    if ( 'pricing' === $field ) {
+                        $section['fields'][ $field ]['price_range_directory_id'] = (int) $type;
+                    }
                 }
 
                 $form_data[] = $section;
@@ -603,8 +608,9 @@ class ATBDP_Metabox {
         $submission_form_fields = directorist_get_listing_form_fields( $directory_id );
         $posted_data            = wp_unslash( $_POST );
         $hidden_fields          = [];
+        $choice_fields          = directorist_get_choice_fields( $submission_form_fields );
         foreach ( $submission_form_fields as $key => $value ) {
-            if ( ! \Directorist\Fields\Conditional_Logic::should_show_field( $value, $posted_data ) ) {
+            if ( ! \Directorist\Fields\Conditional_Logic::should_show_field( $value, $posted_data, $choice_fields ) ) {
                 $hidden_fields[ $key ] = true;
                 continue;
             }
@@ -615,9 +621,24 @@ class ATBDP_Metabox {
             }
 
             if ( 'pricing' === $key ) {
-                $meta_data['_atbd_listing_pricing'] = isset( $_POST['atbd_listing_pricing'] ) ? directorist_clean( wp_unslash( $_POST['atbd_listing_pricing'] ) ) : '';
-                $meta_data['_price' ]               = isset( $_POST['price'] ) ? directorist_clean( wp_unslash( $_POST['price'] ) ) : '';
-                $meta_data['_price_range']          = isset( $_POST['price_range'] ) ? directorist_clean( wp_unslash( $_POST['price_range'] ) ) : '';
+                $price_type = isset( $_POST['atbd_listing_pricing'] ) ? Price_Ranges::clean( wp_unslash( $_POST['atbd_listing_pricing'] ) ) : '';
+                $range      = isset( $_POST['price_range'] ) ? wp_unslash( $_POST['price_range'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated below.
+                $price      = isset( $_POST['price'] ) ? directorist_clean( wp_unslash( $_POST['price'] ) ) : '';
+
+                $saved_range = ! isset( $_POST['atbd_listing_pricing'] ) && ! isset( $_POST['price_range'] ) && ! isset( $_POST['price'] )
+                    ? Price_Ranges::saved_range_for_edit( $value, $post_id, $directory_id )
+                    : null;
+
+                if ( null !== $saved_range ) {
+                    $meta_data['_price_range'] = Price_Ranges::current_value( $saved_range, Price_Ranges::options( $value ) );
+                } else {
+                    $range = 'range' === $price_type ? Price_Ranges::submitted_value( $range, $value, $post_id, $directory_id ) : '';
+                    if ( null !== $range ) {
+                        $meta_data['_atbd_listing_pricing'] = $price_type;
+                        $meta_data['_price']                = $price;
+                        $meta_data['_price_range']          = $range;
+                    }
+                }
             }
 
             if ( 'map' === $key ) {
@@ -630,7 +651,9 @@ class ATBDP_Metabox {
 
             if ( ! in_array( $field_key, [ 'listing_title', 'listing_content', 'tax_input' ], true ) ) {
                 $meta_field_key = '_' . $field_key;
-                $meta_data[ $meta_field_key ] = isset( $_POST[ $field_key ] ) ? wp_unslash( $_POST[ $field_key ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                $meta_data[ $meta_field_key ] = isset( $choice_fields[ $field_key ] )
+                    ? \Directorist\Fields\Fields::create( $value )->sanitize( $posted_data )
+                    : ( $posted_data[ $field_key ] ?? '' );
             }
         }
 
@@ -694,7 +717,7 @@ class ATBDP_Metabox {
 
         $valid_metadata = directorist_filter_listing_empty_metadata( $meta_data );
         foreach ( $valid_metadata as $meta_key => $meta_value ) {
-            update_post_meta( $post_id, $meta_key, $meta_value );
+            update_post_meta( $post_id, $meta_key, '_price_range' === $meta_key ? wp_slash( $meta_value ) : $meta_value );
         }
 
         directorist_delete_listing_empty_metadata( $post_id, $meta_data, $valid_metadata );

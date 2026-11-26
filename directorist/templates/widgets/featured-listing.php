@@ -87,7 +87,7 @@ $reviews_enabled = directorist_is_review_enabled();
                                 <span><?php atbdp_display_price( $price ); ?></span>
 
                             <?php } else {
-                                $output = atbdp_display_price_range( $price_range );
+                                $output = atbdp_display_price_range( $price_range, get_the_ID() );
                                 if ( ! empty( $output ) ) {
                                     echo wp_kses_post( $output );
                                 }

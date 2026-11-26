@@ -11,6 +11,7 @@ namespace Directorist\Rest_Api\Controllers\Version2;
 use WP_Error;
 use WP_REST_Server;
 use Directorist\Helper;
+use Directorist\Price_Ranges;
 use Directorist\AddListingForm\SubmissionController;
 use Directorist\Rest_Api\Controllers\Version1\Listings_Controller as Legacy_Listings_Controller;
 
@@ -275,6 +276,7 @@ class Listings_Controller extends Legacy_Listings_Controller {
         $plan_id = $request['plan'];
 
         $form_fields           = directorist_get_listing_form_fields( $directory_id );
+        $choice_fields         = directorist_get_choice_fields( $form_fields );
         $map                   = $this->get_schema_to_post_fields_map();
         $_POST['directory_id'] = $directory_id;
         $_POST['tax_input']    = array();
@@ -307,13 +309,13 @@ class Listings_Controller extends Legacy_Listings_Controller {
                             )
                         );
                     } else {
-                        $_POST[ $post_key ] = $request['fields'][ $schema_key ];
+                        $_POST[ $post_key ] = 'price_range' === $post_key ? wp_slash( $request['fields'][ $schema_key ] ) : $request['fields'][ $schema_key ];
                     }
                 }
 
             } elseif ( isset( $request['fields'] ) && isset( $request['fields'][ $field_key ] ) ) {
 
-                $_POST[ $field_key ] = $request['fields'][ $field_key ];
+                $_POST[ $field_key ] = isset( $choice_fields[ $field_key ] ) ? wp_slash( $request['fields'][ $field_key ] ) : $request['fields'][ $field_key ];
 
             } elseif ( isset( $request[ $field_key ] ) && isset( $map[ $widget_key ] ) ) {
 
@@ -331,13 +333,13 @@ class Listings_Controller extends Legacy_Listings_Controller {
                             )
                         );
                     } else {
-                        $_POST[ $post_key ] = $request[ $schema_key ];
+                        $_POST[ $post_key ] = 'price_range' === $post_key ? wp_slash( $request[ $schema_key ] ) : $request[ $schema_key ];
                     }
                 }
 
             } elseif ( isset( $request[ $field_key ] ) ) {
 
-                $_POST[ $field_key ] = $request[ $field_key ];
+                $_POST[ $field_key ] = isset( $choice_fields[ $field_key ] ) ? wp_slash( $request[ $field_key ] ) : $request[ $field_key ];
 
             }
         }
@@ -595,6 +597,7 @@ class Listings_Controller extends Legacy_Listings_Controller {
         }
 
         $form_fields      = directorist_get_listing_form_fields( $directory_id );
+        $choice_fields    = directorist_get_choice_fields( $form_fields );
         $data             = array();
         $ignorable_fields = array(
             'view_count',
@@ -669,7 +672,7 @@ class Listings_Controller extends Legacy_Listings_Controller {
                 case 'pricing':
                     $data['price']       = directorist_clean( get_post_meta( $listing->ID, '_price', true ) );
                     $data['price_type']  = directorist_clean( get_post_meta( $listing->ID, '_atbd_listing_pricing', true ) );
-                    $data['price_range'] = directorist_clean( get_post_meta( $listing->ID, '_price_range', true ) );
+                    $data['price_range'] = Price_Ranges::listing_value( $listing->ID );
                     break;
 
                 case 'map':
@@ -695,7 +698,10 @@ class Listings_Controller extends Legacy_Listings_Controller {
 
                 default:
                     $value              = get_post_meta( $listing->ID, '_' . $field_key, true );
-                    $value              = directorist_clean( $value );
+                    $selected = isset( $choice_fields[ $field_key ] )
+                        ? directorist_get_selected_choice_values( $choice_fields[ $field_key ], $value )
+                        : [];
+                    $value = $selected ? ( is_array( $value ) ? $selected : $selected[0] ) : directorist_clean( $value );
                     $data[ $field_key ] = apply_filters( 'directorist_rest_listing_field_data', $value, $form_field, $listing, $context );
                     break;
             }
@@ -1168,7 +1174,6 @@ class Listings_Controller extends Legacy_Listings_Controller {
             'price_range'              => array(
                 'description' => __( 'Price range.', 'directorist' ),
                 'type'        => 'string',
-                'enum'        => array( 'skimming', 'moderate', 'economy', 'bellow_economy' ),
                 'context'     => array( 'view', 'edit' ),
             ),
             'contact_form_hidden' => array(

@@ -2,6 +2,7 @@
 
 namespace Directorist\Multi_Directory;
 
+use Directorist\Helper;
 use Directorist\Integrations\HelpGent\Enquiry_Settings;
 
 class Multi_Directory_Manager {
@@ -680,11 +681,8 @@ class Multi_Directory_Manager {
 
         foreach ( $field_list as $field_key ) {
             if ( isset( $_POST[$field_key] ) && 'name' !==  $field_key ) {
-                $fields[ $field_key ] = directorist_maybe_json(
-                    wp_unslash( $_POST[ $field_key ] ),
-                    true,
-                    'directorist_clean_post'
-                );
+                $value = Helper::maybe_json( wp_unslash( $_POST[ $field_key ] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized below.
+                $fields[ $field_key ] = self::clean_builder_field( $field_key, $value );
             }
         }
 
@@ -728,10 +726,25 @@ class Multi_Directory_Manager {
         }
 
         if ( Enquiry_Settings::KEY !== $field_key ) {
-            $value = directorist_maybe_json( $value, false, 'directorist_clean_post' );
+            $value = self::clean_builder_field( $field_key, Helper::maybe_json( $value ) );
+        }
+
+        if ( 'submission_form_fields' === $field_key && isset( $value['fields']['pricing']['price_range_options'] ) ) {
+            $value['fields']['pricing']['price_range_options'] = wp_slash( $value['fields']['pricing']['price_range_options'] );
         }
 
         update_term_meta( $term_id, $field_key, $value );
+    }
+
+    private static function clean_builder_field( $field_key, $value ) {
+        $cleaned = directorist_clean_post( $value );
+        // The repeater uses plain text, so its values must not become HTML entities.
+        // It is validated separately before the directory is persisted.
+        if ( 'submission_form_fields' === $field_key && is_array( $value['fields']['pricing'] ?? null )
+            && array_key_exists( 'price_range_options', $value['fields']['pricing'] ) ) {
+            $cleaned['fields']['pricing']['price_range_options'] = $value['fields']['pricing']['price_range_options'];
+        }
+        return $cleaned;
     }
 
     public function prepare_settings() {

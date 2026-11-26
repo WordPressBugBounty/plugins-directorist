@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Get conditional logic attributes using centralized method
 $conditional_logic_attr = $listing_form->get_conditional_logic_attributes( $data );
+$selected_values        = directorist_get_selected_choice_values( $data['options'] ?? [], $data['value'] );
 $options                = ! empty( $data['options'] ) && is_array( $data['options'] ) ? $data['options'] : [];
 $has_empty_option       = in_array( '', wp_list_pluck( $options, 'option_value' ), true );
 $show_empty_option      = empty( $data['required'] ) && ! $has_empty_option;
@@ -31,7 +32,7 @@ $placeholder            = ! empty( $data['placeholder'] ) ? $data['placeholder']
 
             <?php foreach ( $options as $value ) : ?>
 
-                <option value="<?php echo esc_attr( $value['option_value'] )?>" <?php selected( $value['option_value'], $data['value'] ); ?>><?php echo esc_attr( $value['option_label'] )?></option>
+                <option value="<?php echo esc_attr( $value['option_value'] )?>" <?php selected( in_array( directorist_get_choice_value( $value['option_value'] ), $selected_values, true ) ); ?>><?php echo esc_attr( $value['option_label'] )?></option>
 
             <?php endforeach ?>
 

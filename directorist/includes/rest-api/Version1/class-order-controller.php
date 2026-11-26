@@ -237,7 +237,8 @@ class Order_Controller extends Abstract_Controller {
 
         $dto = ( new OrderDTO )
             ->set_user_id( get_current_user_id() )
-            ->set_currency( atbdp_get_payment_currency() )
+            ->set_currency( strtoupper( trim( directorist_get_currency() ) ) )
+            ->set_checkout_quote( \Directorist\Checkout\Quote::draft() )
             ->set_status( OrderStatus::PENDING );
 
         try {
@@ -366,6 +367,7 @@ class Order_Controller extends Abstract_Controller {
         if ( ! $old_item ) {
             return new WP_Error( 'rest_not_found', __( 'The order was not found', 'directorist' ) );
         }
+
 
         $dto = $repository->to_dto( $old_item );
 

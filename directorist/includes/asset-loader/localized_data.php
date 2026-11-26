@@ -91,7 +91,24 @@ class Localized_Data {
         $review_approval = get_directorist_option( 'review_approval_text', __( 'Your review has been received. It requires admin approval to publish.', 'directorist' ) );
         $enable_reviewer_content = get_directorist_option( 'enable_reviewer_content', 1 );
 
+        /**
+         * A Nominatim-compatible autocomplete endpoint supplied by the site owner.
+         * The public OSM Nominatim service forbids client-side autocomplete.
+         * Leave this empty to keep address entry manual. The endpoint must return
+         * items containing display_name, lat, and lon.
+         *
+         * @param string $url Full search endpoint URL, with any provider key.
+         */
+        $autocomplete_url = apply_filters( 'directorist_openstreet_autocomplete_url', '' );
+        $autocomplete_url = is_string( $autocomplete_url ) ? esc_url_raw( $autocomplete_url ) : '';
+        $autocomplete_host = $autocomplete_url ? wp_parse_url( $autocomplete_url, PHP_URL_HOST ) : '';
+        if ( 'nominatim.openstreetmap.org' === strtolower( (string) $autocomplete_host ) ) {
+            $autocomplete_url = '';
+        }
+
         $data = [
+            'openstreet_autocomplete_url'   => $autocomplete_url,
+            'openstreet_current_location'   => __( 'Use Current Location', 'directorist' ),
             'nonce'                           => wp_create_nonce( 'atbdp_nonce_action_js' ),
             'directorist_nonce'               => wp_create_nonce( directorist_get_nonce_key() ),
             'ajax_nonce'                      => wp_create_nonce( 'bdas_ajax_nonce' ),
@@ -383,15 +400,12 @@ class Localized_Data {
 
     public static function login_data() {
         $redirection = \ATBDP_Permalink::get_login_redirection_page_link();
-        $redirection_url = $redirection ? $redirection : \ATBDP_Permalink::get_dashboard_page_link();
-        $current_time = time();
-        $redirection_url = strpos( $redirection_url, '?' ) !== false ? $redirection . '&rand=' . $current_time : $redirection . '?rand=' . $current_time;
-
-        if ( strpos( $redirection_url, '?' ) !== false ) {
-            $redirection_url = $redirection_url . '&rand=' . $current_time;
-        } else {
-            $redirection_url = $redirection_url . '?rand=' . $current_time;
+        $selected_plan_url = \ATBDP_Permalink::get_selected_plan_add_listing_page_link();
+        if ( $selected_plan_url ) {
+            $redirection = $selected_plan_url;
         }
+        $redirection_url = $redirection ? $redirection : \ATBDP_Permalink::get_dashboard_page_link();
+        $redirection_url = add_query_arg( 'rand', time(), $redirection_url );
 
         $data = [
             'ajax_url'            => admin_url( 'admin-ajax.php' ),

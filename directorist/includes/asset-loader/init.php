@@ -284,6 +284,14 @@ class Asset_Loader {
             wp_enqueue_style( 'directorist-unicons' );
             wp_enqueue_script( 'directorist-icon-picker' );
             wp_enqueue_script( 'directorist-settings-manager' );
+            if ( function_exists( 'wp_set_script_translations' ) && wp_script_is( 'wp-i18n', 'registered' ) ) {
+                wp_set_script_translations( 'directorist-settings-manager', 'directorist', ATBDP_DIR . 'languages' );
+            }
+            wp_localize_script(
+                'directorist-settings-manager',
+                'directoristSettingsTranslations',
+                require __DIR__ . '/settings-i18n.php'
+            );
             wp_enqueue_script( 'directorist-settings-search-shortcut', DIRECTORIST_ASSETS . 'js/directorist-settings-search-shortcut.js', [ 'directorist-settings-manager' ], ATBDP_VERSION, true );
             wp_enqueue_script( 'directorist-settings-extension-link', DIRECTORIST_ASSETS . 'js/directorist-settings-extension-link.js', [ 'directorist-settings-manager' ], ATBDP_VERSION, true );
             wp_enqueue_media();

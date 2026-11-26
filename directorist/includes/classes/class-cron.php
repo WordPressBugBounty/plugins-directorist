@@ -17,6 +17,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 if ( ! class_exists( 'ATBDP_Cron' ) ) :
     class ATBDP_Cron {
+        /**
+         * Listing currently being removed by automated expiry cleanup.
+         *
+         * @var int
+         */
+        private static $deleting_expired_listing_id = 0;
+
+        /**
+         * Whether expiry cleanup is currently deleting this listing.
+         *
+         * @param int $listing_id Listing ID.
+         * @return bool
+         */
+        public static function is_deleting_expired_listing( $listing_id ) {
+            return (int) $listing_id === self::$deleting_expired_listing_id;
+        }
+
         public function __construct() {
             // init wp schedule
             add_action( 'wp', [ $this, 'atbdp_custom_schedule_cron' ] );
@@ -452,11 +469,19 @@ if ( ! class_exists( 'ATBDP_Cron' ) ) :
             if ( $listings->found_posts ) {
                 // should we delete or trash? @todo; later think about adding option to change post status (eg to hidden) instead of deleting them.
                 foreach ( $listings->posts as $listing ) {
-                    if ( $force ) {
-                        wp_delete_post( $listing->ID, $force );
-                    } else {
-                        wp_trash_post( $listing->ID );
+                    $previous_listing_id = self::$deleting_expired_listing_id;
+                    self::$deleting_expired_listing_id = (int) $listing->ID;
+
+                    try {
+                        if ( $force ) {
+                            wp_delete_post( $listing->ID, $force );
+                        } else {
+                            wp_trash_post( $listing->ID );
+                        }
+                    } finally {
+                        self::$deleting_expired_listing_id = $previous_listing_id;
                     }
+
                     do_action( 'atbdp_deleted_expired_listings', $listing->ID );
                 }
             }

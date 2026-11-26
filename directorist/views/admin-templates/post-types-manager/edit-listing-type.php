@@ -14,6 +14,7 @@
         $label = __( 'Edit Directory', 'directorist' );
     }
     ?>
+    <?php \Directorist\AI_Admin_Actions::render_directory_builder_button( $data['directory_builder_data']['id'] ?? 0 ); ?>
     <div id="atbdp-cpt-manager" data-builder-data="<?php echo esc_attr( $builder_data ); ?>">
         <cpt-manager />
     </div>

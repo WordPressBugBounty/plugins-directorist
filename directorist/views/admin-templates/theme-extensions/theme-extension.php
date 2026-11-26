@@ -1318,11 +1318,7 @@ $notification_count = $total_updates + $required_rows + count( $dependency_rows 
                     <?php endif; ?>
 
                     <?php
-                    $revenue_symbol = html_entity_decode(
-                        atbdp_currency_symbol( $dashboard_metrics['currency'] ?? atbdp_get_payment_currency() ),
-                        ENT_QUOTES,
-                        get_bloginfo( 'charset' )
-                    );
+                    $revenue_currency = $dashboard_metrics['currency'] ?? atbdp_get_payment_currency();
                     $published_chart = ! empty( $dashboard_metric_charts['published_listings'] ) && is_array( $dashboard_metric_charts['published_listings'] )
                         ? $dashboard_metric_charts['published_listings']
                         : [];
@@ -1400,7 +1396,7 @@ $notification_count = $total_updates + $required_rows + count( $dependency_rows 
                         <div class="directorist-te-dashboard-metric <?php echo $revenue_sparkline && ! empty( $revenue_chart['has_data'] ) ? 'has-sparkline' : ''; ?>">
                             <div class="directorist-te-dashboard-metric__top">
                                 <span class="directorist-te-dashboard-icon directorist-te-dashboard-icon--violet"><i class="la la-dollar" aria-hidden="true"></i></span>
-                                <div><strong><?php echo esc_html( $revenue_symbol . number_format_i18n( (float) ( $dashboard_metrics['revenue'] ?? 0 ), 2 ) ); ?></strong><span><?php esc_html_e( 'Revenue', 'directorist' ); ?></span></div>
+                                <div><strong><?php echo esc_html( number_format_i18n( (float) ( $dashboard_metrics['revenue'] ?? 0 ), 2 ) . ' ' . $revenue_currency ); ?></strong><span><?php esc_html_e( 'Revenue (excluding tax)', 'directorist' ); ?></span></div>
                             </div>
                             <div class="directorist-te-dashboard-metric__foot">
                                 <?php if ( ! empty( $revenue_chart['has_comparison'] ) ) : ?>

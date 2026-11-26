@@ -26,7 +26,7 @@ if ( ! class_exists( 'ATBDP_Email' ) ) :
             add_action( 'atbdp_order_completed', [ $this, 'notify_owner_order_completed' ], 10, 3 );
             add_action( 'atbdp_order_completed', [ $this, 'notify_admin_order_completed' ], 10, 3 );
             add_action( 'directorist_checkout_payment_initiated', [ $this, 'notify_plan_order_created' ], 10, 3 );
-            add_action( 'directorist_after_order_update', [ $this, 'notify_plan_order_completed' ], 20, 2 );
+            add_action( 'directorist_order_paid_after_commit', [ $this, 'notify_plan_order_completed' ], 20, 2 );
             /*Fire up email for renewal notification*/
             add_action( 'atbdp_status_updated_to_renewal', [ $this, 'notify_owner_listing_to_expire' ] );
             /*Fire up email for expired listings*/
@@ -527,15 +527,23 @@ This email is sent automatically for information purpose only. Please do not res
          * Get the email header eg. From: and Reply-to:
          *
          * @since 3.1.0
-         * @param array $data [optional] The array of name and the reply to email
-         * @return string It returns the header of the email that contains From: $name and Reply to: $email
+         * @param array $data Optional sender name, sender email, and reply_to email.
+         * @return string Email headers containing the sender and reply-to addresses.
          */
         public function get_email_headers( $data = [] ) {
-            // get the data from the db
-            $name = ! empty( $data['name'] ) ? sanitize_text_field( $data['name'] ) : get_directorist_option( 'email_from_name', get_option( 'blogname' ) );
-            $email = ! empty( $data['email'] ) ? sanitize_email( $data['email'] ) : get_directorist_option( 'email_from_email', get_option( 'admin_email' ) );
-            // build the header for email and return it @todo; is it better to trim here? test on free time.
-            return "From: {$name} <{$email}>\r\nReply-To: {$email}\r\n";
+            $name  = ! empty( $data['name'] ) ? sanitize_text_field( $data['name'] ) : get_directorist_option( 'email_from_name', get_option( 'blogname' ) );
+            $email = ! empty( $data['email'] ) ? $data['email'] : get_directorist_option( 'email_from_email' );
+
+            $email = is_string( $email ) ? is_email( trim( $email ) ) : false;
+            if ( ! $email ) {
+                $admin_email = get_option( 'admin_email' );
+                $email       = is_string( $admin_email ) ? is_email( trim( $admin_email ) ) : false;
+            }
+
+            $reply_to = ! empty( $data['reply_to'] ) ? sanitize_email( $data['reply_to'] ) : $email;
+            $headers  = $email ? "From: {$name} <{$email}>\r\n" : '';
+
+            return $headers . ( $reply_to ? "Reply-To: {$reply_to}\r\n" : '' );
         }
 
         /**
@@ -1078,6 +1086,10 @@ This email is sent automatically for information purpose only. Please do not res
                 return;
             }
 
+            if ( 'expired_only' === get_directorist_option( 'listing_deletion_email_scope', 'all' ) && ! ATBDP_Cron::is_deleting_expired_listing( $listing_id ) ) {
+                return;
+            }
+
             $this->notify_owner_listing_deleted( $listing_id );
             $this->notify_admin_listing_deleted( $listing_id );
         }
@@ -1465,6 +1477,10 @@ We look forward to seeing you soon'
 
             <p align="center">If you did not sign up for this account you can ignore this email.</p>'
             );
+
+            if ( get_user_meta( $user->ID, '_directorist_guest_listing_next_url', true ) ) {
+                $body = str_replace( '==CONFIRM_EMAIL_ADDRESS_URL==', '==SET_PASSWORD_AND_CONFIRM_EMAIL_ADDRESS_URL==', $body );
+            }
 
             $subject = $this->replace_in_content( $subject, null, null, $user );
 

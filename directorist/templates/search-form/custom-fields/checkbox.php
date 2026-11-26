@@ -12,6 +12,7 @@ if ( $value == '' ) {
 }
 
 $conditional_logic_attr = $searchform->get_conditional_logic_attributes( $data );
+$selected_values        = directorist_get_selected_choice_values( $data['options']['options'] ?? [], $value, 'submitted' );
 ?>
 
 <div class="directorist-search-field directorist-search-form-dropdown directorist-form-group"<?php echo $conditional_logic_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped in get_conditional_logic_attributes() ?>>
@@ -34,7 +35,7 @@ $conditional_logic_attr = $searchform->get_conditional_logic_attributes( $data )
                         ?>
 
                         <div class="directorist-checkbox directorist-checkbox-primary">
-                            <input <?php checked( in_array( $option[ 'option_value' ], $value ) ); ?> type="checkbox" id="<?php echo esc_attr( $uniqid ); ?>" name="custom_field[<?php echo esc_attr( $data['field_key'] ); ?>][]" value="<?php echo esc_attr( $option['option_value'] ); ?>">
+                            <input <?php checked( in_array( directorist_get_choice_value( $option['option_value'] ), $selected_values, true ) ); ?> type="checkbox" id="<?php echo esc_attr( $uniqid ); ?>" name="custom_field[<?php echo esc_attr( $data['field_key'] ); ?>][]" value="<?php echo esc_attr( $option['option_value'] ); ?>">
                             <label class="directorist-checkbox__label" for="<?php echo esc_attr( $uniqid ); ?>"><?php echo esc_html( $option['option_label'] ); ?></label>
                         </div>
 

@@ -220,6 +220,39 @@ return apply_filters(
                     'label' => __( 'Price Range Placeholder', 'directorist' ),
                     'value' => 'Select Price Range',
                 ],
+                'price_range_options' => [
+                    'type'                 => 'multi-fields',
+                    'label'                => __( 'Price Range Options', 'directorist' ),
+                    'add-new-button-label' => __( 'Add Option', 'directorist' ),
+                    'remove-button-label'  => __( 'Remove Option', 'directorist' ),
+                    'show_if'              => [
+                        'where'      => 'self.pricing_type',
+                        'compare'    => 'or',
+                        'conditions' => [
+                            [ 'key' => 'value', 'compare' => '=', 'value' => 'both' ],
+                            [ 'key' => 'value', 'compare' => '=', 'value' => 'price_range' ],
+                        ],
+                    ],
+                    'value'                => \Directorist\Price_Ranges::defaults(),
+                    'options'              => [
+                        'option_label' => [
+                            'type'  => 'text',
+                            'label' => __( 'Label', 'directorist' ),
+                            'value' => '',
+                        ],
+                        'option_value' => [
+                            'type'  => 'text',
+                            'label' => __( 'Value', 'directorist' ),
+                            'value' => '',
+                        ],
+                        'deprecated_values' => [
+                            'type'        => 'text',
+                            'label'       => __( 'Deprecated Values (optional)', 'directorist' ),
+                            'description' => __( 'Enter old values separated by commas. Listings using those values will appear under this option in search and will store the new value when saved. Example: economy, budget.', 'directorist' ),
+                            'value'       => '',
+                        ],
+                    ],
+                ],
                 'price_unit_field_type' => [
                     'type'    => 'select',
                     'label'   => __( 'Price Unit Field Type', 'directorist' ),

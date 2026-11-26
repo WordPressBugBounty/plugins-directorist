@@ -11,7 +11,8 @@ use Directorist\DTO\Order\DTO as OrderDTO;
 use Directorist\Utils\Template;
 
 class FeaturedListingCheckout {
-    const CHECKOUT_TYPE = 'featured_listing';
+    const CHECKOUT_TYPE                  = 'featured_listing';
+    const PUBLISH_AFTER_PAYMENT_META_KEY = '_directorist_featured_publish_after_payment';
 
     public function __construct() {
         add_filter( 'directorist_order_data', [ $this, 'handle_order_data' ] );
@@ -27,6 +28,7 @@ class FeaturedListingCheckout {
 
         add_filter( 'directorist_checkout_types', [$this, 'add_checkout_type'] );
         add_action( 'directorist_after_order_update', [$this, 'handle_after_order_update'], 10, 2 );
+        add_action( 'directorist_order_paid_after_commit', [ $this, 'notify_order_completed' ] );
         add_filter( 'directorist_checkout_validation', [$this, 'validate_checkout'], 10, 2 );
         add_action( 'directorist_checkout_table', [$this, 'handle_checkout_table'], 10, 4 );
         add_filter( 'directorist_checkout_subtotal', [$this, 'handle_checkout_subtotal'], 10, 3 );
@@ -34,6 +36,8 @@ class FeaturedListingCheckout {
         add_filter( 'directorist_checkout_product_name', [$this, 'handle_checkout_product_name'], 10, 2 );
         add_filter( 'directorist_ajax_listing_submission_response', [ $this, 'handle_listing_submission_response_data' ], 10, 2 );
         add_filter( 'directorist_listing_update_args_after_preview', [ $this, 'handle_listing_status_after_preview' ], 10, 2 );
+        add_action( 'atbdp_listing_updated', [ $this, 'clear_pending_publication' ] );
+        add_action( 'atbdp_before_renewal', [ $this, 'clear_pending_publication' ] );
     }
 
     public function handle_listing_submission_response_data( array $data, array $request ) {
@@ -53,6 +57,8 @@ class FeaturedListingCheckout {
         if ( directorist_order_repository()->listing_has_paid_featured_order( $listing_id ) ) {
             return $data;
         }
+
+        update_post_meta( $listing_id, self::PUBLISH_AFTER_PAYMENT_META_KEY, 'publish' === get_post_status( $listing_id ) ? '1' : '0' );
 
         directorist_set_listing_featured( $listing_id, false );
         directorist_set_listing_status( $listing_id, 'pending' );
@@ -75,9 +81,20 @@ class FeaturedListingCheckout {
             return $args;
         }
 
+        if ( 'pending' !== get_post_status( $listing_id ) || ! empty( $args['edited'] ) ) {
+            $can_publish = 'publish' === $args['post_status'] && empty( $args['edited'] );
+            update_post_meta( $listing_id, self::PUBLISH_AFTER_PAYMENT_META_KEY, $can_publish ? '1' : '0' );
+        }
+
         $args['post_status'] = 'pending';
 
         return $args;
+    }
+
+    public function clear_pending_publication( $listing_id ) {
+        if ( 'pending' === get_post_status( $listing_id ) || metadata_exists( 'post', $listing_id, self::PUBLISH_AFTER_PAYMENT_META_KEY ) ) {
+            update_post_meta( $listing_id, self::PUBLISH_AFTER_PAYMENT_META_KEY, '0' );
+        }
     }
 
     public function add_checkout_type( array $checkout_types ) {
@@ -109,6 +126,12 @@ class FeaturedListingCheckout {
         if ( ! directorist_user_can_checkout_listing( $listing->ID ) ) {
             throw new Exception( __( 'You do not have permission to pay for this listing.', 'directorist' ), 403 );
         }
+
+        $price = get_directorist_option( 'featured_listing_price' );
+
+        if ( ! is_numeric( $price ) || ! is_finite( (float) $price ) || (float) $price < 0 ) {
+            throw new Exception( __( 'The featured listing price is not configured.', 'directorist' ), 400 );
+        }
     }
 
     public function handle_checkout_table( string $checkout_type, float $total, float $subtotal, WP_REST_Request $request ) {
@@ -139,8 +162,10 @@ class FeaturedListingCheckout {
             return;
         }
 
-        $amount = get_directorist_option( 'featured_listing_price' );
-        $dto->set_listing_id( $request->get_param( 'listing_id' ) )->set_is_featured_listing( 1 )->set_ref_type( self::CHECKOUT_TYPE )->set_amount( $amount )->set_sub_total( $amount );
+        $listing_id = (int) $request->get_param( 'listing_id' );
+        $amount     = get_directorist_option( 'featured_listing_price' );
+
+        $dto->set_listing_id( $listing_id )->set_is_featured_listing( 1 )->set_ref_type( self::CHECKOUT_TYPE )->set_amount( $amount )->set_sub_total( $amount );
     }
 
     public function handle_after_order_update( OrderDTO $dto, $old_order = null ) {
@@ -165,25 +190,43 @@ class FeaturedListingCheckout {
 
             directorist_set_listing_featured( $dto->get_listing_id(), true );
 
-            // Preserve the existing publication flow after an authorized payment.
+            // Only restore listings held for payment, not listings pending moderation.
             $listing = get_post( $dto->get_listing_id() );
 
             if ( $listing && $order_expiration ) {
                 $this->update_listing_expiration( $listing, $order_expiration );
             }
 
-            if ( $listing && 'publish' !== $listing->post_status ) {
-                directorist_set_listing_status( $dto->get_listing_id(), 'publish' );
-            }
-
-            if ( ! isset( $old_order->status ) || Status::PAID !== $old_order->status ) {
-                $order = directorist_order_repository()->single( $dto->get_id() );
-
-                do_action( 'atbdp_order_completed', $dto->get_id(), $dto->get_listing_id(), $order );
+            if ( $listing && 'pending' === $listing->post_status && $this->can_publish_after_payment( $listing ) ) {
+                if ( directorist_set_listing_status( $listing->ID, 'publish' ) ) {
+                    $this->clear_pending_publication( $listing->ID );
+                }
             }
         } elseif ( ! directorist_order_repository()->listing_has_active_featured_entitlement( $dto->get_listing_id() ) ) {
             directorist_set_listing_featured( $dto->get_listing_id(), false );
         }
+    }
+
+    public function notify_order_completed( OrderDTO $dto ) {
+        if ( ! $this->is_featured_order( $dto ) || 1 !== $dto->get_is_featured_listing()
+            || ! directorist_user_can_checkout_listing( $dto->get_listing_id(), $dto->get_user_id() ) ) {
+            return;
+        }
+
+        $order = directorist_order_repository()->single( $dto->get_id() );
+        if ( $order ) {
+            do_action( 'atbdp_order_completed', $dto->get_id(), $dto->get_listing_id(), $order );
+        }
+    }
+
+    private function can_publish_after_payment( \WP_Post $listing ): bool {
+        if ( get_post_meta( $listing->ID, \ATBDP_Add_Listing::RENEWAL_PENDING_META_KEY, true ) ) {
+            return false;
+        }
+
+        // Older checkouts did not record why a listing was pending. Without an
+        // explicit hold, an administrator must approve publication separately.
+        return '1' === get_post_meta( $listing->ID, self::PUBLISH_AFTER_PAYMENT_META_KEY, true );
     }
 
     private function is_paid_transition( $old_order ): bool {

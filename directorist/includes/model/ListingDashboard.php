@@ -158,8 +158,8 @@ class Directorist_Listing_Dashboard {
         $price = get_post_meta( $id, '_price', true );
         $price_range = get_post_meta( $id, '_price_range', true );
         $atbd_listing_pricing = get_post_meta( $id, '_atbd_listing_pricing', true );
-        if ( ! empty( $price_range ) && ( 'range' === $atbd_listing_pricing ) ) {
-            return atbdp_display_price_range( $price_range );
+        if ( '' !== $price_range && 'range' === $atbd_listing_pricing ) {
+            return atbdp_display_price_range( $price_range, $id );
         } else {
             return atbdp_display_price( $price );
         }

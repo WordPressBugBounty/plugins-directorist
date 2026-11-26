@@ -45,22 +45,22 @@ class SubmissionController {
         return ( $field->is_category_only() && ( is_null( self::$selected_categories ) || ! in_array( $field->get_assigned_category(), self::$selected_categories, true ) ) );
     }
 
-    protected static function should_ignore_conditional_logic_field( &$field, &$posted_data ) {
-        return ! Conditional_Logic::should_show_field( $field->get_props(), $posted_data );
+    protected static function should_ignore_conditional_logic_field( &$field, &$posted_data, array $choice_fields = [] ) {
+        return ! Conditional_Logic::should_show_field( $field->get_props(), $posted_data, $choice_fields );
     }
 
     protected static function is_field_submission_empty( &$field, &$posted_data ) {
         return $field->is_value_empty( $posted_data );
     }
 
-    protected static function validate_field( &$field, &$posted_data ) {
+    protected static function validate_field( &$field, &$posted_data, array $choice_fields = [] ) {
         $should_validate = (bool) apply_filters( 'atbdp_add_listing_form_validation_logic', true, $field->get_props(), $posted_data );
 
         if ( self::should_ignore_category_custom_field( $field ) ) {
             $should_validate = false;
         }
 
-        if ( self::should_ignore_conditional_logic_field( $field, $posted_data ) ) {
+        if ( self::should_ignore_conditional_logic_field( $field, $posted_data, $choice_fields ) ) {
             $should_validate = false;
         }
 
@@ -453,7 +453,7 @@ class SubmissionController {
 
         $value = $field->get_value( $posted_data );
 
-        if ( empty( $value['price_type'] ) || ( empty( $value['price'] ) && empty( $value['price_range'] ) ) ) {
+        if ( empty( $value['price_type'] ) || ( empty( $value['price'] ) && '' === $value['price_range'] ) ) {
             $data['_atbd_listing_pricing'] = '';
             $data['_price']                = '';
             $data['_price_range']          = '';
@@ -695,6 +695,7 @@ class SubmissionController {
             return $form_fields;
         }
 
+        $choice_fields = directorist_get_choice_fields( $form_fields );
         foreach ( $form_fields as $form_field ) {
             $field = Fields::create( $form_field );
 
@@ -703,7 +704,7 @@ class SubmissionController {
                 continue;
             }
 
-            $result = self::validate_field( $field, $posted_data );
+            $result = self::validate_field( $field, $posted_data, $choice_fields );
 
             if ( ! $result['is_valid'] ) {
                 $error->add(
@@ -719,7 +720,7 @@ class SubmissionController {
                 continue;
             }
 
-            if ( self::should_ignore_category_custom_field( $field ) || self::should_ignore_conditional_logic_field( $field, $posted_data ) ) {
+            if ( self::should_ignore_category_custom_field( $field ) || self::should_ignore_conditional_logic_field( $field, $posted_data, $choice_fields ) ) {
                 continue;
             }
 
@@ -800,6 +801,9 @@ class SubmissionController {
         $meta_data = apply_filters( 'atbdp_ultimate_listing_meta_user_submission', $meta_data, $posted_data );
 
         $meta_input = self::filter_empty_meta_data( $meta_data );
+        if ( isset( $meta_input['_price_range'] ) ) {
+            $meta_input['_price_range'] = wp_slash( $meta_input['_price_range'] );
+        }
 
         $listing_data['meta_input'] = $meta_input;
         $listing_data['tax_input']  = $tax_data;

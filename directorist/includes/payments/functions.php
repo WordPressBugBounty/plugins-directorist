@@ -128,6 +128,12 @@ function atbdp_get_payment_currency_settings() {
 
     ];
 
+    if ( class_exists( \Directorist\Checkout\Currency::class )
+        && get_directorist_option( 'payment_currency_match_display', null ) ) {
+        $currency_settings['currency'] = directorist_get_currency();
+        $currency_settings['position'] = directorist_get_currency_position();
+    }
+
     return apply_filters( 'atbdp_payment_currency_settings', $currency_settings ); // return the currency settings array
 }
 

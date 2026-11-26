@@ -114,6 +114,7 @@ class Email {
             nl2br( esc_html( $review->comment_content ) ),
             $review_link
         );
+        $message = atbdp_email_html( esc_html( $subject ), $message );
 
         $sent = ATBDP()->email->send_mail( $user->user_email, $subject, $message, ATBDP()->email->get_email_headers() );
         if ( $sent ) {

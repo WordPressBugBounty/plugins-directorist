@@ -4,6 +4,7 @@
  * @since   7.0
  * @version 7.7.0
  */
+use Directorist\Checkout\Currency;
 use Directorist\Enums\Payment\Status;
 use Directorist\Helper;
 use Directorist\DTO\Order\DTO;
@@ -18,7 +19,23 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
  * @var ?PaymentDTO $payment
  * @var float $discount_amount
  * @var float $tax_amount
+ * @var array $quote
  */
+$source             = $quote['source'] ?? [];
+$source_subtotal    = $source['subtotal'] ?? null;
+$order_currency     = $order->get_currency();
+$display_currency   = $quote['display_currency'] ?? $order_currency;
+$precision          = $quote['precision'] ?? 2;
+$show_conversion    = isset( $source['subtotal'], $source['total'], $quote['payable']['total'] ) && $display_currency !== $order_currency;
+$display_precision  = $show_conversion ? 2 : $precision;
+$format             = static function ( float $amount ) use ( $display_currency, $display_precision ): string {
+    return Currency::format( $amount, $display_currency, $display_precision );
+};
+$single_item       = 1 === count( (array) $order_items );
+$quoted_item_price = $single_item ? $source_subtotal : null;
+$show_item_prices  = ! $show_conversion || $single_item;
+$show_discount     = isset( $source['discount'] ) ? $source['discount'] > 0 : ! empty( $order->get_coupon_discount() );
+$show_tax          = isset( $source['tax'] ) ? $source['tax'] > 0 : ! empty( $order->get_tax_rate() );
 ?>
 <div id="directorist" class="atbd_wrapper directorist directory_wrapper single_area directorist-w-100">
     <div class="<?php Helper::directorist_container_fluid(); ?>">
@@ -68,7 +85,7 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                                 </tr>
                                 <tr>
                                     <td class="directorist-payment-table__label"><?php esc_html_e( 'Amount', 'directorist' ); ?></td>
-                                    <td><?php echo wp_kses_post( directorist_price( $order->get_sub_total() ) ); ?></td>
+                                    <td><?php echo esc_html( $format( $source_subtotal ?? $order->get_sub_total() ) ); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -97,24 +114,34 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                                     <?php } ?>
                                 </td>
                                 <td>
-                                    <?php echo wp_kses_post( directorist_price( $order_item['price'] ) ); ?>
+                                    <?php if ( $show_item_prices ) : ?>
+                                        <?php echo esc_html( $format( $quoted_item_price ?? (float) $order_item['price'] ) ); ?>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php endif; ?>
 
-                            <?php if ( ! empty( $order->get_coupon_discount() ) ): ?>
+                            <?php // The saved quote has a subtotal, but no individual item prices. ?>
+                            <?php if ( ! $show_item_prices ): ?>
+                            <tr>
+                                <td class="directorist-payment-table__title"><?php esc_html_e( 'Subtotal', 'directorist' ); ?></td>
+                                <td><?php echo esc_html( $format( $source_subtotal ) ); ?></td>
+                            </tr>
+                            <?php endif; ?>
+
+                            <?php if ( $show_discount ): ?>
                             <tr>
                                 <td class="directorist-payment-table__title">
                                     <?php echo $order->get_coupon_discount_type() === OrderDiscountType::PERCENT ? sprintf( esc_html__('Discount ( %d%% )', 'directorist' ), $order->get_coupon_discount() ) : esc_html__( 'Discount', 'directorist' ); ?>
                                 </td>
                                 <td>
-                                    <?php echo '-' . wp_kses_post( directorist_price( $discount_amount ) ); ?>
+                                    <?php echo '-' . esc_html( $format( $source['discount'] ?? $discount_amount ) ); ?>
                                 </td>
                             </tr>
                             <?php endif; ?>
 
-                            <?php if ( ! empty( $order->get_tax_rate() ) ): ?>
+                            <?php if ( $show_tax ): ?>
                             <tr>
                                 <td class="directorist-payment-table__title">
                                     <?php
@@ -133,7 +160,7 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                                     ?>
                                 </td>
                                 <td>
-                                    <?php echo wp_kses_post( directorist_price( $tax_amount ) ) ?>
+                                    <?php echo esc_html( $format( $source['tax'] ?? $tax_amount ) ); ?>
                                 </td>
                             </tr>
                             <?php endif; ?>
@@ -142,7 +169,7 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                                 <td class="directorist-payment-table__title"><?php esc_html_e( 'Total amount', 'directorist' ); ?></td>
                                 <td>
                                     <?php 
-                                        echo wp_kses_post( directorist_price( directorist_compute_order_total_amount(
+                                        echo esc_html( $format( $source['total'] ?? $quote['payable']['total'] ?? directorist_compute_order_total_amount(
                                             $order->get_sub_total(), 
                                             $order->get_tax_rate(), 
                                             $order->get_tax_type(), 
@@ -152,6 +179,18 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                                     ?>
                                 </td>
                             </tr>
+                            <?php if ( $show_conversion ): ?>
+                            <tr class="directorsit-payment-table-total">
+                                <td class="directorist-payment-table__title">
+                                    <?php esc_html_e( 'Total Amount After Conversion', 'directorist' ); ?>
+                                    <?php if ( ! empty( $quote['exchange_rate'] ) ): ?>
+                                        <br>
+                                        <?php echo esc_html( sprintf( '1 %1$s = %2$s %3$s', $display_currency, $quote['exchange_rate'], $order_currency ) ); ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo esc_html( Currency::format( $quote['payable']['total'], $order_currency, $precision ) ); ?></td>
+                            </tr>
+                            <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -163,13 +202,17 @@ use Directorist\Enums\Order\DiscountType as OrderDiscountType;
                 ?>
                 <div class="directorist-text-center directorist-mt-30"><a href="<?php echo esc_url( $url ); ?>" class="directorist-btn directorist-btn-lg directorist-btn-view-listing"><?php echo esc_attr( $text ); ?></a></div>
                 <?php
-                    $is_retry                 = $payment && $order->get_amount() > 0 && in_array( $order->get_status(), [OrderStatus::PENDING, OrderStatus::FAILED] );
+                    $is_retry = ( $order->get_amount() > 0 || ! empty( $quote['renewal'] ) ) && in_array( $order->get_status(), [ OrderStatus::PENDING, OrderStatus::FAILED ], true );
                     $is_allowed_retry_payment = apply_filters( 'directorist_payment_receipt_is_allowed_retry_payment', $is_retry, $payment, $order );
 
                 if ( $is_allowed_retry_payment ) {
                     ?>
                         <div class="directorist-text-center directorist-mt-30">
-                            <button id="directorist-payment-receipt-retry-payment" data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" class="directorist-btn directorist-btn-lg directorist-btn-view-listing">Retry Payment</button>
+                            <?php if ( empty( $quote['gateway'] ) ) : ?>
+                                <a class="directorist-btn directorist-btn-lg" href="<?php echo esc_url( directorist_get_checkout_page_url( 'payment', [ 'order_id' => $order->get_id() ] ) ); ?>"><?php esc_html_e( 'Review payment', 'directorist' ); ?></a>
+                            <?php elseif ( 'bank_transfer' !== $quote['gateway'] ) : ?>
+                                <button id="directorist-payment-receipt-retry-payment" data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" class="directorist-btn directorist-btn-lg directorist-btn-view-listing"><?php esc_html_e( 'Retry Payment', 'directorist' ); ?></button>
+                            <?php endif; ?>
                         </div>
                     <?php
                 }

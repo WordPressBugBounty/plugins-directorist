@@ -5,7 +5,7 @@ Tags: business directory, listings, classifieds, directory plugin, directory
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 8.12
+Stable tag: 8.12.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -299,6 +299,38 @@ Directorist is developer-friendly with plenty of hooks and filters. You can exte
 Directorist comes with an AI-powered directory builder. Use the Create with AI option, provide directory name, location and AI will build the directory for you.
 
 == Changelog ==
+
+= 8.12.1 - Nov 26, 2026 =
+
+**Improved**
+
+- Added configurable price range labels and values per directory, with support for mapping legacy values.
+- Added checkout currency conversion with configurable exchange rates and bank transfer currency selection.
+- Added order transaction management and an activity timeline for order, payment, and refund changes.
+- Added an option to send listing deletion emails only for automated expiry cleanup.
+- Added support for custom OpenStreetMap autocomplete providers and disabled autocomplete requests to public Nominatim.
+
+**Security**
+
+- Strengthened featured checkout fee validation and preserved administrator approval requirements after payment.
+
+**Fixed**
+
+- Guest listing submissions signing users in before required email verification.
+- Checkbox, radio, and select options with special characters losing selections or failing validation.
+- Conditional date fields not saving when categories are selected in the admin listing form.
+- Signup forms remaining stuck on loading when registration fails.
+- Google Places autocomplete not working in search forms with Places API (New).
+- Selected pricing plans being lost during signup, email verification, and login.
+- Remember Me checkbox not being respected in sign-in forms.
+- Empty listing sections remaining visible when they contain empty Button fields.
+- Missing translation support in the redesigned settings panel.
+- Missing claim notification settings and email templates losing links and formatting when reopened.
+- Listing contact emails ignoring the configured sender address.
+- Missing Job Manager search field options.
+- Owner review notification emails not using the shared Directorist email template.
+- Order status changes overwriting payment statuses.
+- Inconsistent order currency displays, decimal refund handling, and refundable balance calculations.
 
 = 8.12 - Nov 22, 2026 =
 

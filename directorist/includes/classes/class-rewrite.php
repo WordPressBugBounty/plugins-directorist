@@ -50,6 +50,14 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
         protected function get_page_ids( $option_key = null ) {
             $page_ids = null === $option_key ? array_values( $this->get_pages() ) : [ $this->get_page_id( $option_key ) ];
 
+            return self::include_published_page_translations( $page_ids );
+        }
+
+        public static function get_author_profile_page_ids() {
+            return self::include_published_page_translations( [ (int) get_directorist_option( 'author_profile_page' ) ] );
+        }
+
+        private static function include_published_page_translations( array $page_ids ) {
             foreach ( $page_ids as $page_id ) {
                 if ( ! $page_id ) {
                     continue;
@@ -106,7 +114,7 @@ if ( ! class_exists( 'ATBDP_Rewrite' ) ) :
             }
 
             // Author profile page URL Rewrite
-            foreach ( $this->get_page_ids( 'author_profile_page' ) as $page_id ) {
+            foreach ( self::get_author_profile_page_ids() as $page_id ) {
                 $link = $this->get_page_slug( $page_id, 'directory-profile' );
 
                 // Link > Page

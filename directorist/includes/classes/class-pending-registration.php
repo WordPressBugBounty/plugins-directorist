@@ -456,6 +456,7 @@ class Pending_Registration {
             'user_id'            => (int) $user_id,
             'user_email'         => $row['user_email'],
             'generated_password' => ! empty( $profile_data['generated_password'] ),
+            'selected_plan'      => ATBDP_Permalink::get_selected_plan_query_args( isset( $profile_data['selected_plan'] ) ? $profile_data['selected_plan'] : [] ),
         ];
     }
 
@@ -497,6 +498,10 @@ class Pending_Registration {
                     'pending_registration_verified' => 1,
                 ];
             }
+        }
+
+        if ( ! empty( $result['selected_plan'] ) ) {
+            $query_args = array_merge( $query_args, $result['selected_plan'] );
         }
 
         wp_safe_redirect( ATBDP_Permalink::get_signin_signup_page_link( $query_args ) );

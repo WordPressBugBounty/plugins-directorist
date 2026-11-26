@@ -23,6 +23,12 @@ if ( ! empty( $_GET['registration_status'] ) ) {
             <div class="directorist-col-md-6 directorist-offset-md-3 directorist-login-wrapper directorist-authentication <?php echo esc_attr( $active_form === 'signin' ? 'active' : '' ); ?>">
                 <div class="atbdp_login_form_shortcode directorist-authentication__form">
 
+                    <?php if ( isset( $_GET['guest_listing_submitted'] ) && directorist_is_email_verification_enabled() ) : ?>
+                        <p class="directorist-alert directorist-alert-success">
+                            <?php esc_html_e( 'Listing submitted. Check your email to verify your address and set a password, then sign in to continue.', 'directorist' ); ?>
+                        </p>
+                    <?php endif; ?>
+
                     <?php if ( $registration_success ) : ?>
                         <p style="padding: 20px" class="alert-success directorist-alert directorist-alert-success">
                             <span><?php esc_html_e( 'Registration completed. Please check your email for confirmation. Or login here.', 'directorist' );?></span>
@@ -32,10 +38,11 @@ if ( ! empty( $_GET['registration_status'] ) ) {
                     <?php if ( ! empty( $_GET['pending_registration_verified'] ) && empty( $_GET['password_reset'] ) ) : ?>
                         <p class="directorist-alert directorist-alert-success">
                             <?php
+                            $login_url = ATBDP_Permalink::get_signin_signup_page_link( ATBDP_Permalink::get_selected_plan_query_args() );
                             echo wp_kses(
                                 sprintf(
                                     __( 'Email verification successful. Please <a href="%s">click here to login</a>.', 'directorist' ),
-                                    esc_url( ATBDP_Permalink::get_signin_signup_page_link() )
+                                    esc_url( $login_url )
                                 ),
                                 [ 'a' => [ 'href' => [] ] ]
                             );
@@ -88,6 +95,12 @@ if ( ! empty( $_GET['registration_status'] ) ) {
                                     <?php echo wp_kses_post( $is_valid_password_reset_key->get_error_message() ); ?>
                                 </p><?php
                             } else {
+                                $login_args       = get_user_meta( $user->ID, '_directorist_guest_listing_next_url', true )
+                                    ? [ 'guest_listing_continue' => 1 ]
+                                    : [];
+                                $pending_guest    = $login_args && get_user_meta( $user->ID, 'directorist_user_email_unverified', true );
+                                $password_changed = false;
+
                                 if ( ! empty( $_POST['directorist_reset_password'] ) && directorist_verify_nonce( 'directorist-reset-password-nonce', 'reset_password' ) ) :
                                     // Ignore password sanitization
                                     $password_1 = isset( $_POST['password_1'] ) ? $_POST['password_1'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -101,13 +114,21 @@ if ( ! empty( $_GET['registration_status'] ) ) {
                                         wp_set_password( $password_2, $user->ID );
                                         // Since password reset is handled through email, so we can consider it verified!
                                         delete_user_meta( $user->ID, 'directorist_user_email_unverified' );
+                                        $password_changed = true;
+
+                                        if ( $pending_guest ) {
+                                            ATBDP()->email->custom_wp_new_user_notification_email( $user->ID );
+                                            $success_message = __( 'Email verified and password set. Please <a href="%s">sign in to continue</a>.', 'directorist' );
+                                        } else {
+                                            $success_message = __( 'Password changed successfully. Please <a href="%s">click here to login</a>.', 'directorist' );
+                                        }
                                         ?>
                                         <p class="atbd_reset_success directorist-alert directorist-alert-success">
                                             <?php 
                                             echo wp_kses(
                                                 sprintf(
-                                                    __( 'Password changed successfully. Please <a href="%s">click here to login</a>.', 'directorist' ),
-                                                    esc_url( ATBDP_Permalink::get_signin_signup_page_link() )
+                                                    $success_message,
+                                                    esc_url( ATBDP_Permalink::get_signin_signup_page_link( $login_args ) )
                                                 ), [ 'a' => [ 'href' => [] ] ]
                                             );
                                             ?>
@@ -115,11 +136,11 @@ if ( ! empty( $_GET['registration_status'] ) ) {
                                     <?php endif;
                                 endif;
 
-                                if ( ! empty( $_GET['password_reset'] ) ) {
+                                if ( ! empty( $_GET['password_reset'] ) && ! $password_changed ) {
                                     include ATBDP_DIR . 'templates/account/password-reset-form.php';
                                 }
 
-                                if ( ! empty( $_GET['confirm_mail'] ) ) {
+                                if ( ! empty( $_GET['confirm_mail'] ) && ( ! $pending_guest || empty( $_GET['password_reset'] ) ) ) {
                                     /**
                                      * Verify user and send registration confirmation mail
                                      */

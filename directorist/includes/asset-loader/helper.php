@@ -56,8 +56,13 @@ class Helper {
         if ( $script['type'] == 'css' ) {
             wp_register_style( $handle, $url, $dep, $version );
         } else {
-            // The Places (New) bundle must use a fresh URL so cached legacy autocomplete code is not served.
-            $script_version = 'directorist-google-map' === $handle ? $version . '-places-new-20261009' : $version;
+            // Refresh cached bundles when replacing legacy Places autocomplete.
+            $script_version = $version;
+            if ( 'directorist-google-map' === $handle ) {
+                $script_version .= '-places-new-20261009';
+            } elseif ( 'directorist-search-form' === $handle ) {
+                $script_version .= '-places-new-search-20261112';
+            }
             wp_register_script( $handle, $url, $dep, $script_version, true );
         }
     }

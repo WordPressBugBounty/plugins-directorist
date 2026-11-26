@@ -9,6 +9,8 @@ use WP_REST_Request;
 use WP_REST_Server;
 
 use Exception;
+use Directorist\Checkout\Currency;
+use Directorist\Checkout\Quote;
 use Directorist\Contracts\PaymentInterface;
 use Directorist\DTO\Order\DTO as OrderDTO;
 use Directorist\Enums\Order\Status as OrderStatus;
@@ -103,11 +105,28 @@ class Checkout_Controller extends Abstract_Controller {
 
             do_action( 'directorist_checkout_validation', $checkout_type, $request );
 
+            $gateway = (string) $request->get_param( 'payment_gateway' );
+            [ $subtotal, $total ] = Quote::totals( $checkout_type, $request );
+            $review = Quote::choices( $checkout_type, $request, $subtotal, $total );
+            $quote = $review['choices'][$gateway] ?? null;
+            $token = $request->get_param( 'checkout_quote_token' );
+
+            if ( ( $review['review_required'] && ( $review['show_gateways'] || '' !== $gateway ) ) || $token ) {
+                if ( ! $quote ) {
+                    return new WP_Error( 'checkout_currency_unavailable', __( 'This payment method is unavailable for the configured currency or exchange rate. Select another method or contact the site administrator.', 'directorist' ), [ 'status' => 422 ] );
+                }
+
+                if ( ! is_string( $token ) || ! hash_equals( Quote::token( $quote, $checkout_type, $request ), $token ) ) {
+                    return new WP_Error( 'checkout_quote_changed', __( 'The checkout amount needs to be reviewed. Reload checkout and confirm the amount before paying.', 'directorist' ), [ 'status' => 409 ] );
+                }
+            }
+
             $dto = ( new OrderDTO )
                 ->set_user_id( get_current_user_id() )
-                ->set_currency( atbdp_get_payment_currency() )
+                ->set_currency( Currency::matches_display() ? strtoupper( trim( directorist_get_currency() ) ) : atbdp_get_payment_currency() )
                 ->set_status( OrderStatus::PENDING );
 
+            $request->set_attributes( array_merge( $request->get_attributes(), [ 'directorist_persists_checkout_order' => true ] ) );
             do_action( 'directorist_checkout_create_order', $dto, $checkout_type, $request );
 
             $repository = directorist_order_repository();
@@ -120,6 +139,15 @@ class Checkout_Controller extends Abstract_Controller {
                 }
 
                 $dto = $repository->to_dto( $order );
+            }
+
+            $previous_quote = $dto->get_checkout_quote();
+            if ( $token && $quote && $quote['native'] ) {
+                if ( $dto->is_initialized( 'coupon_code' ) && $dto->get_coupon_code() && empty( $quote['coupon'] ) && ! isset( Quote::decode( $previous_quote )['payable'] ) && 'payment' !== $checkout_type ) {
+                    return new WP_Error( 'checkout_coupon_quote_unavailable', __( 'The coupon could not be included in the checkout amount. Review the discount before paying.', 'directorist' ), [ 'status' => 409 ] );
+                }
+
+                Quote::apply( $dto, $quote );
             }
 
             $processor_instance = null;
@@ -135,7 +163,7 @@ class Checkout_Controller extends Abstract_Controller {
 
                 $payment_processors = directorist_get_payment_processors();
 
-                if ( ! isset( $payment_processors[ $payment_gateway ] ) ) {
+                if ( ! isset( $payment_processors[ $payment_gateway ] ) || ! isset( $review['choices'][$payment_gateway] ) ) {
                     return new WP_Error( 'rest_invalid_value', __( 'Invalid payment gateway.', 'directorist' ) );
                 }
 
@@ -154,7 +182,18 @@ class Checkout_Controller extends Abstract_Controller {
             $repository = directorist_order_repository();
 
             if ( ! $dto->is_initialized( 'id' ) ) {
-                $repository->create( $dto );
+                if ( ! $repository->create( $dto ) ) {
+                    return new WP_Error( 'checkout_order_failed', __( 'The order could not be saved.', 'directorist' ), [ 'status' => 500 ] );
+                }
+                do_action( 'directorist_checkout_order_saved', $dto, $checkout_type, $request );
+                $dto = $repository->to_dto( $repository->get_by_id( $dto->get_id() ) );
+                if ( ! $dto ) {
+                    return new WP_Error( 'checkout_order_failed', __( 'The saved order could not be loaded.', 'directorist' ), [ 'status' => 500 ] );
+                }
+            } elseif ( $token && $quote && $quote['native'] ) {
+                if ( ! $repository->accept_checkout_quote( $dto, $previous_quote ) ) {
+                    return new WP_Error( 'checkout_quote_changed', __( 'The order has changed. Reload checkout to review it.', 'directorist' ), [ 'status' => 409 ] );
+                }
             } else {
                 $repository->silent_update( $dto );
             }
@@ -162,7 +201,7 @@ class Checkout_Controller extends Abstract_Controller {
             if ( $process_payment ) {
                 do_action( 'directorist_before_redirect_checkout', $dto, $checkout_type, $request );
 
-                $redirect_url = $processor_instance->pay( $dto, $request->get_params() );
+                $redirect_url = $this->pay_order( $processor_instance, $dto, $request->get_params() );
 
                 /**
                  * Fires after a checkout payment has been initiated successfully.
@@ -183,7 +222,7 @@ class Checkout_Controller extends Abstract_Controller {
             do_action( 'directorist_before_redirect_checkout', $dto, $checkout_type, $request );
 
             // Update the order status to paid if the payable amount is zero or less
-            if ( $order_payable < 1 ) {
+            if ( $order_payable <= 0 ) {
                 $dto->set_id( $dto->get_id() )->set_status( OrderStatus::PAID );
                 $repository->update( $dto );
             }
@@ -194,12 +233,28 @@ class Checkout_Controller extends Abstract_Controller {
                 ]
             );
         } catch ( Exception $e ) {
-            if ( 403 === $e->getCode() ) {
+            if ( in_array( $e->getCode(), [ 400, 403 ], true ) ) {
                 return new WP_Error( 'rest_error', $e->getMessage(), [ 'status' => $e->getCode() ] );
             }
 
             return new WP_Error( 'rest_error', $e->getMessage() );
         }
+    }
+
+    private function pay_order( PaymentInterface $processor, OrderDTO $order, array $params = [] ): ?string {
+        $quote = Quote::stored( $order );
+        if ( empty( $quote['payable'] ) ) {
+            return $processor->pay( $order, $params );
+        }
+
+        return Quote::with_payment_lock( 'checkout:' . $order->get_id(), static function () use ( $processor, $order, $params ) {
+            $current = directorist_order_repository()->get_by_id( $order->get_id() );
+            if ( ! $current || ! in_array( $current->status, [ OrderStatus::PENDING, OrderStatus::FAILED ], true ) ) {
+                throw new Exception( __( 'This order no longer needs payment.', 'directorist' ) );
+            }
+
+            return $processor->pay( $order, $params );
+        } );
     }
 
     protected function get_redirect_url( OrderDTO $dto ): string {
@@ -231,27 +286,31 @@ class Checkout_Controller extends Abstract_Controller {
             return new WP_Error( 'rest_invalid_value', __( 'Order is not pending or failed.', 'directorist' ) );
         }
 
-        $payment_repository = directorist_payment_repository();
-        $payment            = $payment_repository->get_last_payment( $order_id );
-
-        if ( ! $payment ) {
-            return new WP_Error( 'rest_not_found', __( 'Payment not found.', 'directorist' ) );
+        $quote = Quote::stored( $order );
+        if ( empty( $quote['gateway'] ) ) {
+            return rest_ensure_response(
+                [ 'redirect_url' => directorist_get_checkout_page_url( 'payment', [ 'order_id' => $order->get_id() ] ) ]
+            );
         }
 
-        $payment            = $payment_repository->to_dto( $payment );
+        $gateway = $quote['gateway'];
         $payment_processors = directorist_get_payment_processors();
 
-        if ( ! isset( $payment_processors[$payment->get_method()] ) ) {
+        if ( ! is_callable( [ $payment_processors[$gateway] ?? '', 'checkout_currency_precision' ] ) ) {
             return new WP_Error( 'rest_invalid_value', __( 'Invalid payment gateway.', 'directorist' ) );
         }
 
         /**
          * @var PaymentInterface $processor_instance
          */
-        $processor_instance = directorist_make( $payment_processors[$payment->get_method()], __( 'Invalid payment gateway.', 'directorist' ) );
+        $processor_instance = directorist_make( $payment_processors[$gateway], __( 'Invalid payment gateway.', 'directorist' ) );
 
         if ( $processor_instance instanceof PaymentInterface ) {
-            $redirect_url = $processor_instance->pay( $order );
+            try {
+                $redirect_url = $this->pay_order( $processor_instance, $order );
+            } catch ( Exception $error ) {
+                return new WP_Error( 'checkout_retry_failed', $error->getMessage(), [ 'status' => 409 ] );
+            }
         }
 
         return rest_ensure_response(

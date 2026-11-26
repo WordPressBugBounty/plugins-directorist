@@ -80,7 +80,7 @@ $default_icon = 'las la-tags';
                 <span><?php atbdp_display_price( $price ); ?></span>
 
               <?php } else {
-                  $output = atbdp_display_price_range( $price_range );
+                  $output = atbdp_display_price_range( $price_range, $related_listing->ID );
                   echo wp_kses_post( $output );
               } ?>
             </div>

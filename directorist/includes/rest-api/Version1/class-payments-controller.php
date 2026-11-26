@@ -61,16 +61,10 @@ class Payments_Controller extends Abstract_Controller {
                     'methods'             => WP_REST_Server::CREATABLE,
                     'callback'            => [ $this, 'update' ],
                     'permission_callback' => [ $this, 'admin_permissions_check' ],
-                    'args'                => array_merge(
-                        $this->store_args(), 
-                        [
-                            'id'     => [
-                                'description'       => __( 'The order ID.', 'directorist' ),
-                                'type'              => 'integer',
-                                'required'          => true,
-                            ],
-                        ],
-                    )
+                    'args'                => [
+                        'id' => [ 'type' => 'integer', 'required' => true ],
+                        'status' => [ 'type' => 'string', 'enum' => [ 'paid' ], 'required' => true ],
+                    ],
                 ],
                 [
                     'methods'             => WP_REST_Server::DELETABLE,
@@ -99,25 +93,12 @@ class Payments_Controller extends Abstract_Controller {
     }
 
     public function store( WP_REST_Request $request ) {
-        $dto = ( new PaymentDTO )
-            ->set_order_id( $request->get_param( "order_id" ) )
-            ->set_status( $request->get_param( "status" ) )
-            ->set_transaction_id( $request->get_param( "transaction_id" ) )
-            ->set_method( $request->get_param( "method" ) );
-        
-        $repository = new PaymentRepository();
-        $id         = $repository->create( $dto );
-
-        status_header( 201 );
-
-        return rest_ensure_response(
-            [
-                "message" => esc_html__( "Payment was created successfully", 'directorist' ),
-                "data"    => [
-                    "id" => $id
-                ]
-            ]
-        );
+        try {
+            $payment = \Directorist\Order\ManualPaymentService::create( (int) $request['order_id'], $request->get_params() );
+            return new \WP_REST_Response( [ 'message' => __( 'Payment was created successfully', 'directorist' ), 'data' => [ 'id' => $payment->id ] ], 201 );
+        } catch ( \Throwable $error ) {
+            return $this->payment_error( $error );
+        }
     }
 
     public function show( WP_REST_Request $request ) {
@@ -136,33 +117,44 @@ class Payments_Controller extends Abstract_Controller {
     }
 
     public function update( WP_REST_Request $request ) {
-        $repository = new PaymentRepository();
-        
-        $dto = new PaymentDTO;
-        $dto->set_id( $request->get_param( "id" ) );
-
-        $repository->update( $dto );
-
-        return rest_ensure_response(
-            [
-                "message" => esc_html__( "Payment was updated successfully", 'directorist' )
-            ]
-        );
+        try {
+            foreach ( [ 'amount', 'currency', 'transaction_id', 'method' ] as $immutable ) {
+                if ( $request->has_param( $immutable ) ) {
+                    throw new \InvalidArgumentException( __( 'Existing transaction details cannot be edited.', 'directorist' ), 400 );
+                }
+            }
+            $payment = ( new PaymentRepository() )->get_by_id( (int) $request['id'] );
+            if ( ! $payment || ( $request->has_param( 'order_id' ) && (int) $request['order_id'] !== (int) $payment->order_id ) ) {
+                throw new \InvalidArgumentException( __( 'Payment not found.', 'directorist' ), 404 );
+            }
+            \Directorist\Order\ManualPaymentService::mark_paid( (int) $payment->order_id, (int) $payment->id );
+            return rest_ensure_response( [ 'message' => __( 'Payment was updated successfully', 'directorist' ) ] );
+        } catch ( \Throwable $error ) {
+            return $this->payment_error( $error );
+        }
     }
 
     public function delete( WP_REST_Request $request ) {
-        $repository = new PaymentRepository();
-        $repository->delete_by_id( $request->get_param( "id" ) );
+        try {
+            $payment = ( new PaymentRepository() )->get_by_id( (int) $request['id'] );
+            if ( ! $payment || ( $request->has_param( 'order_id' ) && (int) $request['order_id'] !== (int) $payment->order_id ) ) {
+                throw new \InvalidArgumentException( __( 'Payment not found.', 'directorist' ), 404 );
+            }
+            \Directorist\Order\ManualPaymentService::delete( (int) $payment->order_id, (int) $payment->id );
+            return rest_ensure_response( [ 'message' => __( 'Payment was deleted successfully', 'directorist' ), 'deleted' => true ] );
+        } catch ( \Throwable $error ) {
+            return $this->payment_error( $error );
+        }
+    }
 
-        return rest_ensure_response(
-            [
-                "message" => esc_html__( "Payment was deleted successfully", 'directorist' )
-            ]
-        );
+    private function payment_error( \Throwable $error ) {
+        $status = in_array( $error->getCode(), [ 400, 403, 404, 405, 409, 503 ], true ) ? $error->getCode() : 500;
+        return new WP_Error( 'rest_invalid_payment', $error->getMessage(), [ 'status' => $status ] );
     }
 
     protected function store_args(): array {
         return [
+            'amount' => [ 'default' => 0 ],
             'order_id' => [
                 'description'       => __( 'The order ID.', 'directorist' ),
                 'type'              => 'integer',

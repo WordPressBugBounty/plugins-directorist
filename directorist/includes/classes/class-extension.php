@@ -79,13 +79,7 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
          * @return bool
          */
         public static function has_account_session() {
-            $user_id = get_current_user_id();
-
-            if ( ! $user_id || 'access_key' === get_user_meta( $user_id, '_atbdp_subscription_connection_method', true ) ) {
-                return false;
-            }
-
-            return ! empty( get_user_meta( $user_id, '_atbdp_has_subscriptions_sassion', true ) );
+            return \Directorist\Extension_Account::has_session();
         }
 
         public function setup_ajax_actions() {
@@ -2098,7 +2092,7 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
                 update_user_meta( get_current_user_id(), '_themes_available_in_subscriptions', $themes_available_in_subscriptions );
             }
 
-            if ( ! empty( $license_data['plugins'] ) ) {
+            if ( isset( $license_data['plugins'] ) && is_array( $license_data['plugins'] ) ) {
                 $plugins_available_in_subscriptions = $this->prepare_available_in_subscriptions( $license_data['plugins'] );
                 update_user_meta( get_current_user_id(), '_plugins_available_in_subscriptions', $plugins_available_in_subscriptions );
             }
@@ -2219,7 +2213,7 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
                 update_user_meta( get_current_user_id(), '_themes_available_in_subscriptions', $themes_available_in_subscriptions );
             }
 
-            if ( ! empty( $license_data['plugins'] ) ) {
+            if ( isset( $license_data['plugins'] ) && is_array( $license_data['plugins'] ) ) {
                 $plugins_available_in_subscriptions = $this->prepare_available_in_subscriptions( $license_data['plugins'] );
                 update_user_meta( get_current_user_id(), '_plugins_available_in_subscriptions', $plugins_available_in_subscriptions );
             }
@@ -3889,18 +3883,7 @@ if ( ! class_exists( 'ATBDP_Extensions' ) ) {
 
         // get_purchased_extension_list
         public static function get_purchased_extension_list() {
-            if ( ! self::has_account_session() ) {
-                return [];
-            }
-
-            $extensions_available_in_subscriptions = get_user_meta( get_current_user_id(), '_plugins_available_in_subscriptions', true );
-            $directorist_purchased_extension_list  = apply_filters( 'directorist_purchased_extension_list', $extensions_available_in_subscriptions );
-
-            if ( is_array( $directorist_purchased_extension_list ) ) {
-                return $directorist_purchased_extension_list;
-            }
-
-            return $extensions_available_in_subscriptions;
+            return \Directorist\Extension_Account::get_purchased_extensions();
         }
 
         // get_purchased_theme_list

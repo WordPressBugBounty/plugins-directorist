@@ -14,16 +14,28 @@ class BankTransfer extends Payment implements PaymentInterface {
         return 'bank_transfer';
     }
 
+    public static function checkout_currency_precision( string $currency ): int {
+        return \Directorist\Checkout\Currency::precision( $currency );
+    }
+
     public function pay( OrderDTO $dto, array $params = [] ): ?string {
+        $repository = directorist_payment_repository();
+        $payment = $repository->get_last_payment( $dto->get_id() );
+        $amount = directorist_order_payable( $dto );
+        if ( $payment && static::get_key() === $payment->method && Status::PENDING === $payment->status
+            && $dto->get_currency() === $payment->currency && $amount === (float) $payment->amount ) {
+            return null;
+        }
+
         $payment_dto = ( new DTO )
         ->set_order_id( $dto->get_id() )
-        ->set_amount( directorist_order_payable( $dto ) )
-        ->set_currency( directorist_currency() )
+        ->set_amount( $amount )
+        ->set_currency( $dto->get_currency() )
         ->set_status( Status::PENDING )
         ->set_method( static::get_key() )
         ->set_transaction_id( wp_generate_password( 15, false ) );
 
-        directorist_payment_repository()->create( $payment_dto );
+        $repository->create( $payment_dto );
         return null;
     }
 }

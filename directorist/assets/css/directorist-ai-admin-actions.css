@@ -1,0 +1,194 @@
+.wrap .directorist-ai-admin-action,
+.directorist-ai-admin-action {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #d9dee7;
+    border-radius: 6px;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #334155;
+    display: inline-flex;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 8px;
+    justify-content: center;
+    line-height: 1.5;
+    min-height: 34px;
+    padding: 3px 10px;
+    position: relative;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+.wrap .directorist-ai-admin-action.page-title-action {
+    margin-inline-start: 8px;
+}
+
+.wrap .directorist-ai-admin-action--directory {
+    font-size: 14px;
+    min-height: 40px;
+    padding: 7px 13px;
+}
+
+.wrap .directorist-ai-admin-action:hover,
+.wrap .directorist-ai-admin-action:focus-visible,
+.directorist-ai-admin-action:is(:hover, :focus-visible) {
+    background: #f4f6ff;
+    border-color: #435bff;
+    color: #3549cf;
+}
+
+.wrap .directorist-ai-admin-action:focus-visible,
+.directorist-ai-admin-action:focus-visible {
+    outline: 2px solid #435bff;
+    outline-offset: 2px;
+}
+
+.directorist-directory-type-top-right .directorist-ai-admin-action--directory {
+    margin-inline-end: 12px;
+}
+
+.directorist-ai-admin-action-field-header {
+    align-items: center;
+    color: #334155;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    margin-block: 0 6px;
+}
+
+.directorist-ai-admin-action-field-header .directorist-ai-admin-action--field {
+    margin-inline-start: auto;
+}
+
+.directorist-ai-admin-action-field-header > label {
+    margin-block-end: 0;
+}
+
+.wp-media-buttons .directorist-ai-admin-action--field {
+    margin-inline-start: 7px;
+}
+
+.wrap .directorist-ai-admin-action--row,
+.directorist-ai-admin-action--menu {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    gap: 4px;
+    min-height: 0;
+    text-align: start;
+}
+
+.directorist-ai-admin-action--site-editor {
+    inset-block-end: 24px;
+    inset-inline-end: 16px;
+    position: fixed;
+    z-index: 100;
+}
+
+.directorist-ai-admin-action--site-editor .directorist-ai-admin-action__tooltip {
+    inset-block: auto calc(100% + 5px);
+}
+
+.directorist-ai-admin-action--site-editor .directorist-ai-admin-action__tooltip::before {
+    inset: 100% 0 -5px;
+}
+
+.wrap .directorist-ai-admin-action--row {
+    color: var(--wp-admin-theme-color, #2271b1);
+    padding: 0;
+}
+
+.directorist-ai-admin-action--menu {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+}
+
+.directorist-ai-admin-action:is(.directorist-ai-admin-action--row, .directorist-ai-admin-action--menu):not(:hover, :focus-visible) .directorist-ai-admin-action__icon {
+    display: none;
+}
+
+.directorist-ai-admin-action:is(.directorist-ai-admin-action--row, .directorist-ai-admin-action--menu) .directorist-ai-admin-action__icon {
+    flex-basis: 14px;
+    height: 14px;
+    width: 14px;
+    mask-size: 14px;
+}
+
+.directorist-ai-admin-action__icon {
+    --directorist-ai-icon: url('../icons/directorist-ai-mark.svg');
+    --directorist-ai-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='10' width='14' height='11' rx='2' fill='none' stroke='black' stroke-width='1.75'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3m-4 5v2' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round'/%3E%3C/svg%3E");
+    background: currentColor;
+    flex: 0 0 24px;
+    height: 24px;
+    mask: var(--directorist-ai-icon) center / contain no-repeat;
+    width: 24px;
+}
+
+.directorist-ai-admin-action:is(:hover, :focus-visible) .directorist-ai-admin-action__icon,
+[data-directorist-ai-native-lock]:is(:hover, :focus-visible) .directorist-ai-admin-action__icon {
+    mask-image: var(--directorist-ai-lock);
+    mask-size: 17px;
+}
+
+.directorist-ai-admin-action__tooltip {
+    background: #1f2937;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgb(16 24 40 / 18%);
+    box-sizing: border-box;
+    color: #fff;
+    cursor: default;
+    font-size: 12px;
+    font-weight: 500;
+    inset-block-start: calc(100% + 5px);
+    inset-inline-start: var(--directorist-ai-tooltip-offset, 0px);
+    line-height: 1.4;
+    max-width: min(260px, calc(100vw - 32px));
+    padding: 6px 9px;
+    position: absolute;
+    visibility: hidden;
+    white-space: normal;
+    width: max-content;
+    z-index: 20;
+}
+
+.directorist-ai-admin-action__tooltip::before {
+    content: '';
+    inset: -5px 0 100%;
+    position: absolute;
+}
+
+.directorist-ai-admin-action__tooltip--portal {
+    inset: auto;
+    position: fixed;
+    visibility: visible;
+    z-index: 100001;
+}
+
+.directorist-ai-admin-action__tooltip--portal[hidden] {
+    display: none;
+}
+
+.directorist-ai-admin-action:focus-visible:not(.directorist-ai-admin-action--tooltip-dismissed) .directorist-ai-admin-action__tooltip {
+    visibility: visible;
+}
+
+.directorist-ai-admin-action[data-directorist-ai-contact-open]:not(.directorist-ai-admin-action--tooltip-dismissed) .directorist-ai-admin-action__tooltip {
+    visibility: visible;
+}
+
+@media (hover: hover) {
+    .directorist-ai-admin-action:hover:not(.directorist-ai-admin-action--tooltip-dismissed) .directorist-ai-admin-action__tooltip {
+        visibility: visible;
+    }
+}
+
+@media (hover: none) {
+    .directorist-ai-admin-action__icon {
+        mask-image: var(--directorist-ai-lock);
+        mask-size: 17px;
+    }
+}

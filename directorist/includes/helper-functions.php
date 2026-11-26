@@ -1,5 +1,6 @@
 <?php
 use Directorist\Helper;
+use Directorist\Price_Ranges;
 
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
@@ -1105,36 +1106,23 @@ function atbdp_display_price( $price = '', $disable_price = false, $currency = '
 }
 
 /**
- * Print formatted Price inside a p tag
+ * Return the formatted price range for a listing.
  *
- *
- * @return mixed
+ * @param string $price_range Saved or current range value.
+ * @param int    $listing_id  Optional listing context for directory options.
+ * @return string|null
  */
-function atbdp_display_price_range( $price_range ) {
-    $currency = directorist_get_currency();
-    $c_symbol = atbdp_currency_symbol( $currency );
-    if ( empty( $price_range ) ) return null;
-    $output = '';
-    if ( 'skimming' == $price_range ) {
-        $output =
-            '<span class="directorist-listing-price-range directorist-tooltip" data-label="Skimming"><span class="directorist-price-active">' . $c_symbol . '</span><span class="directorist-price-active">' . $c_symbol . '</span><span class="directorist-price-active">' . $c_symbol . '</span><span class="directorist-price-active">' . $c_symbol . '</span>
-        </span>';
-    } elseif ( 'moderate' == $price_range ) {
-        $output =
-            '<span class="directorist-listing-price-range directorist-tooltip" data-label="Moderate"><span class="directorist-price-active">' . $c_symbol . '</span><span class="directorist-price-active">' . $c_symbol . '</span><span class="directorist-price-active">' . $c_symbol . '</span><span>' . $c_symbol . '</span>
-            </span>';
-    } elseif ( 'economy' == $price_range ) {
-        $output =
-            '<span class="directorist-listing-price-range directorist-tooltip" data-label="Economy"><span class="directorist-price-active">' . $c_symbol . '</span><span class="directorist-price-active">' . $c_symbol . '</span><span>' . $c_symbol . '</span><span>' . $c_symbol . '</span>
-        </span>';
-    } elseif ( 'bellow_economy' == $price_range ) {
-
-        $output =
-            '<span class="directorist-listing-price-range directorist-tooltip" data-label="Cheap"><span class="directorist-price-active">' . $c_symbol . '</span><span>' . $c_symbol . '</span><span>' . $c_symbol . '</span><span>' . $c_symbol . '</span>
-        </span>';
-
+function atbdp_display_price_range( $price_range, $listing_id = 0 ) {
+    if ( '' === (string) $price_range ) {
+        return null;
     }
-    return $output;
+
+    $range = Price_Ranges::presentation( $price_range, $listing_id );
+    return sprintf(
+        '<span class="directorist-listing-price-range directorist-tooltip" data-label="%s">%s</span>',
+        esc_attr( $range['price_range_text'] ),
+        Price_Ranges::display_content( $range['active_items'], $range['currency'], $range['price_range_text'] )
+    );
 }
 
 /**
@@ -1668,6 +1656,121 @@ function atbdp_get_view_as( $view ) {
 
     }
     return $ways;
+}
+
+/**
+ * Return a configured choice value as exposed by a native HTML value attribute.
+ *
+ * Decode one layer only. Posted values already have this representation and must
+ * not be decoded again, since literal entity text can be a distinct choice.
+ *
+ * @param string $value Configured option value.
+ * @return string
+ */
+function directorist_get_choice_value( $value ) {
+    return html_entity_decode( esc_attr( (string) $value ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+}
+
+/**
+ * Encode a validated browser value without losing literal entity text or slashes.
+ */
+function directorist_get_choice_storage_value( string $value ): string {
+    return str_replace( '\\', '&#92;', htmlspecialchars( $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' ) );
+}
+
+/**
+ * Match configured, submitted or persisted identities in that context's order.
+ */
+function directorist_get_selected_choice_values( $options, $value, string $source = 'stored' ): array {
+    $choices = [];
+    foreach ( (array) $options as $option ) {
+        if ( ! is_array( $option ) || ! isset( $option['option_value'] ) || ! is_scalar( $option['option_value'] ) ) {
+            continue;
+        }
+
+        $configured = (string) $option['option_value'];
+        $browser    = directorist_get_choice_value( $configured );
+        $choices[]  = [
+            'configured' => $configured,
+            'browser'    => $browser,
+            'stored'     => directorist_get_choice_storage_value( $browser ),
+            'legacy'     => sanitize_text_field( $browser ),
+        ];
+    }
+
+    $priorities = [
+        'stored'     => [ 'stored', 'configured', 'browser', 'legacy' ],
+        'submitted'  => [ 'browser', 'configured', 'stored' ],
+        'configured' => [ 'configured', 'browser', 'stored' ],
+    ];
+    $selected = [];
+    foreach ( (array) $value as $item ) {
+        if ( ! is_scalar( $item ) ) {
+            continue;
+        }
+
+        foreach ( $priorities[ $source ] as $representation ) {
+            $matches = [];
+            foreach ( $choices as $choice ) {
+                if ( (string) $item === $choice[ $representation ] ) {
+                    $matches[] = $choice['browser'];
+                }
+            }
+
+            if ( $matches ) {
+                if ( 1 === count( array_unique( $matches ) ) ) {
+                    $selected[] = $matches[0];
+                }
+                break;
+            }
+        }
+    }
+
+    return array_values( array_unique( $selected ) );
+}
+
+/**
+ * Index the configured options by the input key and the Builder widget key.
+ */
+function directorist_get_choice_fields( array $fields ): array {
+    $choices = [];
+    foreach ( $fields as $key => $field ) {
+        if ( ! is_array( $field ) || empty( $field['field_key'] )
+            || ! in_array( $field['widget_name'] ?? $field['type'] ?? '', [ 'checkbox', 'radio', 'select' ], true )
+            || ! is_array( $field['options'] ?? null ) ) {
+            continue;
+        }
+
+        $choices[ $field['field_key'] ] = $field['options'];
+        $choices[ $key ] = $field['options'];
+    }
+    return $choices;
+}
+
+/**
+ * Return representations of a search choice that still identify it when read.
+ */
+function directorist_get_choice_search_values( array $options, $value ): array {
+    $selected = directorist_get_selected_choice_values( $options, $value, 'submitted' );
+    $matches  = [];
+    foreach ( $options as $option ) {
+        if ( ! isset( $option['option_value'] ) || ! is_scalar( $option['option_value'] ) ) {
+            continue;
+        }
+
+        $browser = directorist_get_choice_value( $option['option_value'] );
+        if ( ! in_array( $browser, $selected, true ) ) {
+            continue;
+        }
+
+        $variants = [ $browser, $option['option_value'], directorist_get_choice_storage_value( $browser ), sanitize_text_field( $browser ) ];
+        foreach ( $variants as $variant ) {
+            if ( '' !== (string) $variant && [ $browser ] === directorist_get_selected_choice_values( $options, $variant ) ) {
+                $matches[] = (string) $variant;
+            }
+        }
+    }
+    return array_values( array_unique( $matches ) );
 }
 
 /*
@@ -2399,14 +2502,21 @@ function atbdp_guest_submission( $guest_email ) {
         die();
     }
 
-    wp_set_current_user( $user_id, $guest_email );
-    wp_set_auth_cookie( $user_id );
-    update_user_meta( $user_id, '_atbdp_generated_password', $password );
+    $requires_verification = directorist_is_email_verification_enabled();
 
-    if ( directorist_is_email_verification_enabled() ) {
-        // Set unverified flag. Once verified this flag will be removed.
+    if ( $requires_verification ) {
         update_user_meta( $user_id, 'directorist_user_email_unverified', 1 );
+        update_user_meta( $user_id, '_directorist_guest_listing_next_url', ATBDP_Permalink::get_dashboard_page_link() );
     }
+
+    // Listing submission needs the author for this request, including its payment hooks.
+    wp_set_current_user( $user_id );
+
+    if ( ! $requires_verification ) {
+        wp_set_auth_cookie( $user_id );
+    }
+
+    update_user_meta( $user_id, '_atbdp_generated_password', $password );
 
     do_action( 'atbdp_user_registration_completed', $user_id );
 
@@ -2425,7 +2535,7 @@ function atbdp_guest_submission( $guest_email ) {
      */
     $notify = apply_filters( 'directorist_guest_submission_email_notification', true, $user_id );
     if ( $notify ) {
-        if ( directorist_is_email_verification_enabled() ) {
+        if ( $requires_verification ) {
             ATBDP()->email->send_user_confirmation_email( get_user_by( 'ID', $user_id ) );
         } else {
             ATBDP()->email->custom_wp_new_user_notification_email( $user_id );

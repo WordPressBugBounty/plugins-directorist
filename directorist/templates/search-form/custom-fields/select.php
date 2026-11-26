@@ -8,6 +8,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 $conditional_logic_attr = $searchform->get_conditional_logic_attributes( $data );
+$selected_values        = directorist_get_selected_choice_values( $data['options']['options'] ?? [], $value, 'submitted' );
 ?>
 
 <div class="directorist-search-field directorist-form-group"<?php echo $conditional_logic_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped in get_conditional_logic_attributes() ?>>
@@ -25,7 +26,7 @@ $conditional_logic_attr = $searchform->get_conditional_logic_attributes( $data )
             <?php
             if ( $data['options']['options'] ) {
                 foreach ( $data['options']['options'] as $option ) {
-                    printf( '<option value="%s"%s>%s</option>', esc_attr( $option['option_value'] ), esc_attr( selected( $value === $option[ 'option_value' ] ) ), esc_html( $option['option_label'] ) );
+                    printf( '<option value="%s"%s>%s</option>', esc_attr( $option['option_value'] ), selected( in_array( directorist_get_choice_value( $option['option_value'] ), $selected_values, true ), true, false ), esc_html( $option['option_label'] ) );
                 }
             }
             ?>

@@ -94,12 +94,13 @@ class ATBDP_Checkout {
 
         wp_enqueue_script( 'directorist-payment-receipt' );
 
-        $discount_amount      = min(
+        $quote                = \Directorist\Checkout\Quote::stored( $order );
+        $discount_amount      = $quote['payable']['discount'] ?? min(
             $order->get_sub_total(),
             directorist_compute_fixed_or_percent_amount( $order->get_coupon_discount_type(), $order->get_coupon_discount(), $order->get_sub_total() )
         );
         $discounted_sub_total = max( 0, $order->get_sub_total() - $discount_amount );
-        $tax_amount           = directorist_compute_fixed_or_percent_amount( $order->get_tax_type(), $order->get_tax_rate(), $discounted_sub_total );
+        $tax_amount           = $quote['payable']['tax'] ?? directorist_compute_fixed_or_percent_amount( $order->get_tax_type(), $order->get_tax_rate(), $discounted_sub_total );
         $order_items          = apply_filters( 'directorist_payment_receipt_order_items', [], $order, $payment, $discount_amount, $tax_amount, $discounted_sub_total );
 
         return Template::get(
@@ -109,6 +110,7 @@ class ATBDP_Checkout {
                 'payment'         => $payment,
                 'discount_amount' => $discount_amount,
                 'tax_amount'      => $tax_amount,
+                'quote'           => $quote,
             ]
         );
     }
@@ -150,14 +152,22 @@ class ATBDP_Checkout {
         wp_enqueue_script( 'directorist-checkout' );
         wp_enqueue_script( 'wp-api-fetch' );
 
-        $subtotal = round( apply_filters( 'directorist_checkout_subtotal', 0, $request->get_param( 'checkout_type' ), $request ) , 2 );
+        $type = $request->get_param( 'checkout_type' );
+        do_action( 'directorist_checkout_prepare_review_request', $type, $request );
+        try {
+            [ $subtotal, $total ] = \Directorist\Checkout\Quote::totals( $type, $request );
+            $currency_review = \Directorist\Checkout\Quote::choices( $type, $request, $subtotal, $total );
+        } catch ( \Exception $exception ) {
+            return '<div class="directorist-alert directorist-alert-warning">' . esc_html( $exception->getMessage() ) . '</div>';
+        }
 
         return Template::get(
             'checkout/checkout', [
                 'checkout_type' => $request->get_param( 'checkout_type' ),
                 'request'       => $request,
                 'subtotal'      => $subtotal,
-                'total'         => round( apply_filters( 'directorist_checkout_total', $subtotal, $request->get_param( 'checkout_type' ), $request ), 2 )
+                'total'           => $total,
+                'currency_review' => $currency_review,
             ]
         );
     }

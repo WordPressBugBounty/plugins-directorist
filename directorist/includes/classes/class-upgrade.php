@@ -60,12 +60,56 @@ class ATBDP_Upgrade
 
         add_action( 'admin_notices', [ $this, 'deprecated_item_upgrade_notice' ], 100 );
 
+        add_action( 'admin_notices', [ $this, 'ai_search_upgrade_notice' ], 100 );
+        add_action( 'admin_init', [ $this, 'dismiss_ai_search_upgrade_notice' ] );
+
         add_action( 'admin_init', [ $this, 'v8_force_migration' ] );
 
         // Migrate assign_to to conditional logic (custom fields only)
         add_action( 'admin_init', [ $this, 'migrate_assign_to_conditional_logic' ] );
 
         add_action( 'admin_notices', [ $this, 'dashboard_upgrade_notice' ] );
+    }
+
+    public function dismiss_ai_search_upgrade_notice() {
+        if ( ! isset( $_GET['directorist-dismiss-ai-search-notice'] ) || ! self::can_manage_plugins() ) {
+            return;
+        }
+
+        check_admin_referer( 'directorist_dismiss_ai_search_notice' );
+        update_option( 'directorist_ai_search_112_notice_dismissed', true, false );
+        wp_safe_redirect( remove_query_arg( [ 'directorist-dismiss-ai-search-notice', '_wpnonce' ] ) );
+        exit;
+    }
+
+    public function ai_search_upgrade_notice() {
+        if ( ! self::can_manage_plugins() || get_option( 'directorist_ai_search_112_notice_dismissed', false ) ) {
+            return;
+        }
+
+        $plugin = defined( 'DIRECTORIST_AI_SEARCH_BASENAME' ) ? DIRECTORIST_AI_SEARCH_BASENAME : 'directorist-ai-search/directorist-ai-search.php';
+
+        if ( ! is_plugin_active( $plugin ) ) {
+            return;
+        }
+
+        $plugins = get_plugins();
+
+        if ( empty( $plugins[ $plugin ]['Version'] ) || ! version_compare( $plugins[ $plugin ]['Version'], '1.1.2', '<' ) ) {
+            return;
+        }
+
+        $dismiss_url = wp_nonce_url( add_query_arg( 'directorist-dismiss-ai-search-notice', '1' ), 'directorist_dismiss_ai_search_notice' );
+
+        ?>
+        <div class="notice notice-warning directorist-plugin-updater-notice" style="position: relative;padding: 5px 38px 5px 12px;">
+            <p class="directorist__notice_new">
+                <span style="font-size: 16px;"><?php esc_html_e( '📣 Directorist AI Search Update Notice!', 'directorist' ); ?></span><br/>
+                <?php esc_html_e( 'Please download the latest version of Directorist AI Search from your Directorist account and install it on your site.', 'directorist' ); ?>
+            </p>
+            <a href="<?php echo esc_url( $dismiss_url ); ?>" class="notice-dismiss" style="text-decoration: none;"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'directorist' ); ?></span></a>
+        </div>
+        <?php
     }
 
     public function dashboard_upgrade_notice() {

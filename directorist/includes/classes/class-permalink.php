@@ -128,6 +128,13 @@ if ( ! class_exists( 'ATBDP_Permalink' ) ) :
          * @return string
          */
         public static function get_login_redirection_page_link() {
+            // The account page resumes the submission for the user who signs in.
+            $account_page_id = (int) get_directorist_option( 'signin_signup_page' );
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Navigation flags only select the local login destination.
+            if ( $account_page_id && is_page( $account_page_id ) && ( isset( $_GET['guest_listing_submitted'] ) || isset( $_GET['guest_listing_continue'] ) ) ) {
+                return self::get_signin_signup_page_link( [ 'guest_listing_continue' => 1 ] );
+            }
+
             // Check if has temp redirect url
             $temp_login_redirect = get_transient( 'atbdp_redirect_after_login' );
 
@@ -317,6 +324,51 @@ if ( ! class_exists( 'ATBDP_Permalink' ) ) :
             $id = get_directorist_option( 'add_listing_page' );
             if ( $id ) $link = get_permalink( $id );
             return apply_filters( 'atbdp_add_listing_page_url', $link );
+        }
+
+        /**
+         * Get the plan selection from the current request for use after authentication.
+         *
+         * @param array|null $query Query arguments, or null for the current request.
+         * @return array Selected plan and directory query arguments.
+         */
+        public static function get_selected_plan_query_args( $query = null ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading a public plan selection.
+            $query = null === $query ? $_GET : $query;
+
+            if ( ! is_array( $query ) || ! isset( $query['plan_id'] ) || ! is_scalar( $query['plan_id'] ) ) {
+                return [];
+            }
+
+            $raw_plan_id = wp_unslash( (string) $query['plan_id'] );
+            if ( ! ctype_digit( $raw_plan_id ) || ! absint( $raw_plan_id ) ) {
+                return [];
+            }
+
+            $plan_id = absint( $raw_plan_id );
+            $args = [ 'plan_id' => $plan_id ];
+
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading a public directory selection.
+            if ( ! empty( $query['directory_type'] ) && is_scalar( $query['directory_type'] ) ) {
+                $args['directory_type'] = sanitize_text_field( wp_unslash( (string) $query['directory_type'] ) );
+            }
+
+            return $args;
+        }
+
+        /**
+         * Get the selected plan's add listing URL for registration and login redirects.
+         *
+         * @return string Safe add listing URL, or an empty string without a selection.
+         */
+        public static function get_selected_plan_add_listing_page_link() {
+            $args = self::get_selected_plan_query_args();
+
+            if ( ! $args || ! get_directorist_option( 'add_listing_page' ) ) {
+                return '';
+            }
+
+            return wp_validate_redirect( add_query_arg( $args, self::get_add_listing_page_link() ), '' );
         }
 
         /**

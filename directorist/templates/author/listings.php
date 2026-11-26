@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <?php $author->archive_type( $author ); ?>
         </div>
 
+        <?php $categories = $author->get_listing_categories(); ?>
+        <?php if ( ! empty( $categories ) ) : ?>
         <div class="directorist-dropdown directorist-dropdown-js directorist-author-listing-top__dropdown directorist-dropdown-update-js">
 
             <button class="directorist-dropdown__toggle directorist-dropdown__toggle-js directorist-toggle-has-icon directorist-btn" id="directorist-dropdown-menu-link"><?php esc_html_e( 'Filter by category', 'directorist' ); ?> <span class="atbd_drop-caret"></span></button>
@@ -24,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <div class="directorist-dropdown__links directorist-dropdown__links-js">
 
                 <?php
-                foreach ( $author->get_listing_categories() as $category ) {
+                foreach ( $categories as $category ) {
                     $active_class = ( isset( $_GET['category'] ) && ( $category->slug == $_GET['category'] ) ) ? 'active' : '';
                     $link = directorist_add_query_args_with_no_pagination( [ 'category' => $category->slug ] );
                     printf( '<a class="directorist-dropdown__links__single %s" href="%s">%s</a>', esc_attr( $active_class ), esc_url( $link ), esc_html( $category->name ) );
@@ -34,6 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             </div>
 
         </div>
+        <?php endif; ?>
 
     </div>
 

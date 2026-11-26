@@ -11,7 +11,6 @@ use Directorist\Utils\Database\Query\Builder;
 use Directorist\Helpers\DateTime;
 use Directorist\DTO\Order\DTO;
 use Directorist\Enums\Order\Status as OrderStatus;
-use Directorist\Enums\Payment\Status as PaymentStatus;
 use Directorist\Enums\Order\TaxType as OrderTaxType;
 use Directorist\Enums\Order\DiscountType as OrderDiscountType;
 use Directorist\DTO\Order\Read;
@@ -24,7 +23,7 @@ class OrderRepository extends Repository {
     }
 
     public function get( Read $dto ): array {
-        $query = $this->get_query_builder()->select( 'd_order.*', 'users.user_email', 'users.display_name as user_display_name' );
+        $query = $this->get_query_builder()->select( 'd_order.*', 'UNIX_TIMESTAMP(d_order.created_at) as created_at_timestamp', 'users.user_email', 'users.display_name as user_display_name' );
 
         $query->left_join( 'users', 'd_order.user_id', '=', 'users.ID' );
 
@@ -54,7 +53,7 @@ class OrderRepository extends Repository {
     }
 
     public function get_by_user_id( int $user_id, Read $dto ) {
-        $query = $this->get_query_builder()->select( 'd_order.*' )->where( 'd_order.user_id', $user_id );
+        $query = $this->get_query_builder()->select( 'd_order.*', 'UNIX_TIMESTAMP(d_order.created_at) as created_at_timestamp' )->where( 'd_order.user_id', $user_id );
 
         if ( ! empty( $dto->get_search() ) ) {
             $search_term = trim( $dto->get_search() );
@@ -143,8 +142,8 @@ class OrderRepository extends Repository {
         $orders = array_map(
             function( $order ) {
                 if ( ! empty( $order->payment ) ) {
-                    $order->payment_method  = $this->get_payment_method_title( $order->payment->method );
-                    $order->transaction_id  = $order->payment->transaction_id ?? null;
+                    $order->payment_method = $this->get_payment_method_title( $order->payment->method );
+                    $order->transaction_id = $order->payment->transaction_id ?? null;
                 }
 
                 $order->total_amount = directorist_order_total_amount( $order );
@@ -165,11 +164,11 @@ class OrderRepository extends Repository {
      */
     public function create( \Directorist\Utils\DTO $dto ) {
         do_action( 'directorist_before_order_create', $dto );
-        
+
         $order_id = parent::create( $dto );
 
         $dto->set_id( $order_id );
-        
+
         do_action( 'directorist_after_order_create', $dto );
 
         return $order_id;
@@ -193,29 +192,41 @@ class OrderRepository extends Repository {
      * @throws Exception If the update operation fails.
      */
     public function update( \Directorist\Utils\DTO $dto ) {
-        do_action( 'directorist_mcp_before_native_order_write' );
-        $old_order = $this->get_by_id( $dto->get_id() );
-        
-        if ( ! $old_order ) {
-            throw new Exception( 'Order not found' );
-        }
+        return \Directorist\Order\Mutation::run(
+            function () use ( $dto ) {
+                do_action( 'directorist_mcp_before_native_order_write' );
+                $old_order = \Directorist\Order\Mutation::locked_row( $this->get_query_builder()->where( 'id', $dto->get_id() ) );
 
-        do_action( 'directorist_before_order_update', $dto, $old_order );
-        
-        $update        = parent::update( $dto );
-        $updated_order = $this->get_by_id( $dto->get_id() );
+                if ( ! $old_order ) {
+                      throw new Exception( 'Order not found' );
+                }
 
-        if ( ! $updated_order ) {
-            throw new Exception( 'Failed to update order' );
-        }
+                do_action( 'directorist_before_order_update', $dto, $old_order );
 
-        do_action( 'directorist_after_order_update', $this->to_dto( $updated_order ), $old_order );
+                $update = parent::update( $dto );
+                \Directorist\Order\Mutation::check_result( $update );
+                $updated_order = \Directorist\Order\Mutation::locked_row( $this->get_query_builder()->where( 'id', $dto->get_id() ) );
 
-        if ( $dto->is_initialized( 'status' ) && in_array( $dto->get_status(), PaymentStatus::all(), true ) ) {
-            ( new PaymentRepository )->update_status_by_order_id( $dto->get_id(), $dto->get_status() );
-        }
+                if ( ! $updated_order ) {
+                    throw new Exception( 'Failed to update order' );
+                }
 
-        return $update;
+                $activity_id = \Directorist\Order\Activity::order_changed( $old_order, $updated_order );
+                $updated_dto = $this->to_dto( $updated_order );
+                do_action( 'directorist_after_order_update', $updated_dto, $old_order );
+
+                if ( $activity_id && OrderStatus::PAID === $updated_order->status ) {
+                    \Directorist\Order\Mutation::after_commit(
+                        $activity_id,
+                        static function () use ( $updated_dto, $old_order ) {
+                            do_action( 'directorist_order_paid_after_commit', $updated_dto, $old_order );
+                        }
+                    );
+                }
+
+                return $update;
+            }
+        );
     }
 
     /**
@@ -227,7 +238,41 @@ class OrderRepository extends Repository {
      */
     public function silent_update( \Directorist\Utils\DTO $dto ) {
         do_action( 'directorist_mcp_before_native_order_write' );
-        return parent::update( $dto );
+        return \Directorist\Order\Mutation::run(
+            function () use ( $dto ) {
+                $before = \Directorist\Order\Mutation::locked_row( $this->get_query_builder()->where( 'id', $dto->get_id() ) );
+                $result = \Directorist\Order\Mutation::check_result( parent::update( $dto ) );
+                $after  = \Directorist\Order\Mutation::locked_row( $this->get_query_builder()->where( 'id', $dto->get_id() ) );
+                if ( $before && $after ) {
+                      \Directorist\Order\Activity::order_changed( $before, $after );
+                }
+                return $result;
+            }
+        );
+    }
+
+    public function accept_checkout_quote( DTO $dto, ?string $previous ): bool {
+        $query = $this->get_query_builder()->where( 'id', $dto->get_id() )
+            ->where( 'status', $dto->get_status() );
+        if ( null === $previous ) {
+            $query->where_null( 'checkout_quote' );
+        } else {
+            $query->where( 'checkout_quote', $previous );
+        }
+
+        if ( $query->update( [
+            'checkout_quote' => $dto->get_checkout_quote(),
+            'amount'         => $dto->get_amount(),
+            'sub_total'      => $dto->get_sub_total(),
+            'currency'       => $dto->get_currency(),
+            'coupon_discount' => $dto->get_coupon_discount(),
+            'tax_rate'        => $dto->get_tax_rate(),
+        ] ) ) {
+            return true;
+        }
+
+        $order = $this->get_by_id( $dto->get_id() );
+        return $order && $order->status === $dto->get_status() && $order->checkout_quote === $dto->get_checkout_quote();
     }
 
     public function update_status( int $order_id, string $status ) {
@@ -237,13 +282,13 @@ class OrderRepository extends Repository {
     }
 
     public function single( $id ) {
-        $order = $this->get_query_builder()->select( 'd_order.*', 'directorist_listing.post_title as listing_title' )->with(
+        $order = $this->get_query_builder()->select( 'd_order.*', 'UNIX_TIMESTAMP(d_order.created_at) as created_at_timestamp', 'directorist_listing.post_title as listing_title' )->with(
             [
                 'user'     => function( $query ) {
                     $query->select( 'ID', 'user_email', 'display_name' );
                 },
                 'payments' => function( $query ) {
-                    $query->order_by_desc( 'id' );
+                    $query->select( '*', 'UNIX_TIMESTAMP(created_at) as created_at_timestamp' )->order_by_desc( 'id' );
                 }
             ]
         )->left_join( Post::get_table_name() . ' as directorist_listing', 'd_order.listing_id', '=', 'directorist_listing.ID' )->where( 'd_order.id', $id )->first();
@@ -276,13 +321,27 @@ class OrderRepository extends Repository {
         $order->tax_label  = null;
         $order->tax_amount = null;
         $tax_amount        = directorist_compute_fixed_or_percent_amount( $order->tax_type, $order->tax_rate, $sub_total );
-        
+
         if ( $tax_amount > 0 ) {
             $order->tax_amount = $tax_amount;
             $order->tax_label  = OrderTaxType::PERCENT === $order->tax_type ? sprintf( esc_html__( 'Tax ( %s%% )', 'directorist' ), $order->tax_rate ) : esc_html__( 'Tax', 'directorist' );
         }
-        
+
+        $quote = \Directorist\Checkout\Quote::decode( $order->checkout_quote ?? null );
+        if ( isset( $quote['payable'] ) ) {
+            $order->discount_amount = $quote['payable']['discount'] ?: null;
+            $order->tax_amount = $quote['payable']['tax'] ?: null;
+            if ( OrderTaxType::PERCENT === $order->tax_type ) {
+                $order->tax_label = sprintf( esc_html__( 'Tax ( %s%% )', 'directorist' ), $order->tax_rate );
+            }
+        }
         $order->total_amount = directorist_order_total_amount( $order );
+
+        $order->transaction_options = \Directorist\Order\ManualPaymentService::describe( $order );
+        foreach ( $order->payments as $payment ) {
+            $payment->can_mark_paid = \Directorist\Order\ManualPaymentService::can_mark_paid( $order, $payment, $order->transaction_options );
+            $payment->can_delete    = 'bank_transfer' === $payment->method;
+        }
 
         return apply_filters( 'directorist_order_data', $order );
     }
@@ -309,7 +368,11 @@ class OrderRepository extends Repository {
             ->set_sub_total( $order->sub_total )
             ->set_status( $order->status )
             ->set_created_at( new DateTime( $order->created_at ) );
-        
+
+        if ( ! empty( $order->checkout_quote ) ) {
+            $dto->set_checkout_quote( $order->checkout_quote );
+        }
+
         if ( ! empty( $order->updated_at ) ) {
             $dto->set_updated_at( new DateTime( $order->updated_at ) );
         }

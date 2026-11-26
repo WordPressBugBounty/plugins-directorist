@@ -125,8 +125,8 @@ class Order_Refund_Controller extends Abstract_Controller {
         $repository = new RefundRepository();
         $refund     = $repository->get_by_id( $request->get_param( "id" ) );
 
-        if ( ! $refund ) {
-            return new WP_Error( 'rest_not_found', __( 'The refund was not found', 'directorist' ) );
+        if ( ! $refund || (int) $refund->order_id !== (int) $request->get_param( 'order_id' ) ) {
+            return new WP_Error( 'rest_not_found', __( 'The refund was not found', 'directorist' ), [ 'status' => 404 ] );
         }
 
         return rest_ensure_response(
@@ -144,7 +144,11 @@ class Order_Refund_Controller extends Abstract_Controller {
             ->set_reason( (string) $request->get_param( "reason" ) );
 
         $repository = new RefundRepository();
-        $repository->update( $dto );
+        try {
+            $repository->update( $dto );
+        } catch ( \Throwable $error ) {
+            return new WP_Error( 'rest_invalid_refund', $error->getMessage(), [ 'status' => in_array( $error->getCode(), [ 400, 404 ], true ) ? $error->getCode() : 500 ] );
+        }
 
         return rest_ensure_response(
             [
@@ -155,6 +159,10 @@ class Order_Refund_Controller extends Abstract_Controller {
 
     public function delete( WP_REST_Request $request ) {
         $repository = new RefundRepository();
+        $refund = $repository->get_by_id( (int) $request->get_param( 'id' ) );
+        if ( ! $refund || (int) $refund->order_id !== (int) $request->get_param( 'order_id' ) ) {
+            return new WP_Error( 'rest_not_found', __( 'The refund was not found', 'directorist' ), [ 'status' => 404 ] );
+        }
         $repository->delete_by_id( $request->get_param( "id" ) );
 
         return rest_ensure_response(
@@ -191,10 +199,10 @@ class Order_Refund_Controller extends Abstract_Controller {
                 'required'    => true,
             ],
             'amount' => [
-                'description' => __( 'The listing ID.', 'directorist' ),
-                'type'        => 'integer',
+                'description' => __( 'The refund amount.', 'directorist' ),
+                'type'        => 'number',
                 'required'    => true,
-                'minimum'     => 1,
+                'minimum'     => 0.01,
             ],
             'status' => [
                 'description' => __( 'The status of the order.', 'directorist' ),

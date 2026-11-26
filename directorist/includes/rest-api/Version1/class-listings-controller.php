@@ -16,6 +16,7 @@ use WP_REST_Server;
 use WP_Error;
 use Directorist\AddListingForm\SubmissionController;
 use Directorist\Helper;
+use Directorist\Price_Ranges;
 use Directorist\Repositories\ListingRepository;
 use Directorist\Listing_Visibility;
 
@@ -828,12 +829,9 @@ class Listings_Controller extends Posts_Controller {
         }
 
         // Price range query.
-        if ( ! empty( $request['price_range'] ) ) {
-            $meta_query['price_range'] = array(
-                'key'     => '_price_range',
-                'value'   => $request['price_range'],
-                'compare' => '='
-            );
+        $price_range = Price_Ranges::clean( $request['price_range'] );
+        if ( '' !== $price_range && 'none' !== $price_range ) {
+            $meta_query['price_range'] = Price_Ranges::query_clause( $price_range, (int) $request['directory'] );
         }
 
         if ( ! empty( $request['website'] ) ) {
@@ -1314,7 +1312,7 @@ class Listings_Controller extends Posts_Controller {
                     $base_data['price'] = (float) get_post_meta( $listing->ID, '_price', true );
                     break;
                 case 'price_range':
-                    $base_data['price_range'] = get_post_meta( $listing->ID, '_price_range', true );
+                    $base_data['price_range'] = Price_Ranges::listing_value( $listing->ID );
                     break;
                 case 'owner_contact_hidden':
                     $base_data['owner_contact_hidden'] = (bool) get_post_meta( $listing->ID, '_hide_contact_owner', true );
@@ -1644,7 +1642,6 @@ class Listings_Controller extends Posts_Controller {
                 'price_range'              => array(
                     'description' => __( 'Listing price range.', 'directorist' ),
                     'type'        => 'string',
-                    'enum'        => array( 'skimming', 'moderate', 'economy', 'bellow_economy' ),
                     'context'     => array( 'view', 'edit' ),
                 ),
                 'owner_contact_hidden'              => array(
@@ -1992,7 +1989,6 @@ class Listings_Controller extends Posts_Controller {
         $params['price_range'] = array(
             'description'       => __( 'Limit result set to listings based on price range.', 'directorist' ),
             'type'              => 'string',
-            'enum'              => array( 'skimming', 'moderate', 'economy', 'bellow_economy' ),
             'validate_callback' => 'rest_validate_request_arg',
         );
         $params['rating'] = array(
@@ -2021,8 +2017,8 @@ class Listings_Controller extends Posts_Controller {
         );
         $params['directory'] = array(
             'description'       => __( 'Limit result set to listings to sepecific directory type.', 'directorist' ),
-            'type'              => 'integar',
-            'sanitize_callback' => 'absint',
+            'type'              => 'integer',
+            'sanitize_callback' => 'rest_sanitize_request_arg',
             'validate_callback' => 'rest_validate_request_arg',
         );
         $params['author'] = array(

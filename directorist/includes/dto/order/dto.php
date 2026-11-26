@@ -25,6 +25,17 @@ class DTO extends \Directorist\Utils\DTO {
 
     private string $currency;
 
+    private ?string $checkout_quote;
+
+    public function get_checkout_quote(): ?string {
+        return $this->checkout_quote ?? null;
+    }
+
+    public function set_checkout_quote( ?string $quote ): self {
+        $this->checkout_quote = $quote;
+        return $this;
+    }
+
     private ?string $coupon_code;
 
     private ?float $coupon_discount;

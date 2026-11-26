@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Get conditional logic attributes using centralized method
 $conditional_logic_attr = $listing_form->get_conditional_logic_attributes( $data );
+$selected_values        = directorist_get_selected_choice_values( $data['options'] ?? [], $data['value'] );
 ?>
 
 <div class="directorist-form-group directorist-custom-field-checkbox"<?php echo $conditional_logic_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped in get_conditional_logic_attributes() ?>>
@@ -21,7 +22,7 @@ $conditional_logic_attr = $listing_form->get_conditional_logic_attributes( $data
                 <?php $uniqid = $option['option_value'] . '-' . wp_rand();  ?>
 
                 <div class="directorist-checkbox directorist-mb-10">
-                    <input type="checkbox" id="<?php echo esc_attr( $uniqid ); ?>" name="<?php echo esc_attr( $data['field_key'] ); ?>[]" value="<?php echo esc_attr( $option['option_value'] ); ?>" <?php echo in_array( $option['option_value'], (array) $data['value'], true ) ? 'checked="checked"' : '' ; ?>>
+                    <input type="checkbox" id="<?php echo esc_attr( $uniqid ); ?>" name="<?php echo esc_attr( $data['field_key'] ); ?>[]" value="<?php echo esc_attr( $option['option_value'] ); ?>" <?php echo in_array( directorist_get_choice_value( $option['option_value'] ), $selected_values, true ) ? 'checked="checked"' : '' ; ?>>
                     <label for="<?php echo esc_attr( $uniqid ); ?>" class="directorist-checkbox__label"><?php echo esc_html( $option['option_label'] ); ?></label>
                 </div>
 

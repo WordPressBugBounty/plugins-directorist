@@ -31,6 +31,7 @@ if ( ! class_exists( 'ATBDP_Settings_Panel' ) ) {
             add_action( 'admin_menu', [$this, 'add_menu_pages'] );
             add_action( 'wp_ajax_save_settings_data', [ $this, 'handle_save_settings_data_request' ] );
             add_action( 'wp_ajax_save_settings_data', [ $this, 'handle_save_settings_data_request' ] );
+            add_filter( 'directorist_validate_settings', [ \Directorist\Checkout\Currency::class, 'validate_settings' ], 10, 2 );
             add_filter( 'atbdp_listing_type_settings_field_list', [ $this, 'register_setting_fields' ] );
             add_filter( 'elementor/editor-one/menu/theme_builder_url', [ $this, 'fix_elementor_theme_builder_url' ], 20 );
         }
@@ -435,6 +436,10 @@ SWBD;
                 $atbdp_options[ $option_key ] = $option_value;
             }
 
+            if ( array_key_exists( 'payment_currency_exchange_rate', $prepared_options ) ) {
+                $atbdp_options['payment_currency_exchange_pair'] = \Directorist\Checkout\Currency::exchange_rate_pair( $atbdp_options );
+            }
+
             update_option( 'atbdp_option', $atbdp_options );
 
             /**
@@ -642,6 +647,19 @@ Please remember that your order may be canceled if you do not make your payment 
                         'description' => __( 'Select where you would like to show the currency symbol. Default is before. Eg. $5', 'directorist' ),
                     ],
 
+                    'payment_currency_match_display' => [
+                        'type'  => 'toggle',
+                        'label' => __( 'Match display currency', 'directorist' ),
+                        'value' => \Directorist\Checkout\Currency::matches_display() ? '1' : '0',
+                    ],
+
+                    'payment_currency_exchange_rate' => [
+                        'type'        => 'text',
+                        'label'       => __( 'Currency Exchange Rate', 'directorist' ),
+                        'value'       => '',
+                        'description' => __( 'Enter the amount in checkout currency equal to one unit of display currency. Enter a new exchange rate when either currency code changes.', 'directorist' ),
+                    ],
+
                     // gateway settings
                     'offline_payment_note'    => [
                         'type'                => 'note',
@@ -654,6 +672,16 @@ Please remember that your order may be canceled if you do not make your payment 
                         'label'           => __( 'Gateway Title', 'directorist' ),
                         'value'           => __( 'Bank Transfer', 'directorist' ),
                         'description'     => __( 'Enter the title of this gateway that should be displayed to the user on the front end.', 'directorist' ),
+                    ],
+
+                    'bank_transfer_currency' => [
+                        'type'    => 'select',
+                        'label'   => __( 'Currency', 'directorist' ),
+                        'value'   => \Directorist\Checkout\Currency::DEFAULT_BANK_TRANSFER_CURRENCY,
+                        'options' => [
+                            [ 'value' => 'display', 'label' => __( 'Display currency', 'directorist' ) ],
+                            [ 'value' => 'checkout', 'label' => __( 'Checkout currency', 'directorist' ) ],
+                        ],
                     ],
 
                     'bank_transfer_description' => [
@@ -3523,6 +3551,28 @@ Please remember that your order may be canceled if you do not make your payment 
                             ],
                         ],
                     ],
+                    'listing_deletion_email_scope' => [
+                        'label'       => __( 'Send Deletion Emails For', 'directorist' ),
+                        'type'        => 'select',
+                        'value'       => 'all',
+                        'options'     => [
+                            [
+                                'value' => 'all',
+                                'label' => __( 'All listing deletions', 'directorist' ),
+                            ],
+                            [
+                                'value' => 'expired_only',
+                                'label' => __( 'Automated expiry cleanup only', 'directorist' ),
+                            ],
+                        ],
+                        'description' => __( 'Applies to enabled Listing Deleted emails for owners and admins. Automated expiry cleanup only excludes manual deletions and account cleanup.', 'directorist' ),
+                        'show-if'     => [
+                            'where'      => 'disable_email_notification',
+                            'conditions' => [
+                                ['key' => 'value', 'compare' => '=', 'value' => false],
+                            ],
+                        ],
+                    ],
                     // email templates settings
                     'allow_email_header' => [
                         'label'         => __( 'Email Header', 'directorist' ),
@@ -4674,6 +4724,10 @@ Best regards,
                                                     'email_sub_renewed_listing', 'email_tmpl_renewed_listing'
                                                 ],
                                             ],
+                                            'listing_deletion_notifications' => [
+                                                'title'  => __( 'Listing Deletion Emails', 'directorist' ),
+                                                'fields' => [ 'listing_deletion_email_scope' ],
+                                            ],
                                             'deleted_listings' => [
                                                 'title'       => __( 'For Deleted/Trashed Listings', 'directorist' ),
                                                 'description' => '',
@@ -4754,7 +4808,9 @@ Best regards,
                                                     'payment_currency',
                                                     'payment_thousand_separator',
                                                     'payment_decimal_separator',
-                                                    'payment_currency_position'
+                                                    'payment_currency_position',
+                                                    'payment_currency_exchange_rate',
+                                                    'payment_currency_match_display',
                                                 ],
                                             ],
                                         ]
@@ -4800,6 +4856,7 @@ Best regards,
                                                 'fields'      => [
                                                     'offline_payment_note',
                                                     'bank_transfer_title',
+                                                    'bank_transfer_currency',
                                                     'bank_transfer_description',
                                                     'bank_transfer_instruction'
                                                 ],
@@ -5650,8 +5707,8 @@ Best regards,
         public function add_menu_pages() {
             add_submenu_page(
                 'edit.php?post_type=at_biz_dir',
-                'Settings',
-                'Settings',
+                __( 'Settings', 'directorist' ),
+                __( 'Settings', 'directorist' ),
                 'manage_options',
                 'atbdp-settings',
                 [ $this, 'menu_page_callback__settings_manager' ],
@@ -5721,6 +5778,12 @@ Best regards,
                     }
 
                     $type = isset( $field_args['type'] ) ? $field_args['type'] : 'text';
+                    // Email body editors must receive the saved HTML as textarea text.
+                    if ( 'value' === $field_args_key && 'textarea' === $type && 0 === strpos( $key, 'email_tmpl_' ) && is_string( $field_args_value ) ) {
+                        $fields[ $key ][ $field_args_key ] = wp_kses_post( $field_args_value );
+                        continue;
+                    }
+
                     $fields[ $key ][ $field_args_key ] = $this->sanitize_field_arg_value( $field_args_key, $field_args_value, $type );
                 }
 

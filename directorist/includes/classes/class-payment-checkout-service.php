@@ -54,15 +54,18 @@ class PaymentCheckoutService {
             throw new Exception( __( 'Order not found.', 'directorist' ) );
         }
 
-        if ( (int) $order->user_id !== get_current_user_id() ) {
+        $order_user_id = (int) $order->user_id;
+        if ( $order_user_id !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
             throw new Exception( __( 'You do not have permission to pay for this order.', 'directorist' ), 403 );
         }
 
-        if ( FeaturedListingCheckout::CHECKOUT_TYPE === $order->ref_type && ! directorist_user_can_checkout_listing( (int) $order->listing_id ) ) {
+        if ( FeaturedListingCheckout::CHECKOUT_TYPE === $order->ref_type
+            && ( ! directorist_user_can_checkout_listing( (int) $order->listing_id ) || ! directorist_user_can_checkout_listing( (int) $order->listing_id, $order_user_id ) )
+        ) {
             throw new Exception( __( 'You do not have permission to pay for this listing.', 'directorist' ), 403 );
         }
 
-        if ( Status::PENDING !== $order->status ) {
+        if ( ! in_array( $order->status, [ Status::PENDING, Status::FAILED ], true ) ) {
             throw new Exception( __( 'This order is not pending payment.', 'directorist' ) );
         }
     }
@@ -80,9 +83,10 @@ class PaymentCheckoutService {
         
         $order = apply_filters( 'directorist_checkout_payment_order', $order, $request );
 
-        $discount_amount     = directorist_compute_fixed_or_percent_amount( $order->coupon_discount_type, $order->coupon_discount, $order->sub_total );
+        $quote               = \Directorist\Checkout\Quote::decode( $order->checkout_quote ?? null );
+        $discount_amount     = $quote['payable']['discount'] ?? directorist_compute_fixed_or_percent_amount( $order->coupon_discount_type, $order->coupon_discount, $order->sub_total );
         $discounted_subtotal = max( 0, (float) $order->sub_total - $discount_amount );
-        $tax_amount          = directorist_compute_fixed_or_percent_amount( $order->tax_type, $order->tax_rate, $discounted_subtotal );
+        $tax_amount          = $quote['payable']['tax'] ?? directorist_compute_fixed_or_percent_amount( $order->tax_type, $order->tax_rate, $discounted_subtotal );
 
         Template::render( 'checkout/order-payment-summary', [
             'order'               => $order,

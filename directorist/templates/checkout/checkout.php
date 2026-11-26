@@ -3,7 +3,14 @@
 defined( 'ABSPATH' ) || exit;
 
 use \Directorist\Helper;
+use Directorist\Checkout\Currency;
+use Directorist\Checkout\Quote;
 
+$choices = $currency_review['choices'];
+$gateways = array_filter( array_keys( $choices ) );
+$default = get_directorist_option( 'default_gateway', 'bank_transfer' );
+$selected = in_array( $default, $gateways, true ) ? $default : ( reset( $gateways ) ?: '' );
+$initial_quote = $choices[$selected] ?? null;
 ?>
 <div id="directorist" class="atbd_wrapper directorist directorist-checkout-form directorist-w-100">
     <div class="<?php Helper::directorist_container_fluid(); ?>">
@@ -12,6 +19,7 @@ use \Directorist\Helper;
                 <?php do_action( 'atbdp_before_checkout_form_start' ); ?>
                 <form id="atbdp-checkout-form" class="form-vertical clearfix" method="post" action="#">
                     <input type="hidden" name="checkout_type" value="<?php echo esc_attr( $checkout_type ); ?>">
+                    <input type="hidden" name="checkout_quote_token" value="<?php echo esc_attr( $initial_quote ? Quote::token( $initial_quote, $checkout_type, $request ) : '' ); ?>">
                     <?php do_action( 'atbdp_after_checkout_form_start' ); ?>
                     <div class="directorist-checkout-text directorist-text-center directorist-mb-40">
                         <?php esc_html_e( 'Your order details are given below. Please review it and click on Proceed to Payment to complete this order.', 'directorist' ); ?>
@@ -38,10 +46,11 @@ use \Directorist\Helper;
                                         </td>
                                         <td class="directorist-text-right">
                                             <div id="atbdp_checkout_total_amount" class="directorist-summery-amount directorist-row-value--order-total">
-                                                <?php echo wp_kses_post( directorist_price( $total ) ) ?>
+                                                <?php echo esc_html( Currency::format( $currency_review['total'], $currency_review['display'] ) ); ?>
                                             </div>
                                         </td>
                                     </tr>
+                                    <?php directorist_template_render( 'checkout/currency-review', compact( 'currency_review', 'choices', 'selected' ) ); ?>
                                     <?php do_action( 'directorist_checkout_table_after_total', $checkout_type, $total, $subtotal, $request ); ?>
                                 </table> <!--ends table-->
                             </div>
@@ -49,17 +58,21 @@ use \Directorist\Helper;
                     </div>
 
                     <?php
-                    $show_payment_gateways = apply_filters( 'directorist_checkout_show_payment_gateways', $subtotal > 0, $checkout_type, $subtotal, $request );
-                    if ( $show_payment_gateways ) : ?>
-                    <?php $active_gateways = apply_filters( 'directorist_checkout_active_gateways', ATBDP_Gateway::get_active_gateways(), $checkout_type, $request ); ?>
+                    if ( $currency_review['show_gateways'] ) : ?>
+                    <?php if ( ! $gateways ) : ?>
+                        <p class="directorist-alert directorist-alert-warning"><?php esc_html_e( 'No payment method is available for this amount and currency. Contact the site administrator.', 'directorist' ); ?></p>
+                    <?php endif; ?>
                     <div class="directorist-card directorist-mt-30 directorist-payment-gateways directorist-mb-15 directorist-checkout-card directorist-checkout-payment" id="directorist_payment_gateways">
                         <div class="directorist-card__header">
                             <h3 class="directorist-card__header__title"><?php esc_html_e( 'Choose a payment method', 'directorist' ); ?></h3>
                         </div>
 
                         <div class="directorist-card__body">
-                            <?php echo directorist_kses( ATBDP_Gateway::gateways_markup( $active_gateways ), 'all' ); ?>
-                            <?php do_action( 'directorist_checkout_payment_gateways_after', $checkout_type, $request, $active_gateways ); ?>
+                            <?php echo directorist_kses( ATBDP_Gateway::gateways_markup( $gateways, $selected ), 'all' ); ?>
+                            <?php do_action( 'directorist_checkout_payment_gateways_after', $checkout_type, $request, $gateways ); ?>
+                            <?php foreach ( $choices as $gateway => $quote ) : ?>
+                                <input type="hidden" data-quote-gateway="<?php echo esc_attr( $gateway ); ?>"<?php echo Quote::hides_conversion( $quote ) ? ' data-hide-conversion' : ''; ?> value="<?php echo esc_attr( Quote::token( $quote, $checkout_type, $request ) ); ?>">
+                            <?php endforeach; ?>
                         </div>
                     </div>
                     <?php endif;
@@ -73,7 +86,7 @@ use \Directorist\Helper;
 
                     <div class="directorist-payment-action directorist-flex directorist-justify-content-between" id="atbdp_pay_notpay_btn">
                         <a href="<?php echo $dashboard_page_link; ?>" class="directorist-btn directorist-btn-lg directorist-btn-light atbdp_not_now_button"><?php echo esc_html( $cancel_button_label ); ?></a>
-                        <button type="submit" id="atbdp_checkout_submit_btn" class="directorist-btn directorist-btn-lg directorist-btn-payment-submit" data-loading-text="<?php esc_html_e( 'Processing...', 'directorist' ); ?>">
+                        <button type="submit" id="atbdp_checkout_submit_btn" <?php disabled( $currency_review['show_gateways'] && ! $gateways ); ?> class="directorist-btn directorist-btn-lg directorist-btn-payment-submit" data-loading-text="<?php esc_html_e( 'Processing...', 'directorist' ); ?>">
                             <span class="directorist-btn-text"><?php echo esc_html( $submit_button_label ); ?></span>
                             <span class="directorist-btn-spinner" style="display: none;">
                                 <svg class="directorist-spinner" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

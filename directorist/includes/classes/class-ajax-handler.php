@@ -1630,7 +1630,7 @@ if ( ! class_exists( 'ATBDP_Ajax_Handler' ) ) :
             $subject  = strtr( $contact_email_subject, $placeholders );
             $message  = strtr( $contact_email_body, $placeholders );
             $message  = nl2br( $message );
-            $headers  = ATBDP()->email->get_email_headers( [ 'name' => $name, 'email' => $email ] );
+            $headers  = ATBDP()->email->get_email_headers( [ 'reply_to' => $email ] );
             $message  = atbdp_email_html( $subject, $message );
             // return true or false, based on the result
             $is_sent = ATBDP()->email->send_mail( $to, $subject, $message, $headers ) ? true : false;
@@ -1735,8 +1735,7 @@ if ( ! class_exists( 'ATBDP_Ajax_Handler' ) ) :
             $message       = apply_filters( 'directorist_contact_admin_email_message', $message, $_POST );
 
             $message       = strtr( $message, $placeholders );
-            $headers       = "From: {$name} <{$email}>\r\n";
-            $headers      .= "Reply-To: {$email}\r\n";
+            $headers       = ATBDP()->email->get_email_headers( [ 'reply_to' => $email ] );
             $message       = atbdp_email_html( $subject, $message );
 
             $is_sent = ATBDP()->email->send_mail( $to, $subject, $message, $headers ) ? true : false;

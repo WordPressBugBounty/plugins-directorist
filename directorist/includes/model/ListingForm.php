@@ -585,7 +585,9 @@ class Directorist_Listing_Form {
         }
         
         $field_key = isset( $data['field_key'] ) ? $data['field_key'] : '';
-        $json      = wp_json_encode( $normalized );
+        $form = directorist_submission_form_fields_raw( (int) $this->get_current_listing_type() );
+        $normalized = \Directorist\Fields\Conditional_Logic::normalize_choice_conditions( $normalized, directorist_get_choice_fields( $form['fields'] ?? [] ) );
+        $json = wp_json_encode( $normalized, JSON_HEX_AMP | JSON_HEX_TAG );
         
         return ' data-conditional-logic="' . esc_attr( $json ) . '" data-field-key="' . esc_attr( $field_key ) . '"';
     }
@@ -1032,6 +1034,9 @@ class Directorist_Listing_Form {
                 }
 
                 $section['fields'][ $field ] = $form_fields[ $field ];
+                if ( 'pricing' === $field ) {
+                    $section['fields'][ $field ]['price_range_directory_id'] = (int) $directory_id;
+                }
             }
 
             $form_data[] = $section;

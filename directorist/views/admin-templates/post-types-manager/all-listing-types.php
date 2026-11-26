@@ -84,6 +84,7 @@
                         </h2>
                         
                         <div class="directorist_link-block-wrapper">
+                            <?php \Directorist\AI_Admin_Actions::render_directory_button(); ?>
                             <button class="directorist_link-block directorist_link-block-primary-outline directorist_btn-import cptm-modal-toggle" data-target="cptm-import-directory-modal">
                                 <span class="directorist_link-icon">
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

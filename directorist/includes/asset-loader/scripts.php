@@ -264,9 +264,14 @@ class Scripts {
                 'type' => 'js',
                 'path' => DIRECTORIST_BUILD_ASSETS . 'js/global/geolocation',
             ],
+            'directorist-checkout-quote' => [
+                'type' => 'js',
+                'path' => DIRECTORIST_ASSETS . 'js/directorist-checkout-quote',
+            ],
             'directorist-checkout' => [
                 'type' => 'js',
                 'path' => DIRECTORIST_BUILD_ASSETS . 'js/public/checkout',
+                'dep'  => [ 'jquery', 'wp-api-fetch', 'directorist-checkout-quote' ],
             ],
             'directorist-add-listing' => [
                 'type' => 'js',
@@ -315,6 +320,10 @@ class Scripts {
                 'dep' => ['wp-element', 'wp-api-fetch', 'wp-i18n'],
             ],
         ];
+
+        if ( wp_script_is( 'wp-i18n', 'registered' ) ) {
+            $scripts['directorist-settings-manager']['dep'][] = 'wp-i18n';
+        }
 
         return apply_filters( 'directorist_scripts', $scripts );
     }

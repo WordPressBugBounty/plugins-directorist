@@ -23,6 +23,10 @@ class Order extends Model {
         return $this->has_many( Payment::class, 'order_id', 'id' );
     }
 
+    public function activities(): HasMany {
+        return $this->has_many( OrderActivity::class, 'order_id', 'id' );
+    }
+
     public function payment():HasOne {
         return $this->has_one( Payment::class, 'order_id', 'id' );
     }

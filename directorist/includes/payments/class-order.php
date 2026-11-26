@@ -9,6 +9,10 @@
  * @since         3.1.0
  */
 
+use Directorist\Checkout\Currency;
+use Directorist\Enums\Order\DiscountType;
+use Directorist\Enums\Order\TaxType;
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -197,6 +201,7 @@ class ATBDP_Order
         $listing_id     = ! empty( $table_order->listing_id ) ? absint( $table_order->listing_id ) : 0;
         $order_dto      = function_exists( 'directorist_order_repository' ) ? directorist_order_repository()->to_dto( $table_order ) : null;
         $order_items    = $order_dto ? apply_filters( 'directorist_payment_receipt_order_items', [], $order_dto ) : [];
+        $quote          = $order_dto ? \Directorist\Checkout\Quote::stored( $order_dto ) : [];
 
         if ( empty( $order_items ) ) {
             $order_items[] = [
@@ -215,12 +220,26 @@ class ATBDP_Order
             $before = $symbol;
         }
 
+        $has_source        = isset( $quote['display_currency'], $quote['source']['subtotal'], $quote['source']['total'], $quote['payable']['total'] );
+        $source            = $has_source ? $quote['source'] : [];
+        $display_currency  = $has_source ? $quote['display_currency'] : $order_currency;
+        $show_conversion   = $display_currency !== $order_currency;
+        $precision         = $quote['precision'] ?? 2;
+        $display_precision = $show_conversion ? 2 : $precision;
+        $format            = static function ( $amount ) use ( $has_source, $display_currency, $display_precision, $before, $after ): string {
+            return $has_source ? Currency::format( (float) $amount, $display_currency, $display_precision ) : $before . $amount . $after;
+        };
+
+        $single_item      = 1 === count( $order_items );
+        $item_subtotal    = $single_item ? ( $source['subtotal'] ?? null ) : null;
+        $show_item_prices = ! $show_conversion || $single_item;
+
         ob_start();
         ?>
         <table border="0" cellspacing="0" cellpadding="7" style="border:1px solid #CCC;">
             <tr style="background-color:#F0F0F0;">
                 <th style="border-right:1px solid #CCC; border-bottom:1px solid #CCC; text-align:left;"><?php esc_html_e( 'Item(s)', 'directorist' ); ?></th>
-                <th style="border-bottom:1px solid #CCC;"><?php printf( esc_html__( 'Price [%s]', 'directorist' ), esc_html( $order_currency ) ); ?></th>
+                <th style="border-bottom:1px solid #CCC;"><?php printf( esc_html__( 'Price [%s]', 'directorist' ), esc_html( $display_currency ) ); ?></th>
             </tr>
             <?php foreach ( $order_items as $order ) : ?>
                 <tr>
@@ -229,23 +248,79 @@ class ATBDP_Order
                         <?php echo ! empty( $order['desc'] ) ? esc_html( $order['desc'] ) : ''; ?>
                     </td>
                     <td style="border-bottom:1px solid #CCC;">
-                        <?php echo esc_html( $before . ( $order['price'] ?? 0 ) . $after ); ?>
+                        <?php if ( $show_item_prices ) : ?>
+                            <?php echo esc_html( $format( $item_subtotal ?? $order['price'] ?? 0 ) ); ?>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
+            <?php // The saved quote has a subtotal, but no individual item prices. ?>
+            <?php if ( ! $show_item_prices ) : ?>
+                <tr>
+                    <td style="border-right:1px solid #CCC; text-align:right;"><?php esc_html_e( 'Subtotal', 'directorist' ); ?></td>
+                    <td><?php echo esc_html( $format( $source['subtotal'] ) ); ?></td>
+                </tr>
+            <?php endif; ?>
+            <?php if ( ! empty( $source['discount'] ) ) : ?>
+                <tr>
+                    <td style="border-right:1px solid #CCC; text-align:right;">
+                        <?php
+                        if ( DiscountType::PERCENT === ( $table_order->coupon_discount_type ?? null ) ) {
+                            printf( esc_html__( 'Discount ( %s%% )', 'directorist' ), esc_html( (float) $table_order->coupon_discount ) );
+                        } else {
+                            esc_html_e( 'Discount', 'directorist' );
+                        }
+                        ?>
+                    </td>
+                    <td>-<?php echo esc_html( $format( $source['discount'] ) ); ?></td>
+                </tr>
+            <?php endif; ?>
+            <?php if ( ! empty( $source['tax'] ) ) : ?>
+                <tr>
+                    <td style="border-right:1px solid #CCC; text-align:right;">
+                        <?php
+                        if ( TaxType::PERCENT === ( $table_order->tax_type ?? null ) ) {
+                            printf( esc_html__( 'Tax ( %s%% )', 'directorist' ), esc_html( (float) $table_order->tax_rate ) );
+                        } else {
+                            esc_html_e( 'Tax', 'directorist' );
+                        }
+                        ?>
+                    </td>
+                    <td><?php echo esc_html( $format( $source['tax'] ) ); ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <td style="border-right:1px solid #CCC; text-align:right; vertical-align:middle;">
-                    <?php printf( esc_html__( 'Total amount [%s]', 'directorist' ), esc_html( $order_currency ) ); ?>
+                    <?php printf( esc_html__( 'Total amount [%s]', 'directorist' ), esc_html( $display_currency ) ); ?>
                 </td>
                 <td>
                     <?php
-                    $total_amount = apply_filters( 'directorist_email_receipt_order_amount', directorist_order_total_amount( $table_order ), $table_order_id );
+                    $total_amount = $source['total'] ?? $quote['payable']['total'] ?? apply_filters( 'directorist_email_receipt_order_amount', directorist_order_total_amount( $table_order ), $table_order_id );
 
-                    echo esc_html( $before . $total_amount . $after );
-                    do_action( 'atbdp_email_receipt_after_total_price', $listing_id );
+                    echo esc_html( $format( $total_amount ) );
+                    if ( ! $show_conversion ) {
+                        do_action( 'atbdp_email_receipt_after_total_price', $listing_id );
+                    }
                     ?>
                 </td>
             </tr>
+            <?php if ( $show_conversion ) : ?>
+                <tr>
+                    <td style="border-right:1px solid #CCC; text-align:right; vertical-align:middle;">
+                        <?php esc_html_e( 'Total Amount After Conversion', 'directorist' ); ?>
+                        <?php if ( ! empty( $quote['exchange_rate'] ) ) : ?>
+                            <br>
+                            <?php echo esc_html( sprintf( '1 %1$s = %2$s %3$s', $display_currency, $quote['exchange_rate'], $order_currency ) ); ?>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php
+                        echo esc_html( Currency::format( $quote['payable']['total'], $order_currency, $precision ) );
+                        do_action( 'atbdp_email_receipt_after_total_price', $listing_id );
+                        ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
         <?php
         return ob_get_clean();

@@ -5,14 +5,15 @@
  * @version 8.6
  */
 
+use Directorist\Price_Ranges;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 $listing_id              = $listing_form->get_add_listing_id();
 $price                   = get_post_meta( $listing_id, '_price', true );
-$price_range             = get_post_meta( $listing_id, '_price_range', true );
+$price_range             = (string) get_post_meta( $listing_id, '_price_range', true );
 $price_type              = get_post_meta( $listing_id, '_atbd_listing_pricing', true );
 $allow_decimal           = get_directorist_option( 'allow_decimal', 1 );
-$currency_symbol         = atbdp_currency_symbol( directorist_get_currency() );
 
 // Get conditional logic attributes using centralized method
 $conditional_logic_attr = $listing_form->get_conditional_logic_attributes( $data );
@@ -43,12 +44,20 @@ $conditional_logic_attr = $listing_form->get_conditional_logic_attributes( $data
     <?php } ?>
 
     <?php if ( $data['pricing_type'] === 'both' || $data['pricing_type'] === 'price_range' ) { ?>
+        <?php
+        $options      = Price_Ranges::options( $data );
+        $directory_id = $data['price_range_directory_id'] ?? $listing_form->get_current_listing_type();
+        $saved_option = Price_Ranges::find( $price_range, $options );
+        if ( ! $saved_option && '' !== $price_range && Price_Ranges::can_keep_saved_value( $price_range, $listing_id, $directory_id ) ) {
+            $options[] = [ 'option_value' => $price_range, 'option_label' => Price_Ranges::legacy_label( $price_range ) ];
+        }
+        $selected_range = $saved_option['option_value'] ?? $price_range;
+        ?>
         <select class="directorist-form-element directory_field directory_pricing_field" id="price_range" name="price_range">
             <option value=""><?php echo esc_html( ! empty( $data['price_range_placeholder'] ) ? $data['price_range_placeholder'] : '' ); ?></option>
-            <option value="skimming"<?php selected( $price_range, 'skimming' ); ?>><?php echo esc_html( sprintf( __( 'Ultra High (%s)', 'directorist' ), str_repeat( $currency_symbol, 4 ) ) );?></option>
-            <option value="moderate" <?php selected( $price_range, 'moderate' ); ?>><?php echo esc_html( sprintf( __( 'Moderate (%s)', 'directorist' ), str_repeat( $currency_symbol, 3 ) ) );?></option>
-            <option value="economy" <?php selected( $price_range, 'economy' ); ?>><?php echo esc_html( sprintf( __( 'Economy (%s)', 'directorist' ), str_repeat( $currency_symbol, 2 ) ) ); ?></option>
-            <option value="bellow_economy" <?php selected( $price_range, 'bellow_economy' ); ?>><?php echo esc_html( sprintf( __( 'Cheap (%s)', 'directorist' ), str_repeat( $currency_symbol, 1 ) ) ); ?></option>
+            <?php foreach ( $options as $option ) : ?>
+                <option value="<?php echo esc_attr( $option['option_value'] ); ?>" <?php selected( $selected_range, $option['option_value'] ); ?>><?php echo esc_html( $option['option_label'] ); ?></option>
+            <?php endforeach; ?>
         </select>
     <?php } ?>
 

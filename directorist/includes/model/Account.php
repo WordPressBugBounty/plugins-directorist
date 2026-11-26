@@ -83,6 +83,11 @@ class Directorist_Account {
 
         $atts = shortcode_atts( self::shortcode_atts(), $atts );
 
+        $plan_args = ATBDP_Permalink::get_selected_plan_query_args();
+        if ( $plan_args && empty( $atts['signup_redirect_url'] ) ) {
+            $atts['signup_redirect_url'] = ATBDP_Permalink::get_selected_plan_add_listing_page_link();
+        }
+
         $user_type = ! empty( $_REQUEST['user_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['user_type'] ) ) : $atts['user_type'];
         $active_form = ( isset( $_GET['signup'] ) && directorist_is_user_registration_enabled() ) ? 'signup' : $atts['active_form'];
 
@@ -91,6 +96,7 @@ class Directorist_Account {
             'user_type'                        => $user_type,
             'enable_registration_password'     => $atts['password'],
             'registration_username'            => $atts['username_label'],
+            'registration_request_error'       => __( 'Registration could not be completed. Please try again.', 'directorist' ),
             'enable_registration_website'      => $atts['website'],
             'registration_website_required'    => $atts['website_required'],
             'enable_registration_first_name'   => $atts['firstname'],
@@ -103,6 +109,7 @@ class Directorist_Account {
             'enable_registration_terms'        => $atts['terms'],
             'auto_login_after_registration'    => $atts['signin_after_signup'],
             'redirection_after_registration'   => $atts['signup_redirect_url'],
+            'selected_plan'                     => $plan_args,
             'active_form'                      => $active_form,
         ];
         wp_localize_script( 'directorist-account', 'directorist_signin_signup_params', $data );

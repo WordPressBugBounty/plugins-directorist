@@ -21,7 +21,7 @@ class Order_Policy {
     /** Tables. */
     public static function tables(): array {
         global $wpdb;
-        return [ $wpdb->prefix . 'directorist_orders', $wpdb->prefix . 'directorist_payments', $wpdb->prefix . 'directorist_refunds' ];
+        return [ $wpdb->prefix . 'directorist_orders', $wpdb->prefix . 'directorist_payments', $wpdb->prefix . 'directorist_refunds', $wpdb->prefix . 'directorist_order_activities', $wpdb->prefix . 'directorist_order_locks' ];
     }
 
     /** Ready. */

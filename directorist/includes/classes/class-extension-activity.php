@@ -1054,7 +1054,7 @@ if ( ! class_exists( 'ATBDP_Extension_Activity' ) ) {
                         'id'           => 'payment-' . $order->ID,
                         'type'         => 'payment',
                         'title'        => __( 'Payment received', 'directorist' ),
-                        'subject'      => html_entity_decode( atbdp_currency_symbol( atbdp_get_payment_currency() ), ENT_QUOTES, get_bloginfo( 'charset' ) ) . number_format_i18n( $amount, 2 ),
+                        'subject'      => number_format_i18n( $amount, 2 ) . ' ' . atbdp_get_payment_currency(),
                         'context'      => implode( ' ', $context_parts ),
                         'timestamp'    => $this->get_post_timestamp( $order ),
                         'icon'         => $presentation['icon'],
@@ -1073,7 +1073,7 @@ if ( ! class_exists( 'ATBDP_Extension_Activity' ) ) {
         }
 
         /**
-         * Get completed payments from the current table-based order system.
+         * Get paid orders, distinguishing recorded payments from status changes.
          *
          * @param int $limit Query limit.
          *
@@ -1082,7 +1082,8 @@ if ( ! class_exists( 'ATBDP_Extension_Activity' ) ) {
         private function get_modern_payment_activity( $limit ) {
             global $wpdb;
 
-            $orders_table = $wpdb->prefix . 'directorist_orders';
+            $orders_table   = $wpdb->prefix . 'directorist_orders';
+            $payments_table = $wpdb->prefix . 'directorist_payments';
 
             if ( ! $this->modern_orders_table_exists() ) {
                 return [];
@@ -1091,9 +1092,11 @@ if ( ! class_exists( 'ATBDP_Extension_Activity' ) ) {
             // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The table name uses the trusted WordPress prefix.
             $orders = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT id, legacy_id, user_id, listing_id, amount, currency, created_at,
-                        UNIX_TIMESTAMP( created_at ) AS created_timestamp
-                    FROM {$orders_table}
+                    "SELECT orders.*,
+                        EXISTS( SELECT 1 FROM {$payments_table} AS payments
+                            WHERE payments.order_id = orders.id AND payments.status = 'paid' ) AS has_payment,
+                        UNIX_TIMESTAMP( orders.created_at ) AS created_timestamp
+                    FROM {$orders_table} AS orders
                     WHERE status = %s
                     AND amount > 0
                     ORDER BY created_at DESC, id DESC
@@ -1108,7 +1111,7 @@ if ( ! class_exists( 'ATBDP_Extension_Activity' ) ) {
             $presentation = $this->get_activity_presentation( 'payment' );
 
             foreach ( $orders as $order ) {
-                $amount        = (float) $order->amount;
+                $amount        = directorist_order_total_amount( $order );
                 $listing_title = $order->listing_id ? get_the_title( (int) $order->listing_id ) : '';
                 $customer      = get_userdata( (int) $order->user_id );
                 $context_parts = [];
@@ -1134,8 +1137,8 @@ if ( ! class_exists( 'ATBDP_Extension_Activity' ) ) {
                     [
                         'id'           => 'payment-db-' . $order->id,
                         'type'         => 'payment',
-                        'title'        => __( 'Payment received', 'directorist' ),
-                        'subject'      => html_entity_decode( atbdp_currency_symbol( $currency ), ENT_QUOTES, get_bloginfo( 'charset' ) ) . number_format_i18n( $amount, 2 ),
+                        'title'        => $order->has_payment ? __( 'Payment received', 'directorist' ) : __( 'Order marked as paid', 'directorist' ),
+                        'subject'      => number_format_i18n( $amount, 2 ) . ' ' . $currency,
                         'context'      => implode( ' ', $context_parts ),
                         'timestamp'    => absint( $order->created_timestamp ),
                         'icon'         => $presentation['icon'],

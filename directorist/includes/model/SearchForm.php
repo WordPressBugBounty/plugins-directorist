@@ -344,16 +344,16 @@ class Directorist_Listing_Search_Form {
 
                     $search_form_fields['fields'][$key]['options'] = $search_options;
 
-                    // For custom fields only: need field_key and option choices from submission form
-                    // (technical link for custom_field[name] and select options - not configuration inheritance)
+                    // Link custom and add-on choice fields to their submission data without inheriting configuration.
                     $submission_field = isset( $submission_form_fields['fields'][$form_key] ) ? $submission_form_fields['fields'][$form_key] : null;
-                    if ( $submission_field && $this->is_custom_field( $submission_field ) ) {
+                    $option_choices   = $submission_field ? $this->get_custom_field_options_from_submission( $submission_field ) : [];
+
+                    if ( $submission_field && ( $this->is_custom_field( $submission_field ) || ! empty( $option_choices ) ) ) {
                         if ( ! empty( $submission_field['field_key'] ) ) {
                             $search_form_fields['fields'][$key]['field_key'] = $submission_field['field_key'];
                         }
                         // Add option choices from submission - required for select/radio/checkbox to work.
                         // Builder stores options at options.options.value (nested) or options.options (array).
-                        $option_choices = $this->get_custom_field_options_from_submission( $submission_field );
                         if ( ! empty( $option_choices ) ) {
                             $search_form_fields['fields'][$key]['options']['options'] = $option_choices;
                         }
@@ -517,7 +517,9 @@ class Directorist_Listing_Search_Form {
         }
 
         $field_key = isset( $data['field_key'] ) ? $data['field_key'] : ( isset( $data['widget_name'] ) ? $data['widget_name'] : '' );
-        $json      = wp_json_encode( $normalized );
+        $form = directorist_submission_form_fields_raw( (int) $this->listing_type );
+        $normalized = \Directorist\Fields\Conditional_Logic::normalize_choice_conditions( $normalized, directorist_get_choice_fields( $form['fields'] ?? [] ) );
+        $json = wp_json_encode( $normalized, JSON_HEX_AMP | JSON_HEX_TAG );
 
         return ' data-conditional-logic="' . esc_attr( $json ) . '" data-field-key="' . esc_attr( $field_key ) . '"';
     }
@@ -734,7 +736,10 @@ class Directorist_Listing_Search_Form {
 
         if ( $this->is_custom_field( $field_data ) ) {
             if ( isset( $_REQUEST['custom_field'][$key] ) ) {
-                $value = is_array( $_REQUEST['custom_field'][$key] ) ? array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['custom_field'][$key] ) ) : sanitize_text_field( wp_unslash( $_REQUEST['custom_field'][$key] ) );
+                $submitted = wp_unslash( $_REQUEST['custom_field'][$key] );
+                $value = in_array( $field_data['widget_name'], [ 'checkbox', 'radio', 'select' ], true )
+                    ? $submitted
+                    : directorist_clean( $submitted );
             } else {
                 $value = '';
             }
@@ -923,9 +928,21 @@ class Directorist_Listing_Search_Form {
         return '';
     }
 
+    public function get_price_range_options() {
+        return Price_Ranges::directory_options( $this->listing_type );
+    }
+
+    public function selected_price_range( $options ) {
+        $requested = isset( $_REQUEST['price_range'] ) ? Price_Ranges::clean( wp_unslash( $_REQUEST['price_range'] ) ) : '';
+        return Price_Ranges::current_value( $requested, $options );
+    }
+
     public function the_price_range_input( $range ) {
-        $checked = ! empty( $_REQUEST['price_range'] ) && $_REQUEST['price_range'] == $range ? ' checked="checked"' : '';
-        printf( '<input type="radio" name="price_range" value="%s"%s>', esc_attr( $range ), esc_attr( $checked ) );
+        // Keep this method available for existing theme overrides.
+        $selected = $this->selected_price_range( $this->get_price_range_options() );
+        printf( '<input type="radio" name="price_range" value="%s"', esc_attr( $range ) );
+        checked( $selected, $range );
+        echo '>';
     }
 
     public function get_atts_data() {

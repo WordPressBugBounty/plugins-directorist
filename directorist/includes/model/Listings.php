@@ -1003,11 +1003,48 @@ class Directorist_Listings {
                 }
             );
 
+            $form = directorist_submission_form_fields_raw( (int) $this->get_current_listing_type() );
+            $choice_fields = directorist_get_choice_fields( $form['fields'] ?? [] );
             foreach ( $custom_fields as $key => $values ) {
                 $key = sanitize_text_field( $key );
                 $meta_query = [];
+                $choice_values = isset( $choice_fields[ $key ] )
+                    ? directorist_get_choice_search_values( $choice_fields[ $key ], $values )
+                    : [];
 
-                if ( is_array( $values ) ) {
+                if ( $choice_values ) {
+                    $meta_query = [
+                        'key'     => '_' . $key,
+                        'value'   => $choice_values,
+                        'compare' => 'IN',
+                        'type'    => 'BINARY',
+                    ];
+                    if ( is_array( $values ) ) {
+                        $meta_query = [ 'relation' => 'OR', $meta_query ];
+                        foreach ( $choice_values as $choice_value ) {
+                            $meta_query[] = [
+                                'key'     => '_' . $key,
+                                'value'   => serialize( $choice_value ),
+                                'compare' => 'LIKE',
+                                'type'    => 'BINARY',
+                            ];
+                        }
+                        // Older checkbox fields could store a comma-separated scalar.
+                        $meta_query[] = [
+                            'relation' => 'AND',
+                            [
+                                'key'     => '_' . $key,
+                                'value'   => '^a:[0-9]+:',
+                                'compare' => 'NOT REGEXP',
+                            ],
+                            [
+                                'key'     => '_' . $key,
+                                'value'   => '(^|,)(' . implode( '|', array_map( 'preg_quote', $choice_values ) ) . ')(,|$)',
+                                'compare' => 'REGEXP',
+                            ],
+                        ];
+                    }
+                } elseif ( is_array( $values ) ) {
                     if ( count( $values ) > 1 ) {
                         $sub_meta_queries = [
                             'relation' => 'OR'
@@ -1105,12 +1142,9 @@ class Directorist_Listings {
             }
         }
 
-        if ( ! empty( $_REQUEST['price_range'] ) && 'none' !== $_REQUEST['price_range'] ) {
-            $meta_queries['_price_range'] = [
-                'key'     => '_price_range',
-                'value'   => sanitize_text_field( wp_unslash( $_REQUEST['price_range'] ) ),
-                'compare' => 'LIKE'
-            ];
+        $price_range = isset( $_REQUEST['price_range'] ) ? Price_Ranges::clean( wp_unslash( $_REQUEST['price_range'] ) ) : '';
+        if ( '' !== $price_range && 'none' !== $price_range ) {
+            $meta_queries['_price_range'] = Price_Ranges::query_clause( $price_range, $this->get_current_listing_type() );
         }
 
         if ( ! empty( $_REQUEST['website'] ) ) {
@@ -1207,6 +1241,9 @@ class Directorist_Listings {
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if ( directorist_is_multi_directory_enabled() && ! empty( $_POST['directory_nav'] ) ) {
             unset( $meta_queries['directory_type'] );
+            if ( isset( $meta_queries['_price_range'] ) ) {
+                $meta_queries['_price_range'] = Price_Ranges::query_clause( $price_range );
+            }
         }
 
         $meta_queries = apply_filters( 'atbdp_search_listings_meta_queries', $meta_queries );

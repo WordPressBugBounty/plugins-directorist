@@ -224,6 +224,7 @@ if ( ! class_exists( 'ATBDP_User' ) ) :
                         'privacy_policy'       => $privacy_policy,
                         'terms_and_conditions' => $t_c_check,
                         'previous_page'        => $previous_page,
+                        'selected_plan'        => ATBDP_Permalink::get_selected_plan_query_args( isset( $params['selected_plan'] ) ? $params['selected_plan'] : [] ),
                         'generated_password'   => $generated_password,
                     ]
                 );
@@ -626,6 +627,16 @@ if ( ! class_exists( 'ATBDP_User' ) ) :
         public function registration_redirection() {
             $dashbord_page_id = (int) get_directorist_option( 'user_dashboard' );
             $signin_page_id = (int) get_directorist_option( 'signin_signup_page' );
+
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Resume the signed-in user's own saved navigation.
+            if ( $signin_page_id && is_user_logged_in() && is_page( $signin_page_id ) && isset( $_GET['guest_listing_continue'] ) ) {
+                $user_id  = get_current_user_id();
+                $next_url = get_user_meta( $user_id, '_directorist_guest_listing_next_url', true );
+
+                delete_user_meta( $user_id, '_directorist_guest_listing_next_url' );
+                wp_safe_redirect( wp_validate_redirect( $next_url, ATBDP_Permalink::get_dashboard_page_link() ) );
+                exit;
+            }
 
             if ( $dashbord_page_id && ! is_user_logged_in() && is_page( $dashbord_page_id ) ) {
 

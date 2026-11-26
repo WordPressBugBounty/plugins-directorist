@@ -1,7 +1,6 @@
 <?php return array(
 	'dependencies' => array(
 		'lodash',
-		'moment',
 		'react',
 		'react-dom',
 		'react-jsx-runtime',
@@ -20,5 +19,5 @@
 		'wp-url',
 		'wp-viewport'
 	),
-	'version' => 'd352ab962b37ea35c8c0'
+	'version' => '0797590ea585816541fb'
 );

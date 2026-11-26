@@ -5,6 +5,8 @@ defined( "ABSPATH" ) || exit;
 use Directorist\Utils\Template;
 use Directorist\DTO\Order\DTO as OrderDTO;
 
+require_once __DIR__ . '/../checkout/class-currency.php';
+require_once __DIR__ . '/../checkout/class-quote.php';
 require_once __DIR__ . '/app.php';
 require_once __DIR__ . '/repositories.php';
 
@@ -26,6 +28,10 @@ function directorist_price( $price, $html = true ) {
 }
 
 function directorist_order_total_amount( stdClass $order ) {
+    $quote = \Directorist\Checkout\Quote::decode( $order->checkout_quote ?? null );
+    if ( isset( $quote['payable'] ) ) {
+        return (float) $quote['payable']['total'];
+    }
     return directorist_compute_order_total_amount(
         $order->sub_total,
         $order->tax_rate,
@@ -99,6 +105,10 @@ function directorist_compute_fixed_or_percent_amount( ?string $type = null, ?flo
 }
 
 function directorist_order_payable( OrderDTO $order_dto ) {
+    $quote = \Directorist\Checkout\Quote::stored( $order_dto );
+    if ( isset( $quote['payable'] ) ) {
+        return (float) $quote['payable']['total'];
+    }
     $payable = $order_dto->get_sub_total();
 
     if (

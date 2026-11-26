@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Conditional_Logic {
-    public static function should_show_field( array $field_props, array $posted_data ) {
+    public static function should_show_field( array $field_props, array $posted_data, array $choice_fields = [], string $source = 'submitted' ) {
         $conditional_logic = self::extract_conditional_logic( $field_props );
 
         if ( empty( $conditional_logic ) || ! is_array( $conditional_logic ) ) {
@@ -25,6 +25,7 @@ class Conditional_Logic {
             return true;
         }
 
+        $conditional_logic = self::normalize_choice_conditions( $conditional_logic, $choice_fields );
         $group_results = [];
 
         foreach ( $conditional_logic['groups'] as $group ) {
@@ -41,6 +42,12 @@ class Conditional_Logic {
 
                 $field_key           = self::normalize_field_key( $condition['field'] );
                 $field_value         = self::get_posted_field_value( $field_key, $posted_data );
+                if ( isset( $choice_fields[ $field_key ] ) && null !== $field_value ) {
+                    $selected = directorist_get_selected_choice_values( $choice_fields[ $field_key ], $field_value, $source );
+                    if ( $selected ) {
+                        $field_value = is_array( $field_value ) ? $selected : $selected[0];
+                    }
+                }
                 $condition_results[] = self::evaluate_condition( $condition, $field_value );
             }
 
@@ -60,6 +67,29 @@ class Conditional_Logic {
         }
 
         return ( isset( $conditional_logic['action'] ) && 'hide' === $conditional_logic['action'] ) ? ! $result : $result;
+    }
+
+    public static function normalize_choice_conditions( array $logic, array $choice_fields ): array {
+        foreach ( $logic['groups'] as &$group ) {
+            if ( empty( $group['conditions'] ) || ! is_array( $group['conditions'] ) ) {
+                continue;
+            }
+            foreach ( $group['conditions'] as &$condition ) {
+                $key = self::normalize_field_key( $condition['field'] ?? '' );
+                if ( ! isset( $choice_fields[ $key ], $condition['value'] ) || ! is_scalar( $condition['value'] ) ) {
+                    continue;
+                }
+
+                $choice = directorist_get_selected_choice_values( $choice_fields[ $key ], $condition['value'], 'configured' );
+                if ( $choice ) {
+                    $condition['value'] = $choice[0];
+                }
+            }
+            unset( $condition );
+        }
+        unset( $group );
+
+        return $logic;
     }
 
     private static function extract_conditional_logic( array $field_props ) {
@@ -176,8 +206,18 @@ class Conditional_Logic {
 
         $taxonomy = $taxonomy_map[ $field_key ];
 
-        if ( ! empty( $posted_data['tax_input'][ $taxonomy ] ) ) {
-            return $posted_data['tax_input'][ $taxonomy ];
+        if ( isset( $posted_data['tax_input'][ $taxonomy ] ) ) {
+            $values = $posted_data['tax_input'][ $taxonomy ];
+
+            // WordPress adds a hidden zero input to taxonomy checklists so an
+            // empty selection is submitted. It is not a selected term.
+            if ( is_array( $values ) ) {
+                return array_values( array_filter( $values, static function ( $value ) {
+                    return ! in_array( $value, [ 0, '0', '' ], true );
+                } ) );
+            }
+
+            return $values;
         }
 
         return null;

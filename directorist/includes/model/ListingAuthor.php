@@ -26,6 +26,8 @@ class Directorist_Listing_Author {
 
     public $current_listing_type;
 
+    private $listing_categories = null;
+
     private function __construct() {
         $this->prepare_data();
     }
@@ -162,8 +164,19 @@ class Directorist_Listing_Author {
         return $this->total_review;
     }
 
+    /**
+     * Build the author listing query with the current category filter.
+     *
+     * @return array
+     */
     public function author_listings_query() {
-        $category = ! empty( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '';
+        return $this->build_author_listings_query( true );
+    }
+
+    private function build_author_listings_query( $include_category ) {
+        // Public, read-only listing filters do not require a nonce.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $category = $include_category && isset( $_GET['category'] ) && is_string( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '';
         $paged    = atbdp_get_paged_num();
         $paginate = get_directorist_option( 'paginate_author_listings', 1 );
 
@@ -180,12 +193,12 @@ class Directorist_Listing_Author {
             $args['no_found_rows'] = true;
         }
 
-        if ( ! empty( $category ) ) {
+        if ( '' !== $category ) {
             $category = [
                 [
                     'taxonomy'         => ATBDP_CATEGORY,
                     'field'            => 'slug',
-                    'terms'            => ! empty( $category ) ? $category : '',
+                    'terms'            => $category,
                     'include_children' => true, /*@todo; Add option to include children or exclude it*/
                 ],
             ];
@@ -343,9 +356,58 @@ class Directorist_Listing_Author {
         return true;
     }
 
+    /**
+     * Get categories that can return listings for this author and directory.
+     *
+     * @return \WP_Term[]
+     */
     public function get_listing_categories() {
+        if ( null !== $this->listing_categories ) {
+            return $this->listing_categories;
+        }
 
-        return get_terms( [ 'taxonomy' => ATBDP_CATEGORY, 'hide_empty' => 0 ] );
+        $this->listing_categories = [];
+
+        if ( ! $this->get_id() ) {
+            return $this->listing_categories;
+        }
+
+        // Use every visible listing in this directory, independent of the selected filter or page.
+        $args = $this->build_author_listings_query( false );
+
+        $args['posts_per_page'] = -1;
+        $args['nopaging']       = true;
+        $args['paged']          = 1;
+        $args['no_found_rows']  = true;
+
+        $query = DB::get_listings_data( Listing_Visibility::query_args( $args, false ) );
+
+        if ( empty( $query->ids ) ) {
+            return $this->listing_categories;
+        }
+
+        $term_ids = wp_get_object_terms( $query->ids, ATBDP_CATEGORY, [ 'fields' => 'ids' ] );
+
+        if ( is_wp_error( $term_ids ) || empty( $term_ids ) ) {
+            return $this->listing_categories;
+        }
+
+        // Parent filters also match listings assigned only to their descendants.
+        foreach ( $term_ids as $term_id ) {
+            $term_ids = array_merge( $term_ids, get_ancestors( $term_id, ATBDP_CATEGORY, 'taxonomy' ) );
+        }
+
+        $categories = get_terms(
+            [
+                'taxonomy'   => ATBDP_CATEGORY,
+                'include'    => array_unique( $term_ids ),
+                'hide_empty' => false,
+            ]
+        );
+
+        $this->listing_categories = is_wp_error( $categories ) ? [] : $categories;
+
+        return $this->listing_categories;
     }
 
     public function listing_pagination_enabled() {

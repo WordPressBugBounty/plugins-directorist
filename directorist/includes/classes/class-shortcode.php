@@ -73,7 +73,39 @@ class ATBDP_Shortcode {
             foreach ( self::$shortcodes as $shortcode => $callback ) {
                 add_shortcode( $shortcode, $callback );
             }
+
+            add_action( 'template_redirect', [ $this, 'validate_author_category_filter' ], 5 );
         }
+    }
+
+    /**
+     * Return a real 404 for author category filters that cannot return listings.
+     */
+    public function validate_author_category_filter() {
+        // Public, read-only listing filters do not require a nonce.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if ( ! isset( $_GET['category'] ) || '' === $_GET['category'] ) {
+            return;
+        }
+
+        $page_ids = \ATBDP_Rewrite::get_author_profile_page_ids();
+        if ( ! $page_ids || ! is_page( $page_ids ) ) {
+            return;
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $category = is_string( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '';
+        $author   = Directorist_Listing_Author::instance();
+
+        if ( in_array( $category, wp_list_pluck( $author->get_listing_categories(), 'slug' ), true ) ) {
+            return;
+        }
+
+        global $wp_query;
+
+        $wp_query->set_404();
+        status_header( 404 );
+        nocache_headers();
     }
 
     public function single_listings_header( $atts ) {

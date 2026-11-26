@@ -302,8 +302,7 @@ class Helper {
     }
 
     public static function has_price_range( $listing_id ) {
-        $price_range = get_post_meta( $listing_id, '_price_range', true );
-        return $price_range;
+        return '' !== (string) get_post_meta( $listing_id, '_price_range', true );
     }
 
     public static function price_template( $listing_id ) {
@@ -313,37 +312,7 @@ class Helper {
 
     public static function price_range_template( $listing_id ) {
         $price_range = get_post_meta( $listing_id, '_price_range', true );
-        $currency = directorist_get_currency();
-        $currency = atbdp_currency_symbol( $currency );
-
-        switch ( $price_range ) {
-            case 'skimming':
-                $active_items = 4;
-                $price_range_text = __( 'Skimming', 'directorist' );
-            break;
-
-            case 'moderate':
-                $active_items = 3;
-                $price_range_text = __( 'Moderate', 'directorist' );
-            break;
-
-            case 'economy':
-                $active_items = 2;
-                $price_range_text = __( 'Economy', 'directorist' );
-            break;
-
-            case 'bellow_economy':
-                $active_items = 1;
-                $price_range_text = __( 'Cheap', 'directorist' );
-            break;
-
-            default:
-                $active_items = 4;
-                $price_range_text = __( 'Skimming', 'directorist' );
-            break;
-        }
-
-        self::get_template( 'global/price-range', compact( 'active_items', 'currency', 'price_range_text' ) );
+        self::get_template( 'global/price-range', Price_Ranges::presentation( $price_range, $listing_id ) );
     }
 
     public static function formatted_price( $price ) {

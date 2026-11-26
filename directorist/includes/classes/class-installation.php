@@ -118,6 +118,14 @@ if ( ! class_exists( 'ATBDP_Installation' ) ) :
             self::$background_updater = new \Directorist\Background_Updater();
         }
 
+        /** Queue the resumable payment snapshot import on the existing updater. */
+        public static function queue_order_activity_import() {
+            if ( ! self::$background_updater ) {
+                self::init_background_updater();
+            }
+            self::$background_updater->push_to_queue( '\\Directorist\\Order\\ActivityMigration::batch' )->save()->dispatch();
+        }
+
         /**
          * Install actions when a update button is clicked within the admin area.
          *

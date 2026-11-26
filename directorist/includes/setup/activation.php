@@ -16,12 +16,30 @@ class Activation {
     public static function register_hooks() {
         add_action( 'directorist_installed', [ __CLASS__, 'run' ] );
         add_action( 'directorist_updated', [ __CLASS__, 'run' ] );
+        add_action( 'init', [ __CLASS__, 'maybe_upgrade_checkout_schema' ], 5 );
     }
 
     public static function run() {
         // Run the activation tasks.
         self::create_tables();
         self::sync_order_status_enum();
+    }
+
+    public static function maybe_upgrade_checkout_schema(): void {
+        if ( get_option( 'directorist_checkout_quote_schema' ) ) {
+            return;
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'directorist_orders';
+        // The table name is built from the configured WordPress table prefix.
+        if ( ! $wpdb->get_var( "SHOW COLUMNS FROM `{$table}` LIKE 'checkout_quote'" ) ) {
+            self::create_tables();
+        }
+
+        if ( $wpdb->get_var( "SHOW COLUMNS FROM `{$table}` LIKE 'checkout_quote'" ) ) {
+            update_option( 'directorist_checkout_quote_schema', '1' );
+        }
     }
 
     public static function create_tables() {
@@ -40,6 +58,7 @@ class Activation {
                 $table->string( "ref_type" )->nullable();
                 $table->decimal( "amount", 10, 2 )->default( 0.00 );
                 $table->string( "currency", 10 )->default( "USD" );
+                $table->long_text( "checkout_quote" )->nullable();
                 $table->string( "coupon_code" )->nullable();
                 $table->decimal( "coupon_discount", 10, 2 )->default( 0.00 );
                 $table->enum( "coupon_discount_type", DiscountType::all() )->nullable();

@@ -15,7 +15,6 @@ use Directorist\PaymentProcessors\BankTransfer as BankTransferPaymentProcessor;
 class PaymentService {
     public function __construct() {
         add_filter( 'directorist_payment_receipt_is_allowed_retry_payment', [$this, 'ignore_retry_payment'], 10, 2 );
-        add_action( 'directorist_repository_after_order_update', [$this, 'update_payment_status'], 10, 1 );
         add_action( 'directorist_payment_receipt_before_order_details', [ $this, 'maybe_show_bank_transfer_instruction' ], 10, 1 );
     }
 
@@ -67,23 +66,6 @@ class PaymentService {
     }
 
     public function update_payment_status( OrderDTO $order_dto ) {
-        if ( $order_dto->get_status() !== OrderStatus::PAID ) {
-            return;
-        }
-
-        $payment_repository = directorist_payment_repository();
-        $last_payment       = $payment_repository->get_last_payment( $order_dto->get_id() );
-
-        if ( ! $last_payment ) {
-            return;
-        }
-
-        if ( $last_payment->status === PaymentStatus::PAID ) {
-            return;
-        }
-
-        $last_payment = $payment_repository->to_dto( $last_payment );
-
-        $payment_repository->update( $last_payment->set_status( $order_dto->get_status() ) );
+        // Compatibility no-op: order state is no longer payment evidence.
     }
 }

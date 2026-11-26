@@ -90,6 +90,7 @@ class Listings_Exporter {
                     'post_type'      => ATBDP_POST_TYPE,
                     'posts_per_page' => -1,
                     'post_status'    => 'publish',
+                    'lang'           => '',
                 ]
             )
         );

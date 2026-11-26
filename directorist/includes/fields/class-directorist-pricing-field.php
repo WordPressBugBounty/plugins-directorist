@@ -5,6 +5,8 @@
  */
 namespace Directorist\Fields;
 
+use Directorist\Price_Ranges;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -13,18 +15,39 @@ class Pricing_Field extends Base_Field {
     public $type = 'pricing';
 
     public function get_value( $posted_data ) {
-        if ( $this->get_price_type_prop() !== 'both' ) {
-            $posted_data['atbd_listing_pricing'] = $this->get_price_type_prop();
+        $listing_id   = (int) ( $posted_data['listing_id'] ?? 0 );
+        $directory_id = (int) ( $posted_data['directory_id'] ?? 0 );
+
+        // Partial edits may omit pricing altogether. Preserve the saved choice
+        // in the same directory, then apply the same normalization as a form edit.
+        $pricing_mode = $this->get_price_type_prop();
+        if ( ! array_key_exists( 'atbd_listing_pricing', $posted_data )
+            && ! array_key_exists( 'price_range', $posted_data )
+            && ! array_key_exists( 'price', $posted_data ) ) {
+            $saved_range = Price_Ranges::saved_range_for_edit( $this->get_props(), $listing_id, $directory_id );
+            if ( null !== $saved_range ) {
+                $posted_data['atbd_listing_pricing'] = 'range';
+                $posted_data['price_range']          = $saved_range;
+            }
+        }
+
+        if ( 'both' !== $pricing_mode ) {
+            $posted_data['atbd_listing_pricing'] = $pricing_mode;
         }
 
         if ( ! isset( $posted_data['atbd_listing_pricing'] ) && ( isset( $posted_data['price'] ) || isset( $posted_data['price_range'] ) ) ) {
             return [];
         }
 
+        $price_type = Price_Ranges::clean( $posted_data['atbd_listing_pricing'] ?? '' );
+        $range      = $posted_data['price_range'] ?? '';
+
         return [
-            'price_type'  => sanitize_text_field( directorist_get_var( $posted_data['atbd_listing_pricing'] ) ),
-            'price'       => round( (float) directorist_get_var( $posted_data['price'], 0 ), 2 ),
-            'price_range' => sanitize_text_field( directorist_get_var( $posted_data['price_range'] ) )
+            'price_type'  => $price_type,
+            'price'       => round( (float) ( $posted_data['price'] ?? 0 ), 2 ),
+            'price_range' => 'range' === $price_type
+                ? Price_Ranges::submitted_value( $range, $this->get_props(), $listing_id, $directory_id )
+                : Price_Ranges::clean( $range ),
         ];
     }
 
@@ -36,7 +59,7 @@ class Pricing_Field extends Base_Field {
             $this->add_error( sprintf( __( 'Invalid price type: %s', 'directorist' ), esc_html( $value['price_type'] ) ) );
         }
 
-        if ( $value['price_type'] === 'range' && ! empty( $value['price_range'] ) && ! in_array( $value['price_range'], $this->get_price_ranges(), true ) ) {
+        if ( ( $value['price_type'] ?? '' ) === 'range' && null === $value['price_range'] ) {
             $this->add_error( __( 'Invalid price range.', 'directorist' ) );
         }
 
@@ -49,10 +72,6 @@ class Pricing_Field extends Base_Field {
 
     protected function get_price_types() {
         return [ 'price', 'range' ];
-    }
-
-    protected function get_price_ranges() {
-        return [ 'skimming', 'moderate', 'economy', 'bellow_economy' ];
     }
 
     protected function get_price_type_prop() {

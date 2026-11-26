@@ -177,7 +177,8 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                 }
 
                 // Guest submission handle.
-                $nonce_expired = false;
+                $nonce_expired       = false;
+                $pending_guest_email = '';
                 if ( directorist_is_guest_submission_enabled() && isset( $posted_data['guest_user_email'] ) && ! self::current_user_can_create() ) {
                     $guest_email = sanitize_email( $posted_data['guest_user_email'] );
 
@@ -200,8 +201,12 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                      * @return bool  True to allow guest account creation, false to prevent it.
                      */
                     if ( apply_filters( 'directorist_should_create_guest_user_account', true, $guest_email, $posted_data ) ) {
-                        atbdp_guest_submission( $guest_email );
-                        $nonce_expired = true;
+                        if ( directorist_is_email_verification_enabled() ) {
+                            $pending_guest_email = $guest_email;
+                        } else {
+                            atbdp_guest_submission( $guest_email );
+                            $nonce_expired = true;
+                        }
                     }
                 }
 
@@ -246,6 +251,7 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                     ]
                 );
 
+                $choice_fields = directorist_get_choice_fields( $form_fields );
                 foreach ( $form_fields as $form_field ) {
                     $field = Fields::create( $form_field );
 
@@ -254,7 +260,7 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                         continue;
                     }
 
-                    $result = self::validate_field( $field, $posted_data );
+                    $result = self::validate_field( $field, $posted_data, $choice_fields );
 
                     if ( ! $result['is_valid'] ) {
                         if ( $field->get_key() === 'privacy_policy' ) {
@@ -272,7 +278,7 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                         continue;
                     }
 
-                    if ( self::should_ignore_conditional_logic_field( $field, $posted_data ) ) {
+                    if ( self::should_ignore_conditional_logic_field( $field, $posted_data, $choice_fields ) ) {
                         continue;
                     }
 
@@ -339,6 +345,11 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                     );
                 }
 
+                // Validate the listing first so guests can correct errors before registering.
+                if ( $pending_guest_email ) {
+                    atbdp_guest_submission( $pending_guest_email );
+                }
+
                 // Terms & conditions and privacy policy have been merged in v8.
                 if ( ! empty( $posted_data['t_c_check'] ) || ! empty( $posted_data['privacy_policy'] ) ) {
                     $meta_data['_t_c_check'] = true;
@@ -358,6 +369,9 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                 $meta_data = apply_filters( 'atbdp_ultimate_listing_meta_user_submission', $meta_data, $posted_data );
 
                 $meta_input = self::filter_empty_meta_data( $meta_data );
+                if ( isset( $meta_input['_price_range'] ) ) {
+                    $meta_input['_price_range'] = wp_slash( $meta_input['_price_range'] );
+                }
 
                 $listing_data['meta_input'] = $meta_input;
                 $listing_data['tax_input']  = $taxonomy_data;
@@ -512,7 +526,13 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                     $data['success_msg'] = __( 'Payment required! Redirecting to checkout...', 'directorist' );
                 }
 
-                wp_send_json( apply_filters( 'atbdp_listing_form_submission_info', $data ) );
+                $data = apply_filters( 'atbdp_listing_form_submission_info', $data );
+
+                if ( $pending_guest_email && empty( $data['error'] ) ) {
+                    $data = self::require_guest_verification( $data );
+                }
+
+                wp_send_json( $data );
             } catch ( Exception $e ) {
                 return wp_send_json(
                     [
@@ -521,6 +541,38 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
                     ], $e->getCode()
                 );
             }
+        }
+
+        private static function require_guest_verification( $data ) {
+            $next_url = ATBDP_Permalink::get_dashboard_page_link();
+
+            if ( ! empty( $data['preview_mode'] ) ) {
+                $preview_args = [
+                    'preview'  => 1,
+                    'redirect' => rawurlencode( wp_validate_redirect( $data['redirect_url'], '' ) ),
+                ];
+
+                if ( ! empty( $data['need_payment'] ) ) {
+                    $preview_args['payment'] = 1;
+                }
+
+                $next_url = add_query_arg( $preview_args, $data['preview_url'] );
+            } elseif ( ! empty( $data['need_payment'] ) ) {
+                $next_url = $data['redirect_url'];
+            }
+
+            update_user_meta(
+                get_current_user_id(),
+                '_directorist_guest_listing_next_url',
+                wp_validate_redirect( $next_url, ATBDP_Permalink::get_dashboard_page_link() )
+            );
+
+            $data['redirect_url'] = ATBDP_Permalink::get_signin_signup_page_link( [ 'guest_listing_submitted' => 1 ] );
+            $data['success_msg']  = __( 'Listing submitted. Please check your email to verify your account.', 'directorist' );
+            $data['preview_mode'] = false;
+            $data['need_payment'] = false;
+
+            return $data;
         }
 
         public static function reset_listing_taxonomy( $listing_id, $taxonomy_data = [] ) {
@@ -721,7 +773,7 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 
             $value = $field->get_value( $posted_data );
 
-            if ( empty( $value['price_type'] ) || ( empty( $value['price'] ) && empty( $value['price_range'] ) ) ) {
+            if ( empty( $value['price_type'] ) || ( empty( $value['price'] ) && '' === $value['price_range'] ) ) {
                 $data['_atbd_listing_pricing'] = '';
                 $data['_price']                = '';
                 $data['_price_range']          = '';
@@ -911,16 +963,16 @@ if ( ! class_exists( 'ATBDP_Add_Listing' ) ) :
 
         // Removed: should_ignore_category_custom_field method (assign_to feature removed)
 
-        public static function should_ignore_conditional_logic_field( $field, $posted_data ) {
-            return ! Conditional_Logic::should_show_field( $field->get_props(), $posted_data );
+        public static function should_ignore_conditional_logic_field( $field, $posted_data, array $choice_fields = [] ) {
+            return ! Conditional_Logic::should_show_field( $field->get_props(), $posted_data, $choice_fields );
         }
 
-        public static function validate_field( $field, $posted_data ) {
+        public static function validate_field( $field, $posted_data, array $choice_fields = [] ) {
             $should_validate = (bool) apply_filters( 'atbdp_add_listing_form_validation_logic', true, $field->get_props(), $posted_data );
 
             // Removed: should_ignore_category_custom_field check (assign_to feature removed)
 
-            if ( self::should_ignore_conditional_logic_field( $field, $posted_data ) ) {
+            if ( self::should_ignore_conditional_logic_field( $field, $posted_data, $choice_fields ) ) {
                 $should_validate = false;
             }
 

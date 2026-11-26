@@ -115,6 +115,9 @@ function register_controllers() {
 
     $payments = new \Directorist\Rest_Api\Controllers\Version2\Payments_Controller();
     $payments->register_routes();
+
+    require_once $dir . 'Version2/class-order-transactions-controller.php';
+    ( new \Directorist\Rest_Api\Controllers\Version2\Order_Transactions_Controller() )->register_routes();
     
     // Directory builder
     require_once $dir . 'Version1/class-builder-controller.php';

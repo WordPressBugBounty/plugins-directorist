@@ -536,7 +536,9 @@ if ( ! class_exists( 'ATBDP_Helper' ) ) :
             if ( 'auth' === $type && ! is_user_logged_in() && ! $login_redirect ) {
                 ob_start();
                 // user not logged in;
-                $error_message = sprintf( esc_html__( 'You need to be logged in to view the content of this page. You can login/sign up %s.', 'directorist' ), apply_filters( 'atbdp_listing_form_login_link', "<a href='" . esc_url( ATBDP_Permalink::get_dashboard_page_link() ) . "'> " . esc_html__( 'Here', 'directorist' ) . '</a>' ) );
+                $plan_args = ATBDP_Permalink::get_selected_plan_query_args();
+                $login_url = $plan_args ? ATBDP_Permalink::get_signin_signup_page_link( $plan_args ) : ATBDP_Permalink::get_dashboard_page_link();
+                $error_message = sprintf( esc_html__( 'You need to be logged in to view the content of this page. You can login/sign up %s.', 'directorist' ), apply_filters( 'atbdp_listing_form_login_link', "<a href='" . esc_url( $login_url ) . "'> " . esc_html__( 'Here', 'directorist' ) . '</a>' ) );
                 ?>
                 <section class="directory_wrapper single_area">
                     <?php self::show_login_message( $error_message ); ?>

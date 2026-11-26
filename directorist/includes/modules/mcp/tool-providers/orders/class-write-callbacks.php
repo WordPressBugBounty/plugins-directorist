@@ -7,8 +7,8 @@
 
 namespace Directorist\MCP\Tool_Providers\Orders;
 
-use Directorist\DTO\Payment\DTO as PaymentDTO;
 use Directorist\DTO\Refund\DTO as RefundDTO;
+use Directorist\Order\Actor;
 use Directorist\MCP\Registration\Tool_Registry;
 use Directorist\MCP\Support\Canonical_Data;
 use Directorist\MCP\Support\Result;
@@ -65,7 +65,11 @@ class Write_Callbacks {
                 'state'        => [ $version, $quote['state'] ],
                 'preview'      => $preview + [ 'after' => $quote['preview'] ],
                 'execute'      => static function () use ( $dto, $order ) {
-                    directorist_order_repository()->update( $dto );
+                    Actor::run(
+                        'admin', static function () use ( $dto ) {
+                            directorist_order_repository()->update( $dto );
+                        }
+                    );
                     return Result::result( [ 'order_id' => (int) $order->id, 'data' => Order_Policy::data( Order_Policy::get( (int) $order->id ) ) ] );
                 }
             ];
@@ -82,7 +86,11 @@ class Write_Callbacks {
                 'execute'      => static function () use ( $order, $target, $tool, $args ) {
                     return Financial_Operations::execute(
                         $tool, $args, $order, static function () use ( $order, $target ) {
-                            directorist_order_repository()->update_status( (int) $order->id, $target );
+                            Actor::run(
+                                current_user_can( 'manage_options' ) ? 'admin' : 'system', static function () use ( $order, $target ) {
+                                    directorist_order_repository()->update_status( (int) $order->id, $target );
+                                }
+                            );
                             return Result::result( [ 'order_id' => (int) $order->id, 'status' => $target ] );
                         }
                     );
@@ -113,8 +121,15 @@ class Write_Callbacks {
             Validation::check( $minor === Money::minor( Order_Policy::total( $order ), $order->currency ), __( 'Record the exact native due amount.', 'directorist' ) );
             Validation::check( '' !== trim( $args['evidence_reference'] ), __( 'Receipt evidence is required.', 'directorist' ) );
             $native = static function () use ( $order, $amount, $args ) {
-                $dto = ( new PaymentDTO() )->set_order_id( (int) $order->id )->set_amount( $amount )->set_currency( $order->currency )->set_status( 'paid' )->set_method( 'bank_transfer' )->set_transaction_id( 'mcp-' . substr( Canonical_Data::hash( $args['evidence_reference'] ), 0, 32 ) );
-                $id  = directorist_payment_repository()->create( $dto );
+                $payment = \Directorist\Order\ManualPaymentService::create(
+                    (int) $order->id, [
+                        'amount'         => $args['amount'],
+                        'status'         => 'paid',
+                        'method'         => 'bank_transfer',
+                        'transaction_id' => 'mcp-' . substr( Canonical_Data::hash( $args['evidence_reference'] ), 0, 32 ),
+                    ]
+                );
+                $id      = (int) $payment->id;
                 Validation::check( $id > 0, __( 'Payment recording failed.', 'directorist' ), 'operation_failed' );
                 return Result::result( [ 'payment_id' => $id, 'mode' => 'offline_recording' ] );
             };
@@ -156,7 +171,10 @@ class Write_Callbacks {
             'state'        => [ $version, $provider['contract_version'] ?? '' ],
             'preview'      => $preview + [ 'amount' => $args['amount'], 'currency' => $order->currency, 'mode' => $args['mode'] ?? 'offline_recording', 'balance' => Order_Policy::balance( $order ), 'effects' => 'Native ledger, order, entitlement and notification hooks. Ledger-only recording does not return money.' ],
             'execute'      => static function () use ( $tool, $args, $order, $native, $provider ) {
-                return Financial_Operations::execute( $tool, $args, $order, $native, $provider );
+                $administrative_write = static function () use ( $native ) {
+                    return Actor::run( 'admin', $native );
+                };
+                return Financial_Operations::execute( $tool, $args, $order, $administrative_write, $provider );
             }
         ];
     }

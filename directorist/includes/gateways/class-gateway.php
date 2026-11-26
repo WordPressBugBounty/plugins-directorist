@@ -352,9 +352,9 @@ class ATBDP_Gateway{
         return array_values( array_intersect( $active_gateways, array_keys( $payment_processors ) ) );
     }
 
-    public static function gateways_markup( ?array $active_gateways = null ) {
+    public static function gateways_markup( ?array $active_gateways = null, ?string $selected = null ) {
         $active_gateways = $active_gateways ?? self::get_active_gateways();
-        $default_gw      = get_directorist_option( 'default_gateway', 'bank_transfer' );
+        $default_gw      = $selected ?? get_directorist_option( 'default_gateway', 'bank_transfer' );
 
         // If the gateways are empty, vail out.
         if ( empty( $active_gateways ) ) {

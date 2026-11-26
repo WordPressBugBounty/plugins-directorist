@@ -3,6 +3,7 @@
 namespace Directorist\Multi_Directory;
 
 use Directorist\Helper;
+use Directorist\Price_Ranges;
 use Directorist\Integrations\HelpGent\Enquiry_Settings;
 
 require_once dirname( __DIR__ ) . '/helpgent/class-enquiry-settings.php';
@@ -39,6 +40,15 @@ trait Multi_Directory_Helper {
                 return $settings_error;
             }
 
+            // Reject invalid price ranges before creating a directory term.
+            if ( isset( $fields['submission_form_fields'] ) ) {
+                $fields['submission_form_fields'] = Helper::maybe_json( $fields['submission_form_fields'] );
+                $error = self::validate_price_range_options( $fields );
+                if ( is_wp_error( $error ) ) {
+                    return self::price_range_settings_error( $error );
+                }
+            }
+
             $create_directory = self::create_directory(
                 [
                     'directory_name' => $args['directory_name']
@@ -67,6 +77,35 @@ trait Multi_Directory_Helper {
         }
 
         return $update_directory;
+    }
+
+    private static function validate_price_range_options( &$fields ) {
+        $pricing = $fields['submission_form_fields']['fields']['pricing'] ?? [];
+        if ( ! is_array( $pricing ) || ! array_key_exists( 'price_range_options', $pricing ) ) {
+            return;
+        }
+
+        $options = Price_Ranges::validate_options( $pricing['price_range_options'], ( $pricing['pricing_type'] ?? 'both' ) !== 'price_unit' );
+        if ( is_wp_error( $options ) ) {
+            return $options;
+        }
+
+        $fields['submission_form_fields']['fields']['pricing']['price_range_options'] = $options;
+    }
+
+    private static function price_range_settings_error( $error ) {
+        return [
+            'status' => [
+                'success'     => false,
+                'error_count' => 1,
+                'status_log'  => [
+                    'invalid_price_range_options' => [
+                        'type'    => 'error',
+                        'message' => $error->get_error_message(),
+                    ],
+                ],
+            ],
+        ];
     }
 
     // create_directory
@@ -237,6 +276,11 @@ trait Multi_Directory_Helper {
         if ( $settings_error ) {
             $settings_error['term_id'] = $term_id;
             return $settings_error;
+        }
+
+        $error = self::validate_price_range_options( $fields );
+        if ( is_wp_error( $error ) ) {
+            return self::price_range_settings_error( $error );
         }
 
         $directory_name = ( ! empty( $fields['name'] ) ) ? $fields['name'] : '';
