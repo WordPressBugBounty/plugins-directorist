@@ -159,49 +159,16 @@ final class AI_Admin_Actions {
     }
 
     public static function render_frontend_listing_buttons( $listing_id ) {
-        if ( ! is_user_logged_in() || self::is_plugin_active() ) {
-            return;
-        }
-
-        $post_type = get_post_type_object( ATBDP_POST_TYPE );
-        if ( ! $post_type || ( $listing_id ? ! self::can_edit_listing( get_post( $listing_id ) ) : ! current_user_can( $post_type->cap->create_posts ) ) ) {
-            return;
-        }
-
-        $destination = self::get_frontend_destination();
-
-        if ( $destination ) {
-            self::enqueue_assets();
-            self::render_editor_templates( ! $listing_id, $destination );
-        }
+        // Older theme overrides may still call this method.
     }
 
     public static function render_owner_dashboard_button( $listing_id ) {
-        if ( self::is_plugin_active() || ! self::can_edit_listing( get_post( $listing_id ) ) ) {
-            return;
-        }
-
-        $destination = self::get_frontend_destination();
-        if ( $destination ) {
-            self::enqueue_assets();
-            self::render_button( __( 'Improve with AI', 'directorist' ), $destination, 'directorist-dropdown-item directorist-ai-admin-action--menu' );
-        }
+        // Older theme overrides may still call this method.
     }
 
     private static function can_edit_listing( $post ) {
         return $post && ATBDP_POST_TYPE === $post->post_type && current_user_can( 'edit_post', $post->ID )
             && ( current_user_can( 'manage_options' ) || get_current_user_id() === (int) $post->post_author );
-    }
-
-    private static function get_frontend_destination() {
-        if ( current_user_can( 'manage_options' ) ) {
-            return self::get_destination();
-        }
-
-        return [
-            'url'   => '',
-            'label' => __( 'Ask your site administrator to enable Directorist AI', 'directorist' ),
-        ];
     }
 
     private static function render_editor_templates( $is_new, $destination ) {
@@ -261,10 +228,6 @@ final class AI_Admin_Actions {
             esc_attr( $tooltip_id ),
             esc_html( $destination['label'] )
         );
-
-        if ( '' === $destination['url'] ) {
-            return '<button type="button" data-directorist-ai-contact-admin' . $attributes . '>' . $content . '</button>';
-        }
 
         $new_tab = self::PURCHASE_URL === $destination['url'] ? ' target="_blank" rel="noopener noreferrer"' : '';
         return '<a href="' . esc_url( $destination['url'] ) . '"' . $attributes . $new_tab . '>' . $content . '</a>';

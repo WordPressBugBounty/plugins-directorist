@@ -79,7 +79,6 @@ if ( $query->have_posts() ) {
                                     }
                                 }
                                 ?>
-                                <?php \Directorist\AI_Admin_Actions::render_owner_dashboard_button( get_the_ID() ); ?>
 
                             </div>
                         </div>

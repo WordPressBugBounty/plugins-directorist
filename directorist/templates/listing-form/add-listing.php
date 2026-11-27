@@ -18,7 +18,6 @@ $has_sidebar = (bool) $enable_sidebar;
     <div class="<?php Helper::directorist_container_fluid(); ?>">
         <?php do_action( 'directorist_before_add_listing_from_frontend' );?>
         <form action="<?php echo esc_url( $action_url ); ?>" method="post" id="directorist-add-listing-form">
-            <?php \Directorist\AI_Admin_Actions::render_frontend_listing_buttons( $listing_form->get_add_listing_id() ); ?>
             <div class="directorist-add-listing-form">
                 <?php ATBDP()->listing->add_listing->show_nonce_field(); ?>
                 <input type="hidden" name="add_listing_form" value="1">

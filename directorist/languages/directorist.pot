@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-26 04:16+0000\n"
+"POT-Creation-Date: 2026-11-27 04:42+0000\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -4001,7 +4001,7 @@ msgstr ""
 msgid "Could not submit this listing for renewal."
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:112, ../includes/classes/class-ai-admin-actions.php:208
+#: ../includes/classes/class-ai-admin-actions.php:112, ../includes/classes/class-ai-admin-actions.php:175
 msgid "Generate listing with AI"
 msgstr ""
 
@@ -4009,63 +4009,59 @@ msgstr ""
 msgid "Import listings with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:126, ../includes/classes/class-ai-admin-actions.php:243
+#: ../includes/classes/class-ai-admin-actions.php:126, ../includes/classes/class-ai-admin-actions.php:210
 msgid "Create directory with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:138, ../includes/classes/class-ai-admin-actions.php:187
+#: ../includes/classes/class-ai-admin-actions.php:138
 msgid "Improve with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:203
-msgid "Ask your site administrator to enable Directorist AI"
-msgstr ""
-
-#: ../includes/classes/class-ai-admin-actions.php:208
+#: ../includes/classes/class-ai-admin-actions.php:175
 msgid "Improve listing with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:214
+#: ../includes/classes/class-ai-admin-actions.php:181
 msgid "Preview image / thumbnail"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:215
+#: ../includes/classes/class-ai-admin-actions.php:182
 msgid "Gallery"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:216
+#: ../includes/classes/class-ai-admin-actions.php:183
 msgid "Generate with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:219
+#: ../includes/classes/class-ai-admin-actions.php:186
 msgid "Edit with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:222
+#: ../includes/classes/class-ai-admin-actions.php:189
 msgid "Choose with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:225
+#: ../includes/classes/class-ai-admin-actions.php:192
 msgid "Replace with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:242
+#: ../includes/classes/class-ai-admin-actions.php:209
 msgid "Edit directory with AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:321
+#: ../includes/classes/class-ai-admin-actions.php:284
 msgid "Activate Directorist AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:331
+#: ../includes/classes/class-ai-admin-actions.php:294
 msgid "Check your AI Pro license"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:366
+#: ../includes/classes/class-ai-admin-actions.php:329
 msgid "Install Directorist AI"
 msgstr ""
 
-#: ../includes/classes/class-ai-admin-actions.php:376
+#: ../includes/classes/class-ai-admin-actions.php:339
 msgid "View AI Pro plans · Opens in a new tab"
 msgstr ""
 
@@ -12443,7 +12439,7 @@ msgstr ""
 msgid "Watch the video to learn how to create listing header."
 msgstr ""
 
-#: ../includes/modules/multi-directory-setup/class-builder-data.php:2603, ../includes/modules/multi-directory-setup/class-builder-data.php:2675, ../templates/listing-form/add-listing.php:73
+#: ../includes/modules/multi-directory-setup/class-builder-data.php:2603, ../includes/modules/multi-directory-setup/class-builder-data.php:2675, ../templates/listing-form/add-listing.php:72
 msgid "Back"
 msgstr ""
 
@@ -16554,7 +16550,7 @@ msgstr ""
 msgid "Review payment"
 msgstr ""
 
-#: ../templates/dashboard/listing-row.php:100
+#: ../templates/dashboard/listing-row.php:99
 msgid "No items found"
 msgstr ""
 
@@ -16730,11 +16726,11 @@ msgstr ""
 msgid "Enter youtube url"
 msgstr ""
 
-#: ../templates/listing-form/add-listing.php:46
+#: ../templates/listing-form/add-listing.php:45
 msgid "Finish"
 msgstr ""
 
-#: ../templates/listing-form/add-listing.php:85
+#: ../templates/listing-form/add-listing.php:84
 msgid "Skip preview and submit listing"
 msgstr ""
 

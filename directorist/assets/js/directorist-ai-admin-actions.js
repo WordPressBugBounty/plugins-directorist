@@ -9,7 +9,7 @@
     const actionSelector = '.directorist-ai-admin-action';
     const tooltipSelector = '.directorist-ai-admin-action__tooltip';
     const dismissedClass = 'directorist-ai-admin-action--tooltip-dismissed';
-    const activeTooltipSelector = `${actionSelector}:is(:hover, :focus-visible, [data-directorist-ai-contact-open]):not(.${dismissedClass}) > ${tooltipSelector}`;
+    const activeTooltipSelector = `${actionSelector}:is(:hover, :focus-visible):not(.${dismissedClass}) > ${tooltipSelector}`;
     let tooltipSequence = 0;
 
     function cloneAction(templateId) {
@@ -57,14 +57,13 @@
 
     function mountEditorActions() {
         const launcher = cloneAction('directorist-ai-listing-editor-action');
-        const form = document.querySelector('#post, #directorist-add-listing-form');
+        const form = document.getElementById('post');
 
         if (!launcher || !form) {
             return;
         }
 
-        const isAdmin = form.id === 'post';
-        if (isAdmin && addListing) {
+        if (addListing) {
             addListing.after(launcher);
         } else {
             form.prepend(launcher);
@@ -110,10 +109,6 @@
                 } else {
                     container.before(header);
                 }
-            }
-
-            if (!isAdmin) {
-                return;
             }
 
             const labels = document.getElementById('directorist-ai-field-generate').dataset;
@@ -185,18 +180,9 @@
                 revealTooltip(action);
             }
         });
-        document.addEventListener('focusout', (event) => {
-            event.target.closest(actionSelector)?.removeAttribute('data-directorist-ai-contact-open');
-        });
         document.addEventListener('click', (event) => {
             if (event.target.closest(tooltipSelector)) {
                 event.preventDefault();
-                return;
-            }
-            const action = event.target.closest('[data-directorist-ai-contact-admin]');
-            if (action) {
-                action.setAttribute('data-directorist-ai-contact-open', '');
-                revealTooltip(action);
             }
         });
 

@@ -69,8 +69,7 @@
     margin-inline-start: 7px;
 }
 
-.wrap .directorist-ai-admin-action--row,
-.directorist-ai-admin-action--menu {
+.wrap .directorist-ai-admin-action--row {
     background: transparent;
     border: 0;
     color: inherit;
@@ -101,17 +100,11 @@
     padding: 0;
 }
 
-.directorist-ai-admin-action--menu {
-    display: flex;
-    justify-content: start;
-    width: 100%;
-}
-
-.directorist-ai-admin-action:is(.directorist-ai-admin-action--row, .directorist-ai-admin-action--menu):not(:hover, :focus-visible) .directorist-ai-admin-action__icon {
+.directorist-ai-admin-action--row:not(:hover, :focus-visible) .directorist-ai-admin-action__icon {
     display: none;
 }
 
-.directorist-ai-admin-action:is(.directorist-ai-admin-action--row, .directorist-ai-admin-action--menu) .directorist-ai-admin-action__icon {
+.directorist-ai-admin-action--row .directorist-ai-admin-action__icon {
     flex-basis: 14px;
     height: 14px;
     width: 14px;
@@ -173,10 +166,6 @@
 }
 
 .directorist-ai-admin-action:focus-visible:not(.directorist-ai-admin-action--tooltip-dismissed) .directorist-ai-admin-action__tooltip {
-    visibility: visible;
-}
-
-.directorist-ai-admin-action[data-directorist-ai-contact-open]:not(.directorist-ai-admin-action--tooltip-dismissed) .directorist-ai-admin-action__tooltip {
     visibility: visible;
 }
 
